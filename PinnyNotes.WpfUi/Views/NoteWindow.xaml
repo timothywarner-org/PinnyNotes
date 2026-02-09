@@ -26,6 +26,7 @@
         ShowInTaskbar="{Binding Note.ShowInTaskbar}"
         Background="{Binding Note.Background}"
         BorderBrush="{Binding Note.BorderBrush}"
+        Topmost="{Binding Note.IsPinned}"
 
         d:DataContext="{d:DesignInstance Type=vm:NoteViewModel}"
         d:Height="300"

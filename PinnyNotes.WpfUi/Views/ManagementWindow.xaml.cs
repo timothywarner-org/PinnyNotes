@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
+using PinnyNotes.WpfUi.Models;
 using PinnyNotes.WpfUi.ViewModels;
 
 namespace PinnyNotes.WpfUi.Views;
@@ -17,7 +19,16 @@ public partial class ManagementWindow : Window
 
         InitializeComponent();
 
+        NotesListView.MouseUp += NotesListView_MouseUp;
         NotesListView.MouseDoubleClick += NotesListView_MouseDoubleClick;
+    }
+
+    private void NotesListView_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+        HitTestResult hitTestResult = VisualTreeHelper.HitTest(NotesListView, e.GetPosition(NotesListView));
+        FrameworkElement? item = hitTestResult?.VisualHit as FrameworkElement;
+        if (item?.DataContext is not NotePreviewModel)
+            NotesListView.UnselectAll();
     }
 
     private void NotesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)

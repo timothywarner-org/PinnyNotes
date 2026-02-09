@@ -19,6 +19,7 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   SelectionMode="Extended"
                   ItemsSource="{Binding NotePreviews}">
+
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border Width="125"
@@ -28,13 +29,12 @@
                             Background="{Binding TitleBrush}"
                             BorderBrush="{Binding BorderBrush}"
                             BorderThickness="1">
-                        <TextBlock
-                                Text="{Binding ContentPreview}"
-                                FontSize="12"
-                                TextWrapping="Wrap"
-                                Padding="5,2,5,2"
-                                Background="{Binding BackgroundBrush}"
-                                Foreground="{Binding TextBrush}" />
+                        <TextBlock Text="{Binding ContentPreview}"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"
+                                   Padding="5,2,5,2"
+                                   Background="{Binding BackgroundBrush}"
+                                   Foreground="{Binding TextBrush}" />
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -49,19 +49,18 @@
             <ListView.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext,
                                                    RelativeSource={RelativeSource Self}}">
-                    <MenuItem Header="New Note"
+                    <MenuItem Header="New note"
                               Command="{Binding NewNoteCommand}" />
                     <Separator />
-                    <MenuItem Header="Open"
+                    <MenuItem Header="Open note(s)"
                               Command="{Binding OpenNotesCommand}" />
-                    <MenuItem Header="Close"
+                    <MenuItem Header="Close note(s)"
                               Command="{Binding CloseNotesCommand}" />
                     <Separator />
-                    <MenuItem Header="Delete"
+                    <MenuItem Header="Delete note"
                               Command="{Binding DeleteNotesCommand}" />
                 </ContextMenu>
             </ListView.ContextMenu>
-
 
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>

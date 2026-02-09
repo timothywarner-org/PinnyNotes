@@ -8,11 +8,13 @@ namespace PinnyNotes.WpfUi.Models;
 
 public class NoteModel : BaseModel
 {
-    public NoteModel(NoteSettingsModel NoteSettings)
+    public NoteModel(NoteSettingsModel NoteSettings, string themeColorScheme)
     {
 
         Width = NoteSettings.DefaultWidth;
         Height = NoteSettings.DefaultHeight;
+
+        ThemeColorScheme = themeColorScheme;
 
         TransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyModes.Disabled);
     }
@@ -52,7 +54,7 @@ public class NoteModel : BaseModel
     public int GravityX { get; set => SetProperty(ref field, value); }
     public int GravityY { get; set => SetProperty(ref field, value); }
 
-    public string? ThemeColorScheme { get; set => SetProperty(ref field, value); }
+    public string ThemeColorScheme { get; set => SetProperty(ref field, value); }
 
     public bool IsPinned { get; set => SetProperty(ref field, value); }
     public bool IsOpen { get; set => SetProperty(ref field, value); }

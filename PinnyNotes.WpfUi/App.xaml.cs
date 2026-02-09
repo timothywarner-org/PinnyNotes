@@ -115,9 +115,13 @@ public partial class App : Application
         services.AddSingleton<MessengerService>();
         services.AddSingleton<WindowService>();
         services.AddTransient<NotifyIconService>();
+        services.AddSingleton<ThemeService>();
 
         services.AddTransient<SettingsWindow>();
         services.AddTransient<SettingsViewModel>();
+
+        services.AddTransient<ManagementWindow>();
+        services.AddTransient<ManagementViewModel>();
     }
 
     protected override async void OnExit(ExitEventArgs e)

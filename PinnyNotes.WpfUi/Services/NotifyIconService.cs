@@ -63,6 +63,12 @@ public class NotifyIconService : IDisposable
         };
         newNoteItem.Click += NewNote_Click;
 
+        MenuItem managementWindowItem = new()
+        {
+            Header = "Management Window"
+        };
+        managementWindowItem.Click += ManagementWindow_Click;
+
         MenuItem settingsItem = new()
         {
             Header = "Settings"
@@ -77,6 +83,7 @@ public class NotifyIconService : IDisposable
 
         ContextMenu contextMenu = new();
         contextMenu.Items.Add(newNoteItem);
+        contextMenu.Items.Add(managementWindowItem);
         contextMenu.Items.Add(new Separator());
         contextMenu.Items.Add(settingsItem);
         contextMenu.Items.Add(new Separator());
@@ -112,6 +119,11 @@ public class NotifyIconService : IDisposable
     private void NewNote_Click(object? sender, EventArgs e)
     {
         _messengerService.Publish(new OpenNoteWindowMessage());
+    }
+
+    private void ManagementWindow_Click(object? sender, EventArgs e)
+    {
+        _messengerService.Publish(new OpenManagementWindowMessage());
     }
 
     private void Settings_Click(object? sender, EventArgs e)

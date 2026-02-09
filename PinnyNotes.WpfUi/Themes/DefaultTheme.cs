@@ -2,9 +2,7 @@
 
 public class DefaultTheme : Theme
 {
-    private const string DefaultName = "Default";
-
-    public DefaultTheme() : base(DefaultName)
+    public DefaultTheme()
     {
         string yellowName = "Yellow";
         Palette yellowLightPalette = new("#FEEA00", "#FFFCDD", "#FEF7B1", "#464646", "#000000");
@@ -45,5 +43,11 @@ public class DefaultTheme : Theme
         Palette greenLightPalette = new("#AACC04", "#E3EBC6", "#C6D67D", "#464646", "#000000");
         Palette greenDarkPalette = new("#AACC04", "#323232", "#464646", "#AACC04", "#FFFFFF");
         ColorSchemes[greenName] = new(greenName, "#C6D67D", greenLightPalette, greenDarkPalette);
+
+        DefaultColorSchemeName = yellowName;
     }
+
+    public override string Name { get; } = "Default";
+    public override Dictionary<string, ColorScheme> ColorSchemes { get; } = [];
+    public override string DefaultColorSchemeName { get; }
 }

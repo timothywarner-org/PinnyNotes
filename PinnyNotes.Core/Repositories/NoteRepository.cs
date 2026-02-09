@@ -13,24 +13,24 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
         (
             Id                  INTEGER PRIMARY KEY AUTOINCREMENT,
 
-            Content             TEXT    DEFAULT '',
+            Content             TEXT,
 
-            X                   REAL    DEFAULT 0,
-            Y                   REAL    DEFAULT 0,
-            Width               REAL    DEFAULT 300,
-            Height              REAL    DEFAULT 300,
+            X                   REAL,
+            Y                   REAL,
+            Width               REAL,
+            Height              REAL,
 
-            GravityX            INTEGER DEFAULT 1,
-            GravityY            INTEGER DEFAULT 1,
+            GravityX            INTEGER,
+            GravityY            INTEGER,
 
-            ThemeColorScheme    TEXT    DEFAULT NULL,
+            ThemeColorScheme    TEXT,
 
-            IsPinned            INTEGER DEFAULT 0,
-            IsOpen              INTEGER DEFAULT 0
+            IsPinned            INTEGER,
+            IsOpen              INTEGER
         )
     ";
 
-    public async Task<int> Create()
+    public async Task<int> Create(NoteDto note)
     {
         using SqliteConnection connection = new(ConnectionString);
         connection.Open();
@@ -39,8 +39,56 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
             connection,
             @"
                 INSERT INTO Notes
-                DEFAULT VALUES;
-            "
+                (
+                    Content,
+
+                    X,
+                    Y,
+                    Width,
+                    Height,
+
+                    GravityX,
+                    GravityY,
+
+                    ThemeColorScheme,
+
+                    IsPinned,
+                    IsOpen
+                )
+                VALUES
+                (
+                    @content,
+
+                    @x,
+                    @y,
+                    @width,
+                    @height,
+
+                    @gravityX,
+                    @gravityY,
+
+                    @themeColorScheme,
+
+                    @isPinned,
+                    @isOpen
+                );
+            ",
+            parameters: [
+                new("@content", note.Content),
+
+                new("@x", note.X),
+                new("@y", note.Y),
+                new("@width", note.Width),
+                new("@height", note.Height),
+
+                new("@gravityX", note.GravityX),
+                new("@gravityY", note.GravityY),
+
+                new("@themeColorScheme", note.ThemeColorScheme),
+
+                new("@isPinned", note.IsPinned),
+                new("@isOpen", note.IsOpen)
+            ]
         );
 
         int newId = await GetLastInsertRowId(connection);
@@ -175,7 +223,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
             GetInt(reader, "GravityX"),
             GetInt(reader, "GravityY"),
 
-            GetStringNullable(reader, "ThemeColorScheme"),
+            GetString(reader, "ThemeColorScheme"),
 
             GetBool(reader, "IsPinned"),
             GetBool(reader, "IsOpen")

@@ -20,16 +20,19 @@ public partial class NoteWindow : Window
 {
     private readonly NoteSettingsModel _noteSettings;
     private readonly MessengerService _messengerService;
+    private readonly ThemeService _themeService;
 
     private readonly NoteViewModel _viewModel;
 
     #region NoteWindow
 
-    public NoteWindow(SettingsService settingsService, MessengerService messengerService, NoteViewModel viewModel)
+    public NoteWindow(SettingsService settingsService, MessengerService messengerService, ThemeService themeService, NoteViewModel viewModel)
     {
         _noteSettings = settingsService.NoteSettings;
         _messengerService = messengerService;
         _messengerService.Subscribe<WindowActionMessage>(OnWindowActionMessage);
+        _themeService = themeService;
+
         _viewModel = viewModel;
 
         DataContext = _viewModel;
@@ -55,7 +58,7 @@ public partial class NoteWindow : Window
     private void PopulateTitleBarContextMenu()
     {
         int insertIndex = TitleBarContextMenu.Items.IndexOf(ThemeMenuSeparator);
-        foreach (ColorScheme colorScheme in _viewModel.AvailableThemes[0].ColorSchemes.Values)
+        foreach (ColorScheme colorScheme in _themeService.CurrentTheme.ColorSchemes.Values)
         {
             MenuItem menuItem = new()
             {
@@ -118,12 +121,14 @@ public partial class NoteWindow : Window
         ShowTitleBar();
     }
 
-    private void Window_Deactivated(object? sender, EventArgs e)
+    private async void Window_Deactivated(object? sender, EventArgs e)
     {
         _viewModel.Note.IsFocused = false;
         _viewModel.UpdateOpacity();
         _viewModel.UpdateAlwaysOnTop();
         HideTitleBar();
+
+        await _viewModel.SaveNote();
     }
 
     private async void Window_Closing(object? sender, CancelEventArgs e)

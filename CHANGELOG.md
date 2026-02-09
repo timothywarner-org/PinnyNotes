@@ -5,12 +5,15 @@
 
 ### Added
 - GUID tool.
+- Auto save notes to database.
+- Management Window.
 - 
 
 ### Changed
 - Use exe dir for database when in debug mode.
 - Resize can now be done from any side or corner, rather than only with bottom right grip.
 - Transparency only enabled if required when loading notes.
+- Updated to .NET 10.
 - 
 
 ### Fixed

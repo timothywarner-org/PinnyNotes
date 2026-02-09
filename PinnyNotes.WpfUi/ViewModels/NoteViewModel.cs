@@ -2,12 +2,14 @@
 using System.Windows;
 using System.Windows.Threading;
 
+using PinnyNotes.Core.DataTransferObjects;
 using PinnyNotes.Core.Enums;
 using PinnyNotes.Core.Repositories;
 using PinnyNotes.WpfUi.Commands;
 using PinnyNotes.WpfUi.Helpers;
 using PinnyNotes.WpfUi.Interop;
 using PinnyNotes.WpfUi.Interop.Constants;
+using PinnyNotes.WpfUi.Messages;
 using PinnyNotes.WpfUi.Models;
 using PinnyNotes.WpfUi.Services;
 using PinnyNotes.WpfUi.Themes;
@@ -17,12 +19,11 @@ namespace PinnyNotes.WpfUi.ViewModels;
 public class NoteViewModel : BaseViewModel
 {
     private readonly NoteRepository _noteRepository;
+    private readonly ThemeService _themeService;
 
     private readonly DispatcherTimer _saveTimer;
 
     public RelayCommand<string> ChangeThemeColorCommand { get; }
-
-    public Theme[] AvailableThemes { get; }
 
     public NoteSettingsModel NoteSettings { get; set; }
     public EditorSettingsModel EditorSettings { get; set; }
@@ -33,16 +34,14 @@ public class NoteViewModel : BaseViewModel
         NoteRepository noteRepository,
         AppMetadataService appMetadataService,
         SettingsService settingsService,
-        MessengerService messengerService
+        MessengerService messengerService,
+        ThemeService themeService
     ) : base(appMetadataService, settingsService, messengerService)
     {
         _noteRepository = noteRepository;
+        _themeService = themeService;
 
         ChangeThemeColorCommand = new RelayCommand<string>(ChangeThemeColor);
-
-        AvailableThemes = [
-            new DefaultTheme()
-        ];
 
         NoteSettings = SettingsService.NoteSettings;
         NoteSettings.PropertyChanged += OnNoteSettingsChanged;
@@ -50,31 +49,46 @@ public class NoteViewModel : BaseViewModel
 
         _saveTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(30)
+            Interval = TimeSpan.FromSeconds(5)
         };
         _saveTimer.Tick += OnSaveTimerTick;
     }
 
     public async Task Initialize(int? noteId = null, NoteModel? parent = null)
     {
-        int id;
         if (noteId is null)
-            id = await _noteRepository.Create();
+            await CreateNewNote(parent);
         else
-            id = (int)noteId;
+            await LoadNote((int)noteId);
+    }
 
-        Note = new(await _noteRepository.GetById(id), NoteSettings);
+    private async Task CreateNewNote(NoteModel? parent = null)
+    {
+        Note = new(NoteSettings, _themeService.GetNewNoteColorSchemeName(parent?.ThemeColorScheme));
 
-        if (noteId is null)
-        {
-            InitNoteColor(parent?.ThemeColorScheme);
-            InitNotePosition(parent);
-        }
+        InitNotePosition(parent);
+        UpdateBrushes();
+        UpdateOpacity();
+
+        Note.IsOpen = true;
+
+        Note.Id = await _noteRepository.Create(Note.ToDto());
+
+        Note.IsSaved = true;
+
+        MessengerService.Publish<NoteActionMessage>(new(NoteActions.Created, Note.ToDto()));
+    }
+
+    private async Task LoadNote(int noteId)
+    {
+        Note = new(await _noteRepository.GetById((int)noteId), NoteSettings);
 
         UpdateBrushes();
         UpdateOpacity();
 
         Note.IsOpen = true;
+
+        await SaveNote();
     }
 
     public void OnWindowLoaded(nint windowHandle)
@@ -134,16 +148,6 @@ public class NoteViewModel : BaseViewModel
     private async void OnSaveTimerTick(object? sender, EventArgs e)
     {
         await SaveNote();
-    }
-
-    private void InitNoteColor(string? parentColorScheme = null)
-    {
-        // Set this first as cycle colors wont trigger a change if the next color if the default for ThemeColors
-        string? currentColorScheme = AppMetadataService.Metadata.ColorScheme;
-        if (NoteSettings.CycleColors)
-            currentColorScheme = AvailableThemes[0].GetNextColorScheme(currentColorScheme, parentColorScheme);
-
-        Note.ThemeColorScheme = currentColorScheme;
     }
 
     private void InitNotePosition(NoteModel? parent = null)
@@ -246,19 +250,9 @@ public class NoteViewModel : BaseViewModel
 
     private void UpdateBrushes()
     {
-        Note.ThemeColorScheme ??= AvailableThemes[0].GetNextColorScheme(null);
-
         AppMetadataService.Metadata.ColorScheme = Note.ThemeColorScheme;
 
-        ColorScheme colorScheme = AvailableThemes[0].ColorSchemes[Note.ThemeColorScheme];
-
-        ColorModes colorMode = NoteSettings.ColorMode;
-        Palette palette;
-        if (colorMode == ColorModes.Dark || (colorMode == ColorModes.System && SystemThemeHelper.IsDarkMode()))
-            palette = colorScheme.Dark;
-        else
-            palette = colorScheme.Light;
-
+        Palette palette = _themeService.GetPalette(Note.ThemeColorScheme, NoteSettings.ColorMode);
         Note.UpdateBrushes(palette);
     }
 
@@ -324,22 +318,27 @@ public class NoteViewModel : BaseViewModel
         );
 
         Note.IsSaved = true;
+
+        MessengerService.Publish<NoteActionMessage>(new(NoteActions.Updated, Note.ToDto()));
     }
 
     public async Task<bool> CloseNote()
     {
         _saveTimer.Stop();
 
+        MessengerService.Publish<NoteActionMessage>(new(NoteActions.Closed, Note.ToDto()));
+
         if (string.IsNullOrEmpty(Note.Content))
         {
             // Delete note if empty, TO DO: Add setting for this behaviour
             await _noteRepository.Delete(Note.Id);
+            MessengerService.Publish<NoteActionMessage>(new(NoteActions.Deleted, Note.ToDto()));
             return false;
         }
 
         // IsOpen is updated when users closes note via close button,
         // it's left true if windows is closed by exiting app so it will re-open with app.
-        await _noteRepository.Update(Note.ToDto());
+        await SaveNote();
 
         return false;
     }

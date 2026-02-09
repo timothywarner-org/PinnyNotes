@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum WindowActions
+public enum WindowAction
 {
     Activate
 }

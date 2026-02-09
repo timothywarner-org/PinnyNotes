@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum CopyActions
+public enum CopyAction
 {
     None,
     CopySelected,

@@ -9,7 +9,7 @@ public class RelayCommand<T>(Action<T> execute, Predicate<T>? canExecute = null)
 
     public bool CanExecute(object? parameter)
     {
-        return _canExecute == null || (parameter is T t && _canExecute(t));
+        return _canExecute is null || (parameter is T t && _canExecute(t));
     }
 
     public void Execute(object? parameter)
@@ -32,7 +32,7 @@ public class RelayCommand(Action execute, Func<bool>? canExecute = null) : IComm
     private readonly Func<bool>? _canExecute = canExecute;
 
     public bool CanExecute(object? parameter)
-        => _canExecute == null || _canExecute();
+        => _canExecute is null || _canExecute();
 
     public void Execute(object? parameter)
         => _execute();

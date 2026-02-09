@@ -8,17 +8,16 @@ public class AppMetadataService(AppMetadataRepository appMetadataRepository)
 {
     private readonly AppMetadataRepository _appMetadataRepository = appMetadataRepository;
 
-    public AppMetadataModel Metadata => _metadata;
-    private AppMetadataModel _metadata = null!;
+    public AppMetadataModel Metadata { get; private set; } = null!;
 
     public async Task Load()
     {
         AppMetadataDataDto appMetadata = await _appMetadataRepository.GetById(1);
 
-        _metadata = new()
+        Metadata = new()
         {
             LastUpdateCheck = appMetadata.LastUpdateCheck,
-            ColorScheme = appMetadata.ColorScheme
+            ColourScheme = appMetadata.ColourScheme
         };
     }
 
@@ -28,8 +27,8 @@ public class AppMetadataService(AppMetadataRepository appMetadataRepository)
             new AppMetadataDataDto(
                 Id: 1,
 
-                LastUpdateCheck: _metadata.LastUpdateCheck,
-                ColorScheme: _metadata.ColorScheme
+                LastUpdateCheck: Metadata.LastUpdateCheck,
+                ColourScheme: Metadata.ColourScheme
             )
         );
     }

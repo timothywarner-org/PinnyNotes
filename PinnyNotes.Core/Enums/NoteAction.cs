@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum NoteActions
+public enum NoteAction
 {
     Created,
     Updated,

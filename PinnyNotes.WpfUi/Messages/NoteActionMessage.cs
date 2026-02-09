@@ -4,6 +4,6 @@ using PinnyNotes.Core.Enums;
 namespace PinnyNotes.WpfUi.Messages;
 
 public record NoteActionMessage(
-    NoteActions Action,
+    NoteAction Action,
     NoteDto NoteDto
 );

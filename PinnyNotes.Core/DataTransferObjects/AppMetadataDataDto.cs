@@ -4,5 +4,5 @@ public record AppMetadataDataDto(
     int Id,
 
     long? LastUpdateCheck,
-    string? ColorScheme
+    string? ColourScheme
 );

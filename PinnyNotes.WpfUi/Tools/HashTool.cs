@@ -17,7 +17,6 @@ public class HashTool : BaseTool, ITool
         HashSHA1,
         HashMD5
     }
-    public ToolStates State => ToolSettings.HashToolState;
 
     public HashTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
@@ -32,6 +31,8 @@ public class HashTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.HashToolState;
 
     private void MenuAction(ToolActions action)
     {

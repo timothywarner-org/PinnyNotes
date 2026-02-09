@@ -15,8 +15,6 @@ public class SlashTool : BaseTool, ITool
         SlashSwap
     }
 
-    public ToolStates State => ToolSettings.SlashToolState;
-
     public SlashTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -28,6 +26,8 @@ public class SlashTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.SlashToolState;
 
     private void MenuAction(ToolActions action)
     {

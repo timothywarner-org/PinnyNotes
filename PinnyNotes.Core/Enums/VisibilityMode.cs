@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum VisibilityModes
+public enum VisibilityMode
 {
     ShowInTaskbar,
     HideInTaskbar,

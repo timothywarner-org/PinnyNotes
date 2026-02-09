@@ -17,8 +17,6 @@ public class QuoteTool : BaseTool, ITool
     private readonly char[] _openingQuotes = ['\'', '"', '`', '‘', '“'];
     private readonly char[] _closingQuotes = ['\'', '"', '`', '’', '”'];
 
-    public ToolStates State => ToolSettings.QuoteToolState;
-
     public QuoteTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -32,6 +30,8 @@ public class QuoteTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.QuoteToolState;
 
     private void MenuAction(ToolActions action)
     {

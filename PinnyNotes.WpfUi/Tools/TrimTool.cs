@@ -14,8 +14,6 @@ public class TrimTool : BaseTool, ITool
         TrimLines
     }
 
-    public ToolStates State => ToolSettings.TrimToolState;
-
     public TrimTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -28,6 +26,8 @@ public class TrimTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.TrimToolState;
 
     private void MenuAction(ToolActions action)
     {

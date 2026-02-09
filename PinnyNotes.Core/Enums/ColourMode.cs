@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum ColorModes
+public enum ColourMode
 {
     Light = 0,
     Dark = 1,

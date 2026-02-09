@@ -6,7 +6,7 @@ namespace PinnyNotes.WpfUi.Tools;
 
 public interface ITool
 {
-    ToolStates State { get; }
+    ToolState State { get; }
 
     MenuItem MenuItem { get; }
 }

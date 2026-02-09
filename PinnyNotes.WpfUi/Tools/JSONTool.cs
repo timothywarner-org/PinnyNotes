@@ -18,8 +18,6 @@ public class JsonTool : BaseTool, ITool
         WriteIndented = true
     };
 
-    public ToolStates State => ToolSettings.JsonToolState;
-
     public JsonTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -29,6 +27,8 @@ public class JsonTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.JsonToolState;
 
     private void MenuAction(ToolActions action)
     {

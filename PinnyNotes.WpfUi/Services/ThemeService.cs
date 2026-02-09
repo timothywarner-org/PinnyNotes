@@ -11,24 +11,24 @@ public class ThemeService(AppMetadataService appMetadataService, SettingsService
 
     public Theme CurrentTheme { get; } = new DefaultTheme();
 
-    public string GetNewNoteColorSchemeName(string? parentColorScheme = null)
+    public string GetNewNoteColourSchemeName(string? parentColourScheme = null)
     {
-        // Set this first as cycle colors wont trigger a change if the next color if the default for ThemeColors
-        string currentColorScheme = _appMetadataService.Metadata.ColorScheme ?? CurrentTheme.DefaultColorSchemeName;
-        if (_settingsService.NoteSettings.CycleColors)
-            currentColorScheme = GetNextColorSchemeName(currentColorScheme, parentColorScheme);
+        // Set this first as cycle colours wont trigger a change if the next colour if the default for ThemeColours
+        string currentColourScheme = _appMetadataService.Metadata.ColourScheme ?? CurrentTheme.DefaultColourSchemeName;
+        if (_settingsService.NoteSettings.CycleColours)
+            currentColourScheme = GetNextColourSchemeName(currentColourScheme, parentColourScheme);
 
-        return currentColorScheme;
+        return currentColourScheme;
     }
 
-    public string GetNextColorSchemeName(string currentColorSchemeName, string? parentColorSchemeName = null)
+    public string GetNextColourSchemeName(string currentColourSchemeName, string? parentColourSchemeName = null)
     {
-        string[] keys = [.. CurrentTheme.ColorSchemes.Keys];
+        string[] keys = [..CurrentTheme.ColourSchemes.Keys];
 
-        int index = keys.IndexOf(currentColorSchemeName) + 1;
+        int index = keys.IndexOf(currentColourSchemeName) + 1;
 
         string nextName = (index == keys.Length) ? keys[0] : keys[index];
-        if (nextName == parentColorSchemeName)
+        if (nextName == parentColourSchemeName)
         {
             index++;
             nextName = (index == keys.Length) ? keys[0] : keys[index];
@@ -37,15 +37,15 @@ public class ThemeService(AppMetadataService appMetadataService, SettingsService
         return nextName;
     }
 
-    public Palette GetPalette(string colorSchemeName, ColorModes colorMode)
+    public Palette GetPalette(string colourSchemeName, ColourMode colourMode)
     {
-        ColorScheme colorScheme = CurrentTheme.ColorSchemes[colorSchemeName];
+        ColourScheme colourScheme = CurrentTheme.ColourSchemes[colourSchemeName];
 
         Palette palette;
-        if (colorMode == ColorModes.Dark || (colorMode == ColorModes.System && SystemThemeHelper.IsDarkMode()))
-            palette = colorScheme.Dark;
+        if (colourMode == ColourMode.Dark || (colourMode == ColourMode.System && SystemThemeHelper.IsDarkMode()))
+            palette = colourScheme.Dark;
         else
-            palette = colorScheme.Light;
+            palette = colourScheme.Light;
 
         return palette;
     }

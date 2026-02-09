@@ -13,8 +13,6 @@ public class JoinTool : BaseTool, ITool
         JoinTab
     }
 
-    public ToolStates State => ToolSettings.JoinToolState;
-
     public JoinTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -26,6 +24,8 @@ public class JoinTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.JoinToolState;
 
     private void MenuAction(ToolActions action)
     {

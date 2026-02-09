@@ -15,8 +15,6 @@ public class CaseTool : BaseTool, ITool
         CaseTitle
     }
 
-    public ToolStates State => ToolSettings.CaseToolState;
-
     public CaseTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -28,6 +26,8 @@ public class CaseTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.CaseToolState;
 
     private void MenuAction(ToolActions action)
     {

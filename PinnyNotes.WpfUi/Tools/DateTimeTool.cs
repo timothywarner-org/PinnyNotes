@@ -11,8 +11,6 @@ public class DateTimeTool : BaseTool, ITool
         DateTimeSortableDateTime
     }
 
-    public ToolStates State => ToolSettings.DateTimeToolState;
-
     public DateTimeTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -22,6 +20,8 @@ public class DateTimeTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.DateTimeToolState;
 
     private void MenuAction(ToolActions action)
     {

@@ -21,12 +21,16 @@ public abstract class BaseRepository
     {
         SqliteCommand command = connection.CreateCommand();
         command.CommandText = query;
-        if (parameters != null)
-            foreach (KeyValuePair<string, object?> parameter in parameters)
-                command.Parameters.AddWithValue(
-                    parameter.Key,
-                    parameter.Value ?? DBNull.Value
-                );
+        if (parameters == null)
+            return command;
+
+        foreach (KeyValuePair<string, object?> parameter in parameters)
+        {
+            command.Parameters.AddWithValue(
+                parameter.Key,
+                parameter.Value ?? DBNull.Value
+            );
+        }
 
         return command;
     }

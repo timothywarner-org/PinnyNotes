@@ -12,8 +12,6 @@ public class Base64Tool : BaseTool, ITool
         Base64Decode
     }
 
-    public ToolStates State => ToolSettings.Base64ToolState;
-
     public Base64Tool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -24,6 +22,8 @@ public class Base64Tool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.Base64ToolState;
 
     private void MenuAction(Enum action)
     {

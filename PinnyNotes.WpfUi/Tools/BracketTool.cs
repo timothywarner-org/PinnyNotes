@@ -18,8 +18,6 @@ public class BracketTool : BaseTool, ITool
     private readonly char[] _openingBrackets = ['(', '{', '['];
     private readonly char[] _closingBrackets = [')', '}', ']'];
 
-    public ToolStates State => ToolSettings.BracketToolState;
-
     public BracketTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -34,6 +32,8 @@ public class BracketTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.BracketToolState;
 
     private void MenuAction(ToolActions action)
     {

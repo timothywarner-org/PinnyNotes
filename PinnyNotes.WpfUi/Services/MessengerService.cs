@@ -25,22 +25,28 @@ public class MessengerService
     public void Unsubscribe<TMessage>(Action<TMessage> handler)
     {
         Type messageType = typeof(TMessage);
-        if (_subscribers.TryGetValue(messageType, out var handlers))
-            lock (handlers)
-                handlers.Remove(handler);
+        if (!_subscribers.TryGetValue(messageType, out List<Delegate>? handlers))
+            return;
+
+        lock (handlers)
+        {
+            handlers.Remove(handler);
+        }
     }
 
     public void Publish<TMessage>(TMessage message)
     {
         Type messageType = typeof(TMessage);
-        if (_subscribers.TryGetValue(messageType, out var handlers))
-        {
-            List<Delegate> snapshot;
-            lock (handlers)
-                snapshot = [..handlers];
+        if (!_subscribers.TryGetValue(messageType, out List<Delegate>? handlers))
+            return;
 
-            foreach (Delegate? handler in snapshot)
-                ((Action<TMessage>)handler)(message);
+        List<Delegate> snapshot;
+        lock (handlers)
+        {
+            snapshot = [..handlers];
         }
+
+        foreach (Delegate? handler in snapshot)
+            ((Action<TMessage>)handler)(message);
     }
 }

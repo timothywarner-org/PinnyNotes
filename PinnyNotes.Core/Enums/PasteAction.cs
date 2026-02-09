@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum PasteActions
+public enum PasteAction
 {
     None,
     Paste,

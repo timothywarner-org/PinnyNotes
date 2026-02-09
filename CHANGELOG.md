@@ -39,7 +39,7 @@
 ## v1.14.0 - 30/09/2025
 
 ### Added
-- Color tool.
+- Colour tool.
 - Backend database.
 - Copy (Ctrl+C), Alternative Copy (Ctrl+Shift+C) and Alternative Copy Fallback (Ctrl+Shift+C with no selection) action options.
 - Paste (Ctrl+V) and Alternative Copy (Ctrl+Shift+C) action options.
@@ -143,7 +143,7 @@
 ### Fixed
 - Title bar only being draggable with left mouse button even when buttons switched in Windows.
 - Save prompt did now show if a note was closed by right clicking in Windows Taskbar.
-- Notes would always open on primary monitor, even if opened from parent on anothe monitor.
+- Notes would always open on primary monitor, even if opened from parent on another monitor.
 
 
 ## v1.10.0 - 22/07/2024
@@ -155,7 +155,7 @@
 - Settings window - Settings move out of menu and into their own window.
 - Start positions - More start positions have been added.
 - Transparency - Note can now be transparent depending on given settings.
-- Dark mode - Notes can appear dark with the selected color used as accent colors.
+- Dark mode - Notes can appear dark with the selected colour used as accent colours.
 
 ### Fixed
 - Notes order - Unpinned notes now come above pinned notes when focused for editing.

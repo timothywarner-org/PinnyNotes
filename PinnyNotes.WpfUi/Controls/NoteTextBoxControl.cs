@@ -11,12 +11,6 @@ namespace PinnyNotes.WpfUi.Controls;
 
 public partial class NoteTextBoxControl : TextBox
 {
-    public RelayCommand CopyCommand;
-    public RelayCommand CutCommand;
-    public RelayCommand PasteCommand;
-    public RelayCommand ClearCommand;
-    public RelayCommand<bool> SetReadOnlyCommand;
-
     private readonly NoteTextBoxContextMenu _contextMenu;
 
     public NoteTextBoxControl() : base()
@@ -132,12 +126,12 @@ public partial class NoteTextBoxControl : TextBox
     public static readonly DependencyProperty TabWidthProperty = DependencyProperty.Register(nameof(TabWidth), typeof(int), typeof(NoteTextBoxControl));
 
     // Copy and Paste
-    public CopyActions CopyAction
+    public CopyAction CopyAction
     {
-        get => (CopyActions)GetValue(CopyActionProperty);
+        get => (CopyAction)GetValue(CopyActionProperty);
         set => SetValue(CopyActionProperty, value);
     }
-    public static readonly DependencyProperty CopyActionProperty = DependencyProperty.Register(nameof(CopyAction), typeof(CopyActions), typeof(NoteTextBoxControl));
+    public static readonly DependencyProperty CopyActionProperty = DependencyProperty.Register(nameof(CopyAction), typeof(CopyAction), typeof(NoteTextBoxControl));
 
     public bool TrimTextOnCopy
     {
@@ -146,12 +140,12 @@ public partial class NoteTextBoxControl : TextBox
     }
     public static readonly DependencyProperty TrimTextOnCopyProperty = DependencyProperty.Register(nameof(TrimTextOnCopy), typeof(bool), typeof(NoteTextBoxControl));
 
-    public CopyActions CopyAltAction
+    public CopyAction CopyAltAction
     {
-        get => (CopyActions)GetValue(CopyAltActionProperty);
+        get => (CopyAction)GetValue(CopyAltActionProperty);
         set => SetValue(CopyAltActionProperty, value);
     }
-    public static readonly DependencyProperty CopyAltActionProperty = DependencyProperty.Register(nameof(CopyAltAction), typeof(CopyActions), typeof(NoteTextBoxControl));
+    public static readonly DependencyProperty CopyAltActionProperty = DependencyProperty.Register(nameof(CopyAltAction), typeof(CopyAction), typeof(NoteTextBoxControl));
 
     public bool TrimTextOnAltCopy
     {
@@ -160,12 +154,12 @@ public partial class NoteTextBoxControl : TextBox
     }
     public static readonly DependencyProperty TrimTextOnAltCopyProperty = DependencyProperty.Register(nameof(TrimTextOnAltCopy), typeof(bool), typeof(NoteTextBoxControl));
 
-    public CopyFallbackActions CopyFallbackAction
+    public CopyFallbackAction CopyFallbackAction
     {
-        get => (CopyFallbackActions)GetValue(CopyFallbackActionProperty);
+        get => (CopyFallbackAction)GetValue(CopyFallbackActionProperty);
         set => SetValue(CopyFallbackActionProperty, value);
     }
-    public static readonly DependencyProperty CopyFallbackActionProperty = DependencyProperty.Register(nameof(CopyFallbackAction), typeof(CopyFallbackActions), typeof(NoteTextBoxControl));
+    public static readonly DependencyProperty CopyFallbackActionProperty = DependencyProperty.Register(nameof(CopyFallbackAction), typeof(CopyFallbackAction), typeof(NoteTextBoxControl));
 
     public bool TrimTextOnFallbackCopy
     {
@@ -174,12 +168,12 @@ public partial class NoteTextBoxControl : TextBox
     }
     public static readonly DependencyProperty TrimTextOnFallbackCopyProperty = DependencyProperty.Register(nameof(TrimTextOnFallbackCopy), typeof(bool), typeof(NoteTextBoxControl));
 
-    public CopyFallbackActions CopyAltFallbackAction
+    public CopyFallbackAction CopyAltFallbackAction
     {
-        get => (CopyFallbackActions)GetValue(CopyAltFallbackActionProperty);
+        get => (CopyFallbackAction)GetValue(CopyAltFallbackActionProperty);
         set => SetValue(CopyAltFallbackActionProperty, value);
     }
-    public static readonly DependencyProperty CopyAltFallbackActionProperty = DependencyProperty.Register(nameof(CopyAltFallbackAction), typeof(CopyFallbackActions), typeof(NoteTextBoxControl));
+    public static readonly DependencyProperty CopyAltFallbackActionProperty = DependencyProperty.Register(nameof(CopyAltFallbackAction), typeof(CopyFallbackAction), typeof(NoteTextBoxControl));
 
     public bool TrimTextOnAltFallbackCopy
     {
@@ -195,12 +189,12 @@ public partial class NoteTextBoxControl : TextBox
     }
     public static readonly DependencyProperty AutoCopyProperty = DependencyProperty.Register(nameof(AutoCopy), typeof(bool), typeof(NoteTextBoxControl));
 
-    public PasteActions PasteAction
+    public PasteAction PasteAction
     {
-        get => (PasteActions)GetValue(PasteActionProperty);
+        get => (PasteAction)GetValue(PasteActionProperty);
         set => SetValue(PasteActionProperty, value);
     }
-    public static readonly DependencyProperty PasteActionProperty = DependencyProperty.Register(nameof(PasteAction), typeof(PasteActions), typeof(NoteTextBoxControl));
+    public static readonly DependencyProperty PasteActionProperty = DependencyProperty.Register(nameof(PasteAction), typeof(PasteAction), typeof(NoteTextBoxControl));
 
     public bool TrimTextOnPaste
     {
@@ -209,12 +203,12 @@ public partial class NoteTextBoxControl : TextBox
     }
     public static readonly DependencyProperty TrimTextOnPasteProperty = DependencyProperty.Register(nameof(TrimTextOnPaste), typeof(bool), typeof(NoteTextBoxControl));
 
-    public PasteActions PasteAltAction
+    public PasteAction PasteAltAction
     {
-        get => (PasteActions)GetValue(PasteAltActionProperty);
+        get => (PasteAction)GetValue(PasteAltActionProperty);
         set => SetValue(PasteAltActionProperty, value);
     }
-    public static readonly DependencyProperty PasteAltActionProperty = DependencyProperty.Register(nameof(PasteAltAction), typeof(PasteActions), typeof(NoteTextBoxControl));
+    public static readonly DependencyProperty PasteAltActionProperty = DependencyProperty.Register(nameof(PasteAltAction), typeof(PasteAction), typeof(NoteTextBoxControl));
 
     public bool TrimTextOnAltPaste
     {
@@ -229,6 +223,13 @@ public partial class NoteTextBoxControl : TextBox
         set => SetValue(MiddleClickPasteProperty, value);
     }
     public static readonly DependencyProperty MiddleClickPasteProperty = DependencyProperty.Register(nameof(MiddleClickPaste), typeof(bool), typeof(NoteTextBoxControl));
+
+
+    public RelayCommand CopyCommand;
+    public RelayCommand CutCommand;
+    public RelayCommand PasteCommand;
+    public RelayCommand ClearCommand;
+    public RelayCommand<bool> SetReadOnlyCommand;
 
     public new int LineCount()
     {
@@ -255,7 +256,7 @@ public partial class NoteTextBoxControl : TextBox
         string text = (HasSelectedText) ? SelectedText : Text;
         if (text.Length == 0)
             return 0;
-        return text.Length - text.Count(c => c == '\n' || c == '\r'); // Substract new lines from count.
+        return text.Length - text.Count(c => c == '\n' || c == '\r'); // Subtract new lines from count.
     }
 
     public bool HasSelectedText
@@ -295,7 +296,7 @@ public partial class NoteTextBoxControl : TextBox
         Clipboard.SetDataObject(copiedText);
     }
 
-    private string GetTextForCopyAction(CopyActions action, CopyFallbackActions fallbackAction, bool trim, bool fallbackTrim, bool cut)
+    private string GetTextForCopyAction(CopyAction action, CopyFallbackAction fallbackAction, bool trim, bool fallbackTrim, bool cut)
     {
         string text;
 
@@ -303,8 +304,8 @@ public partial class NoteTextBoxControl : TextBox
         {
             text = fallbackAction switch
             {
-                CopyFallbackActions.CopyLine => HandleLineCopyOrCut(fallbackTrim, cut),
-                CopyFallbackActions.CopyNote => HandleNoteCopyOrCut(fallbackTrim, cut),
+                CopyFallbackAction.CopyLine => HandleLineCopyOrCut(fallbackTrim, cut),
+                CopyFallbackAction.CopyNote => HandleNoteCopyOrCut(fallbackTrim, cut),
                 _ => string.Empty // Default, CopyFallbackActions.None
             };
             return text;
@@ -312,9 +313,9 @@ public partial class NoteTextBoxControl : TextBox
 
         text = action switch
         {
-            CopyActions.CopySelected => HandleSelectedTextCopyOrCut(trim, cut),
-            CopyActions.CopyLine => HandleLineCopyOrCut(trim, cut),
-            CopyActions.CopyAll => HandleNoteCopyOrCut(trim, cut),
+            CopyAction.CopySelected => HandleSelectedTextCopyOrCut(trim, cut),
+            CopyAction.CopyLine => HandleLineCopyOrCut(trim, cut),
+            CopyAction.CopyAll => HandleNoteCopyOrCut(trim, cut),
             _ => string.Empty // Default, CopyActions.None
         };
 
@@ -369,7 +370,7 @@ public partial class NoteTextBoxControl : TextBox
     private new void Paste()
     {
         bool trimText;
-        PasteActions action;
+        PasteAction action;
         if (IsShiftPressed())
         {
             trimText = TrimTextOnAltPaste;
@@ -382,7 +383,7 @@ public partial class NoteTextBoxControl : TextBox
         }
 
         // Do nothing if action is None or clipboard does not contain text.
-        if (action == PasteActions.None || !Clipboard.ContainsText())
+        if (action == PasteAction.None || !Clipboard.ContainsText())
             return;
 
         string clipboardString;
@@ -413,13 +414,13 @@ public partial class NoteTextBoxControl : TextBox
 
         switch (action)
         {
-            case PasteActions.Paste:
+            case PasteAction.Paste:
                 HandelPaste(clipboardString);
                 break;
-            case PasteActions.PasteAndReplaceAll:
+            case PasteAction.PasteAndReplaceAll:
                 HandelPasteAndReplaceAll(clipboardString);
                 break;
-            case PasteActions.PasteAtEnd:
+            case PasteAction.PasteAtEnd:
                 HandelPasteAtEnd(clipboardString);
                 break;
         }
@@ -576,8 +577,8 @@ public partial class NoteTextBoxControl : TextBox
             string line = GetLineText(GetLineIndexFromCharacterIndex(caretIndex)).TrimEnd(Environment.NewLine.ToCharArray());
 
             // Get the whitespace from the beginning of the line and create our indent string
-            string preceedingWhitespace = new(line.TakeWhile(char.IsWhiteSpace).ToArray());
-            string indent = Environment.NewLine + preceedingWhitespace;
+            string precedingWhitespace = new([..line.TakeWhile(char.IsWhiteSpace)]);
+            string indent = Environment.NewLine + precedingWhitespace;
 
             // Add the indent and restore caret position
             Text = Text.Insert(caretIndex, indent);
@@ -685,7 +686,7 @@ public partial class NoteTextBoxControl : TextBox
                     if (lines[i].Length > 0)
                     {
                         if (lines[i][0] == '\t')
-                            lines[i] = lines[i].Remove(0, 1);
+                            lines[i] = lines[i][1..];
                         else if (lines[i][0] == ' ')
                         {
                             int concurrentSpaces = 0;
@@ -699,10 +700,10 @@ public partial class NoteTextBoxControl : TextBox
                             switch (concurrentSpaces)
                             {
                                 case >= 4:
-                                    lines[i] = lines[i].Remove(0, 4);
+                                    lines[i] = lines[i][4..];
                                     break;
                                 case 1:
-                                    lines[i] = lines[i].Remove(0, concurrentSpaces);
+                                    lines[i] = lines[i][concurrentSpaces..];
                                     break;
                             }
                         }

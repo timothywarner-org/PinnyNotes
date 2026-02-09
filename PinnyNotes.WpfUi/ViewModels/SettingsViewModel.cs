@@ -9,7 +9,9 @@ namespace PinnyNotes.WpfUi.ViewModels;
 public class SettingsViewModel : BaseViewModel
 {
     public SettingsViewModel(
-        AppMetadataService appMetadata, SettingsService settingsService, MessengerService messengerService
+        AppMetadataService appMetadata,
+        SettingsService settingsService,
+        MessengerService messengerService
     ) : base(appMetadata, settingsService, messengerService)
     {
         ApplicationSettings = SettingsService.ApplicationSettings;
@@ -17,7 +19,7 @@ public class SettingsViewModel : BaseViewModel
         EditorSettings = SettingsService.EditorSettings;
         ToolSettings = SettingsService.ToolSettings;
 
-        IsTransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyModes.Disabled);
+        IsTransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyMode.Disabled);
     }
 
     public ApplicationSettingsModel ApplicationSettings { get; set; }
@@ -25,71 +27,71 @@ public class SettingsViewModel : BaseViewModel
     public EditorSettingsModel EditorSettings { get; set; }
     public ToolSettingsModel ToolSettings { get; set; }
 
-    public static KeyValuePair<StartupPositions, string>[] StartupPositionsList { get; } = [
-        new(StartupPositions.TopLeft, "Top Left"),
-        new(StartupPositions.TopCenter, "Top Center"),
-        new(StartupPositions.TopRight, "Top Right"),
-        new(StartupPositions.MiddleLeft, "Middle Left"),
-        new(StartupPositions.MiddleCenter, "Middle Center"),
-        new(StartupPositions.MiddleRight, "Middle Right"),
-        new(StartupPositions.BottomLeft, "Bottom Left"),
-        new(StartupPositions.BottomCenter, "Bottom Center"),
-        new(StartupPositions.BottomRight, "Bottom Right")
+    public static KeyValuePair<StartupPosition, string>[] StartupPositionsList { get; } = [
+        new(StartupPosition.TopLeft, "Top left"),
+        new(StartupPosition.TopCentre, "Top centre"),
+        new(StartupPosition.TopRight, "Top right"),
+        new(StartupPosition.MiddleLeft, "Middle left"),
+        new(StartupPosition.MiddleCentre, "Middle centre"),
+        new(StartupPosition.MiddleRight, "Middle right"),
+        new(StartupPosition.BottomLeft, "Bottom left"),
+        new(StartupPosition.BottomCentre, "Bottom centre"),
+        new(StartupPosition.BottomRight, "Bottom right")
     ];
 
-    public static KeyValuePair<MinimizeModes, string>[] MinimizeModeList { get; } = [
-        new(MinimizeModes.Allow, "Yes"),
-        new(MinimizeModes.Prevent, "No"),
-        new(MinimizeModes.PreventIfPinned, "When not pinned")
+    public static KeyValuePair<MinimizeMode, string>[] MinimizeModeList { get; } = [
+        new(MinimizeMode.Allow, "Yes"),
+        new(MinimizeMode.Prevent, "No"),
+        new(MinimizeMode.PreventIfPinned, "When not pinned")
     ];
 
-    public static KeyValuePair<VisibilityModes, string>[] VisibilityModeList { get; } = [
-        new(VisibilityModes.ShowInTaskbar, "Show in taskbar"),
-        new(VisibilityModes.HideInTaskbar, "Hide in taskbar"),
-        new(VisibilityModes.HideInTaskbarAndTaskSwitcher, "Hide in taskbar and task switcher")
+    public static KeyValuePair<VisibilityMode, string>[] VisibilityModeList { get; } = [
+        new(VisibilityMode.ShowInTaskbar, "Show in taskbar"),
+        new(VisibilityMode.HideInTaskbar, "Hide in taskbar"),
+        new(VisibilityMode.HideInTaskbarAndTaskSwitcher, "Hide in taskbar and task switcher")
     ];
 
-    public static KeyValuePair<ColorModes, string>[] ColorModeList { get; } = [
-        new(ColorModes.Light, "Light"),
-        new(ColorModes.Dark, "Dark"),
-        new(ColorModes.System, "System Default")
+    public static KeyValuePair<ColourMode, string>[] ColourModeList { get; } = [
+        new(ColourMode.Light, "Light"),
+        new(ColourMode.Dark, "Dark"),
+        new(ColourMode.System, "System default")
     ];
 
-    public static KeyValuePair<TransparencyModes, string>[] TransparencyModeList { get; } = [
-        new(TransparencyModes.Disabled, "Disabled"),
-        new(TransparencyModes.Enabled, "Enabled"),
-        new(TransparencyModes.WhenPinned, "Only when pinned")
+    public static KeyValuePair<TransparencyMode, string>[] TransparencyModeList { get; } = [
+        new(TransparencyMode.Disabled, "Disabled"),
+        new(TransparencyMode.Enabled, "Enabled"),
+        new(TransparencyMode.WhenPinned, "Only when pinned")
     ];
 
-    public static KeyValuePair<string, string>[] FontFamilyList { get; }
-        = new InstalledFontCollection().Families
-                                       .Select(f => new KeyValuePair<string, string>(f.Name, f.Name))
-                                       .ToArray();
-
-    public static KeyValuePair<CopyActions, string>[] CopyActionList { get; } = [
-        new(CopyActions.None, "None"),
-        new(CopyActions.CopySelected, "Copy selected"),
-        new(CopyActions.CopyLine, "Copy line"),
-        new(CopyActions.CopyAll, "Copy all")
+    public static KeyValuePair<string, string>[] FontFamilyList { get; } = [..
+        new InstalledFontCollection().Families
+                                     .Select(f => new KeyValuePair<string, string>(f.Name, f.Name))
     ];
 
-    public static KeyValuePair<PasteActions, string>[] PasteActionList { get; } = [
-        new(PasteActions.None, "None"),
-        new(PasteActions.Paste, "Paste"),
-        new(PasteActions.PasteAndReplaceAll, "Paste and replace all"),
-        new(PasteActions.PasteAtEnd, "Paste at end")
+    public static KeyValuePair<CopyAction, string>[] CopyActionList { get; } = [
+        new(CopyAction.None, "None"),
+        new(CopyAction.CopySelected, "Copy selected"),
+        new(CopyAction.CopyLine, "Copy line"),
+        new(CopyAction.CopyAll, "Copy all")
     ];
 
-    public static KeyValuePair<CopyFallbackActions, string>[] CopyFallbackActionList { get; } = [
-        new(CopyFallbackActions.None, "None"),
-        new(CopyFallbackActions.CopyLine, "Copy line"),
-        new(CopyFallbackActions.CopyNote, "Copy note")
+    public static KeyValuePair<PasteAction, string>[] PasteActionList { get; } = [
+        new(PasteAction.None, "None"),
+        new(PasteAction.Paste, "Paste"),
+        new(PasteAction.PasteAndReplaceAll, "Paste and replace all"),
+        new(PasteAction.PasteAtEnd, "Paste at end")
     ];
 
-    public static KeyValuePair<ToolStates, string>[] ToolStateList { get; } = [
-        new(ToolStates.Disabled, "Disabled"),
-        new(ToolStates.Enabled, "Enabled"),
-        new(ToolStates.Favourite, "Favourite")
+    public static KeyValuePair<CopyFallbackAction, string>[] CopyFallbackActionList { get; } = [
+        new(CopyFallbackAction.None, "None"),
+        new(CopyFallbackAction.CopyLine, "Copy line"),
+        new(CopyFallbackAction.CopyNote, "Copy note")
+    ];
+
+    public static KeyValuePair<ToolState, string>[] ToolStateList { get; } = [
+        new(ToolState.Disabled, "Disabled"),
+        new(ToolState.Enabled, "Enabled"),
+        new(ToolState.Favourite, "Favourite")
     ];
 
     public bool IsTransparencyEnabled { get; set; }

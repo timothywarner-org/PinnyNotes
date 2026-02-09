@@ -8,15 +8,15 @@ namespace PinnyNotes.WpfUi.Models;
 
 public class NoteModel : BaseModel
 {
-    public NoteModel(NoteSettingsModel NoteSettings, string themeColorScheme)
+    public NoteModel(NoteSettingsModel NoteSettings, string themeColourScheme)
     {
 
         Width = NoteSettings.DefaultWidth;
         Height = NoteSettings.DefaultHeight;
 
-        ThemeColorScheme = themeColorScheme;
+        ThemeColourScheme = themeColourScheme;
 
-        TransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyModes.Disabled);
+        TransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyMode.Disabled);
     }
 
     public NoteModel(NoteDto noteDto, NoteSettingsModel NoteSettings)
@@ -33,12 +33,12 @@ public class NoteModel : BaseModel
         GravityX = noteDto.GravityX;
         GravityY = noteDto.GravityY;
 
-        ThemeColorScheme = noteDto.ThemeColorScheme;
+        ThemeColourScheme = noteDto.ThemeColourScheme;
 
         IsPinned = noteDto.IsPinned;
         IsOpen = noteDto.IsOpen;
 
-        TransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyModes.Disabled);
+        TransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyMode.Disabled);
     }
 
     public int Id { get; set => SetProperty(ref field, value); }
@@ -54,7 +54,7 @@ public class NoteModel : BaseModel
     public int GravityX { get; set => SetProperty(ref field, value); }
     public int GravityY { get; set => SetProperty(ref field, value); }
 
-    public string ThemeColorScheme { get; set => SetProperty(ref field, value); }
+    public string ThemeColourScheme { get; set => SetProperty(ref field, value); }
 
     public bool IsPinned { get; set => SetProperty(ref field, value); }
     public bool IsOpen { get; set => SetProperty(ref field, value); }
@@ -99,7 +99,7 @@ public class NoteModel : BaseModel
             GravityX,
             GravityY,
 
-            ThemeColorScheme,
+            ThemeColourScheme,
 
             IsPinned,
             IsOpen

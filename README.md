@@ -19,8 +19,8 @@
 
 - **Pin / Always on Top:** Keep notes visible above all other windows.
 - **Block Minimizing:** Prevent notes from being minimized, even with the Show Desktop button.
-- **Colors:** Choose from multiple colors or have new notes cycle through them automatically.
-- **Dark Mode:** Dark theme with color-matched accents.
+- **Colours:** Choose from multiple colours or have new notes cycle through them automatically.
+- **Dark Mode:** Dark theme with colour-matched accents.
 - **Transparency:** Make notes semi-transparent so content behind them can still be seen.
 - **Start Position:** Set where on the screen your notes will open.
 - **Advanced Copy/Paste Actions**
@@ -28,7 +28,7 @@
   - **Middle Click Paste:** Quickly paste clipboard contents with a middle-click.
   - **Copy on Click:** Hold Ctrl and click to copy selected text.
   - **Auto Copy:** Automatically copy text when highlighted.
-  - **No Selection Copy Behavior:** Choose whether to copy the current line, full note, or nothing when no text is selected.
+  - **No Selection Copy Behaviour:** Choose whether to copy the current line, full note, or nothing when no text is selected.
 - **Advanced Selection:**
   - **Triple-click:** Select current line.
   - **Quadruple-click:** Select the full line ignoring wrapping.
@@ -48,7 +48,7 @@
 - **Base64:** Encode/decode Base64 text.
 - **Bracket:** Add/remove parentheses, square or curly brackets.
 - **Case:** Convert to lower, upper, or proper case.
-- **Color:** Convert RGB to and from HEX values.
+- **Colour:** Convert RGB to and from HEX values.
 - **DateTime:** Get the current date in a sortable format (e.g., 2024-07-11T12:00:00).
 - **Gibberish:** Generate gibberish words, sentences, paragraphs, articles, and names.
 - **GUID:** Generate GUID/UUID's.
@@ -80,7 +80,7 @@
 
 > **⚠️ Linux Support Notice**
 >
-> A Linux version has been requested, but one is **not planned**. Pinny Notes is built using **WPF**, which is Windows-only. Even with a cross-platform framework, modern Linux desktops using **Wayland** do not allow applications to reliably set window positions or enforce “always on top” behavior, both of which are core features of Pinny Notes.
+> A Linux version has been requested, but one is **not planned**. Pinny Notes is built using **WPF**, which is Windows-only. Even with a cross-platform framework, modern Linux desktops using **Wayland** do not allow applications to reliably set window positions or enforce “always on top” behaviour, both of which are core features of Pinny Notes.
 
 
 ## ❤️ Support Development

@@ -12,8 +12,6 @@ public class SortTool : BaseTool, ITool
         SortDescending
     }
 
-    public ToolStates State => ToolSettings.SortToolState;
-
     public SortTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -24,6 +22,8 @@ public class SortTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.SortToolState;
 
     private void MenuAction(ToolActions action)
     {

@@ -15,7 +15,7 @@ public class NotePreviewModel : BaseModel
 
         ContentPreview = noteDto.Content;
 
-        ThemeColorScheme = noteDto.ThemeColorScheme;
+        ThemeColourScheme = noteDto.ThemeColourScheme;
     }
 
     public int Id { get; set => SetProperty(ref field, value); }
@@ -33,7 +33,7 @@ public class NotePreviewModel : BaseModel
         }
     } = "";
 
-    public string ThemeColorScheme { get; set => SetProperty(ref field, value); }
+    public string ThemeColourScheme { get; set => SetProperty(ref field, value); }
 
     public Brush BackgroundBrush { get; set => SetProperty(ref field, value); } = Brushes.LightGray;
     public Brush BorderBrush { get; set => SetProperty(ref field, value); } = Brushes.DarkGray;

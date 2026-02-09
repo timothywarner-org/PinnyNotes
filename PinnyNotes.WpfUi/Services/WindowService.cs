@@ -54,10 +54,10 @@ public class WindowService
         // TO DO: Add settings for this behaviour.
         switch (message.Action)
         {
-            case ApplicationActions.Start:
+            case ApplicationAction.Start:
                 OpenManagementWindow();
                 break;
-            case ApplicationActions.NewInstance:
+            case ApplicationAction.NewInstance:
                 _ = OpenNoteWindow();
                 break;
         }
@@ -72,10 +72,10 @@ public class WindowService
         {
             switch (message.Action)
             {
-                case NoteWindowActions.Open:
+                case NoteWindowAction.Open:
                     _ = OpenNoteWindow(noteId);
                     break;
-                case NoteWindowActions.Close:
+                case NoteWindowAction.Close:
                     CloseNoteWindow(noteId);
                     break;
             }
@@ -86,7 +86,7 @@ public class WindowService
     {
         switch (message.Action)
         {
-            case NoteActions.Closed:
+            case NoteAction.Closed:
                 _openNoteWindows.Remove(message.NoteDto.Id);
                 break;
         }
@@ -94,7 +94,7 @@ public class WindowService
 
     private void OnOpenSettingsWindowMessage(OpenSettingsWindowMessage message)
     {
-        if (_settingsWindow == null || !_settingsWindow.IsLoaded)
+        if (_settingsWindow is null || !_settingsWindow.IsLoaded)
         {
             _settingsWindow = _serviceProvider.GetRequiredService<SettingsWindow>();
             _settingsWindow.Closed += (s, e) => _settingsWindow = null;
@@ -143,7 +143,7 @@ public class WindowService
 
     private void OpenManagementWindow()
     {
-        if (_managementWindow == null || !_managementWindow.IsLoaded)
+        if (_managementWindow is null || !_managementWindow.IsLoaded)
         {
             _managementWindow = _serviceProvider.GetRequiredService<ManagementWindow>();
             _managementWindow.Closed += (s, e) => _settingsWindow = null;

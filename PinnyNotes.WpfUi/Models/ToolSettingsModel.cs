@@ -4,24 +4,24 @@ namespace PinnyNotes.WpfUi.Models;
 
 public class ToolSettingsModel : BaseModel
 {
-    public ToolStates Base64ToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates BracketToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates CaseToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates ColorToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates DateTimeToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates GibberishToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates GuidToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates HashToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates HtmlEntityToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates IndentToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates JoinToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates JsonToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates ListToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates QuoteToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates RemoveToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates SlashToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates SortToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates SplitToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates TrimToolState { get; set => SetProperty(ref field, value); }
-    public ToolStates UrlToolState { get; set => SetProperty(ref field, value); }
+    public ToolState Base64ToolState { get; set => SetProperty(ref field, value); }
+    public ToolState BracketToolState { get; set => SetProperty(ref field, value); }
+    public ToolState CaseToolState { get; set => SetProperty(ref field, value); }
+    public ToolState ColourToolState { get; set => SetProperty(ref field, value); }
+    public ToolState DateTimeToolState { get; set => SetProperty(ref field, value); }
+    public ToolState GibberishToolState { get; set => SetProperty(ref field, value); }
+    public ToolState GuidToolState { get; set => SetProperty(ref field, value); }
+    public ToolState HashToolState { get; set => SetProperty(ref field, value); }
+    public ToolState HtmlEntityToolState { get; set => SetProperty(ref field, value); }
+    public ToolState IndentToolState { get; set => SetProperty(ref field, value); }
+    public ToolState JoinToolState { get; set => SetProperty(ref field, value); }
+    public ToolState JsonToolState { get; set => SetProperty(ref field, value); }
+    public ToolState ListToolState { get; set => SetProperty(ref field, value); }
+    public ToolState QuoteToolState { get; set => SetProperty(ref field, value); }
+    public ToolState RemoveToolState { get; set => SetProperty(ref field, value); }
+    public ToolState SlashToolState { get; set => SetProperty(ref field, value); }
+    public ToolState SortToolState { get; set => SetProperty(ref field, value); }
+    public ToolState SplitToolState { get; set => SetProperty(ref field, value); }
+    public ToolState TrimToolState { get; set => SetProperty(ref field, value); }
+    public ToolState UrlToolState { get; set => SetProperty(ref field, value); }
 }

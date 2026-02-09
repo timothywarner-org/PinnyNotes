@@ -28,8 +28,6 @@ public partial class App : Application
 
     private Mutex _mutex = null!;
 
-    public static IServiceProvider Services { get; private set; } = null!;
-
     private AppMetadataService _appMetadataService = null!;
     private SettingsService _settingsService = null!;
     private NotifyIconService _notifyIconService = null!;
@@ -78,7 +76,7 @@ public partial class App : Application
             () => {
                 while (_eventWaitHandle.WaitOne())
                     Current.Dispatcher.BeginInvoke(
-                        () => messengerService.Publish(new ApplicationActionMessage(ApplicationActions.NewInstance))
+                        () => messengerService.Publish(new ApplicationActionMessage(ApplicationAction.NewInstance))
                     );
             }
         )
@@ -89,9 +87,9 @@ public partial class App : Application
 
         thread.Start();
 
-        messengerService.Publish(new ApplicationActionMessage(ApplicationActions.Start));
+        messengerService.Publish(new ApplicationActionMessage(ApplicationAction.Start));
 
-        ShutdownMode = (_applicationSettings.ShowNotifiyIcon) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
+        ShutdownMode = (_applicationSettings.ShowNotifyIcon) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
 
         if (_settingsService.ApplicationSettings.CheckForUpdates)
         {
@@ -100,6 +98,8 @@ public partial class App : Application
                 _appMetadataService.Metadata.LastUpdateCheck = date.ToUnixTimeSeconds();
         }
     }
+
+    public static IServiceProvider Services { get; private set; } = null!;
 
     private static void ConfigureServices(IServiceCollection services)
     {
@@ -139,13 +139,13 @@ public partial class App : Application
 
     private void OnApplicationActionMessage(ApplicationActionMessage message)
     {
-        if (message.Action == ApplicationActions.Close)
+        if (message.Action == ApplicationAction.Close)
             Shutdown();
     }
 
     private void OnApplicationSettingsChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ApplicationSettingsModel.ShowNotifiyIcon))
-            ShutdownMode = (_applicationSettings.ShowNotifiyIcon) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
+        if (e.PropertyName == nameof(ApplicationSettingsModel.ShowNotifyIcon))
+            ShutdownMode = (_applicationSettings.ShowNotifyIcon) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
     }
 }

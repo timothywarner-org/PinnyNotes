@@ -16,8 +16,6 @@ public class SplitTool : BaseTool, ITool
 
     private string? _selectedText = null;
 
-    public ToolStates State => ToolSettings.SplitToolState;
-
     public SplitTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -31,6 +29,8 @@ public class SplitTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.SplitToolState;
 
     private void MenuAction(ToolActions action)
     {

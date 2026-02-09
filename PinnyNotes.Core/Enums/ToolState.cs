@@ -1,8 +1,8 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum TransparencyModes
+public enum ToolState
 {
     Disabled,
     Enabled,
-    WhenPinned
+    Favourite
 }

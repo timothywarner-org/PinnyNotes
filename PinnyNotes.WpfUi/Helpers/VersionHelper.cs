@@ -8,7 +8,8 @@ namespace PinnyNotes.WpfUi.Helpers;
 
 public static class VersionHelper
 {
-    private static Version CurrentVersion => Assembly.GetExecutingAssembly().GetName().Version ?? new();
+    private static Version CurrentVersion
+        => Assembly.GetExecutingAssembly().GetName().Version ?? new();
 
     public static async Task<bool> CheckForNewRelease(long? lastUpdateCheck, DateTimeOffset date)
     {

@@ -30,7 +30,7 @@ public partial class SettingsWindow : Window
 
     private void Window_Activated(object? sender, System.EventArgs e)
     {
-        if (Owner == null)
+        if (Owner is null)
         {
             Left = SystemParameters.PrimaryScreenWidth / 2 - Width / 2;
             Top = SystemParameters.PrimaryScreenHeight / 2 - Height / 2;
@@ -66,7 +66,7 @@ public partial class SettingsWindow : Window
 
     private void OnWindowActionMessage(WindowActionMessage message)
     {
-        if (message.Action == WindowActions.Activate)
+        if (message.Action == WindowAction.Activate)
         {
             WindowState = WindowState.Normal;
             Activate();

@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum ApplicationActions
+public enum ApplicationAction
 {
     Start,
     NewInstance,

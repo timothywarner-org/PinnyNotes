@@ -14,8 +14,6 @@ public abstract class BaseTool
     protected NoteTextBoxControl NoteTextBox;
 
     private MenuItem? _menuItem;
-    public MenuItem MenuItem => _menuItem
-        ?? throw new Exception("Tools menu has not been initialised.");
 
     public BaseTool(NoteTextBoxControl noteTextBox)
     {
@@ -24,6 +22,9 @@ public abstract class BaseTool
         SettingsService settingsService = App.Services.GetRequiredService<SettingsService>();
         ToolSettings = settingsService.ToolSettings;
     }
+
+    public MenuItem MenuItem => _menuItem
+        ?? throw new Exception("Tools menu has not been initialised.");
 
     protected void InitializeMenuItem(string header, ToolMenuAction[] menuActions)
     {
@@ -34,7 +35,7 @@ public abstract class BaseTool
 
         foreach (ToolMenuAction menuAction in menuActions)
         {
-            if (menuAction.Name == "-" && menuAction.Command == null && menuAction.Action == null)
+            if (menuAction.Name == "-" && menuAction.Command is null && menuAction.Action is null)
             {
                 _menuItem.Items.Add(new Separator());
                 continue;
@@ -64,7 +65,7 @@ public abstract class BaseTool
             string noteText = NoteTextBox.Text;
             // Ignore trailing new line if it was automatically added
             if (NoteTextBox.NewLineAtEnd && NoteTextBox.Text.EndsWith(Environment.NewLine))
-                noteText = noteText.Remove(noteText.Length - Environment.NewLine.Length);
+                noteText = noteText[..^Environment.NewLine.Length];
             NoteTextBox.SelectAll();
             NoteTextBox.SelectedText = function(noteText, action);
             NoteTextBox.SelectionLength = 0;

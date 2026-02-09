@@ -21,8 +21,6 @@ public class GibberishTool : BaseTool, ITool
 
     private readonly Random _random = new();
 
-    public ToolStates State => ToolSettings.GibberishToolState;
-
     public GibberishTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -38,6 +36,8 @@ public class GibberishTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.GibberishToolState;
 
     private void MenuAction(ToolActions action)
     {

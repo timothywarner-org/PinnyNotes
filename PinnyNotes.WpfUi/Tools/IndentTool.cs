@@ -13,8 +13,6 @@ public class IndentTool : BaseTool, ITool
         IndentTab
     }
 
-    public ToolStates State => ToolSettings.IndentToolState;
-
     public IndentTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -26,6 +24,8 @@ public class IndentTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.IndentToolState;
 
     private void MenuAction(ToolActions action)
     {

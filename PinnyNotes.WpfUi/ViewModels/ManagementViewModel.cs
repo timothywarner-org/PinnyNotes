@@ -18,6 +18,9 @@ public class ManagementViewModel : BaseViewModel
     private readonly NoteRepository _noteRepository;
     private readonly ThemeService _themeService;
 
+    private readonly Dictionary<int, int> _notePreviewIdIndexMap = []; // Use this since we don't have a Observable Dictionary
+    private readonly Dictionary<int, NotePreviewModel> _selectedNotePreviews = [];
+
     public ManagementViewModel(
         NoteRepository noteRepository,
         AppMetadataService appMetadataService,
@@ -45,31 +48,29 @@ public class ManagementViewModel : BaseViewModel
     public ICommand DeleteNotesCommand { get; }
 
     public ObservableCollection<NotePreviewModel> NotePreviews { get; } = [];
-    private readonly Dictionary<int, int> _notePreviewIdIndexMap = []; // Use this since we don't have a Observable Dictionary
-    private readonly Dictionary<int, NotePreviewModel> _selectedNotePreviews = [];
 
     private async void LoadNotes()
     {
-        ColorModes colorMode = SettingsService.NoteSettings.ColorMode;
+        ColourMode colourMode = SettingsService.NoteSettings.ColourMode;
 
         ClearNotePreviews();
 
         IEnumerable<NoteDto> noteDtos = await _noteRepository.GetAll();
         foreach (NoteDto noteDto in noteDtos)
-            AddNotePreview(noteDto, colorMode);
+            AddNotePreview(noteDto, colourMode);
     }
 
     private void OnNoteActionMessage(NoteActionMessage message)
     {
         switch (message.Action)
         {
-            case NoteActions.Created:
+            case NoteAction.Created:
                 AddNotePreview(message.NoteDto);
                 break;
-            case NoteActions.Updated:
+            case NoteAction.Updated:
                 UpdatedNotePreview(message.NoteDto);
                 break;
-            case NoteActions.Deleted:
+            case NoteAction.Deleted:
                 RemoveNotePreview(message.NoteDto.Id);
                 break;
         }
@@ -80,16 +81,16 @@ public class ManagementViewModel : BaseViewModel
         NotePreviewModel notePreview = NotePreviews[_notePreviewIdIndexMap[dto.Id]];
 
         notePreview.ContentPreview = dto.Content;
-        notePreview.ThemeColorScheme = dto.ThemeColorScheme;
+        notePreview.ThemeColourScheme = dto.ThemeColourScheme;
 
         UpdateNotePreviewBrushes(notePreview);
     }
 
-    private void UpdateNotePreviewBrushes(NotePreviewModel notePreview, ColorModes? colorMode = null)
+    private void UpdateNotePreviewBrushes(NotePreviewModel notePreview, ColourMode? colourMode = null)
     {
         Palette palette = _themeService.GetPalette(
-            notePreview.ThemeColorScheme,
-            colorMode ?? SettingsService.NoteSettings.ColorMode
+            notePreview.ThemeColourScheme,
+            colourMode ?? SettingsService.NoteSettings.ColourMode
         );
 
         notePreview.UpdateBrushes(palette);
@@ -102,29 +103,29 @@ public class ManagementViewModel : BaseViewModel
 
     private void OnOpenNotesCommand()
     {
-        List<int> selectedNoteIds = [.. _selectedNotePreviews.Keys]; // Selected
+        List<int> selectedNoteIds = [.._selectedNotePreviews.Keys]; // Selected
         if (selectedNoteIds.Count == 0)
-            selectedNoteIds = [.. _notePreviewIdIndexMap.Keys]; // All
+            selectedNoteIds = [.._notePreviewIdIndexMap.Keys]; // All
 
-        MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowActions.Open));
+        MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowAction.Open));
     }
 
     private void OnCloseNotesCommand()
     {
-        List<int> selectedNoteIds = [.. _selectedNotePreviews.Keys]; // Selected
+        List<int> selectedNoteIds = [.._selectedNotePreviews.Keys]; // Selected
         if (selectedNoteIds.Count == 0)
-            selectedNoteIds = [.. _notePreviewIdIndexMap.Keys]; // All
+            selectedNoteIds = [.._notePreviewIdIndexMap.Keys]; // All
 
-        MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowActions.Close));
+        MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowAction.Close));
     }
 
     private async void OnDeleteNotesCommand()
     {
-        List<int> selectedNoteIds = [.. _selectedNotePreviews.Keys]; // Selected
+        List<int> selectedNoteIds = [.._selectedNotePreviews.Keys]; // Selected
         if (selectedNoteIds.Count == 0)
             return; // No delete all
 
-        MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowActions.Close));
+        MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowAction.Close));
 
         foreach (int noteId in selectedNoteIds)
         {
@@ -164,11 +165,11 @@ public class ManagementViewModel : BaseViewModel
         _selectedNotePreviews.Clear();
     }
 
-    private void AddNotePreview(NoteDto dto, ColorModes? colorMode = null)
+    private void AddNotePreview(NoteDto dto, ColourMode? colourMode = null)
     {
         NotePreviewModel notePreview = new(dto);
 
-        UpdateNotePreviewBrushes(notePreview, colorMode);
+        UpdateNotePreviewBrushes(notePreview, colourMode);
 
         notePreview.PropertyChanged += NotePreview_PropertyChanged;
 

@@ -13,8 +13,6 @@ public class ListTool : BaseTool, ITool
         ListRemove
     }
 
-    public ToolStates State => ToolSettings.ListToolState;
-
     public ListTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -26,6 +24,8 @@ public class ListTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.ListToolState;
 
     private void MenuAction(ToolActions action)
     {

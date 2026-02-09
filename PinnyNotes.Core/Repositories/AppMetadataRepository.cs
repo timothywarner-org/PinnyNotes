@@ -14,7 +14,7 @@ public class AppMetadataRepository(DatabaseConfiguration databaseConfiguration) 
             Id              INTEGER PRIMARY KEY AUTOINCREMENT,
 
             LastUpdateCheck INTEGER DEFAULT NULL,
-            ColorScheme     TEXT    DEFAULT NULL
+            ColourScheme    TEXT    DEFAULT NULL
         );
     ";
 
@@ -41,7 +41,7 @@ public class AppMetadataRepository(DatabaseConfiguration databaseConfiguration) 
             Id: GetInt(reader, "Id"),
 
             LastUpdateCheck: GetLongNullable(reader, "LastUpdateCheck"),
-            ColorScheme: GetStringNullable(reader, "ColorScheme")
+            ColourScheme: GetStringNullable(reader, "ColourScheme")
         );
     }
 
@@ -56,12 +56,12 @@ public class AppMetadataRepository(DatabaseConfiguration databaseConfiguration) 
                 UPDATE ApplicationData
                 SET
                     LastUpdateCheck = @lastUpdateCheck,
-                    ColorScheme     = @colorScheme
+                    ColourScheme    = @colourScheme
                 WHERE Id = @id
             ",
             parameters: [
                 new("@lastUpdateCheck", applicationData.LastUpdateCheck),
-                new("@colorScheme", applicationData.ColorScheme),
+                new("@colourScheme", applicationData.ColourScheme),
 
                 new("@id", applicationData.Id)
             ]

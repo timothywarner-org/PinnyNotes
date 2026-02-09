@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Threading;
 
-using PinnyNotes.Core.DataTransferObjects;
 using PinnyNotes.Core.Enums;
 using PinnyNotes.Core.Repositories;
 using PinnyNotes.WpfUi.Commands;
@@ -23,13 +22,6 @@ public class NoteViewModel : BaseViewModel
 
     private readonly DispatcherTimer _saveTimer;
 
-    public RelayCommand<string> ChangeThemeColorCommand { get; }
-
-    public NoteSettingsModel NoteSettings { get; set; }
-    public EditorSettingsModel EditorSettings { get; set; }
-
-    public NoteModel Note { get; set; } = null!;
-
     public NoteViewModel(
         NoteRepository noteRepository,
         AppMetadataService appMetadataService,
@@ -41,7 +33,7 @@ public class NoteViewModel : BaseViewModel
         _noteRepository = noteRepository;
         _themeService = themeService;
 
-        ChangeThemeColorCommand = new RelayCommand<string>(ChangeThemeColor);
+        ChangeThemeColourCommand = new RelayCommand<string>(ChangeThemeColour);
 
         NoteSettings = SettingsService.NoteSettings;
         NoteSettings.PropertyChanged += OnNoteSettingsChanged;
@@ -54,41 +46,19 @@ public class NoteViewModel : BaseViewModel
         _saveTimer.Tick += OnSaveTimerTick;
     }
 
+    public RelayCommand<string> ChangeThemeColourCommand { get; }
+
+    public NoteSettingsModel NoteSettings { get; set; }
+    public EditorSettingsModel EditorSettings { get; set; }
+
+    public NoteModel Note { get; set; } = null!;
+
     public async Task Initialize(int? noteId = null, NoteModel? parent = null)
     {
         if (noteId is null)
             await CreateNewNote(parent);
         else
             await LoadNote((int)noteId);
-    }
-
-    private async Task CreateNewNote(NoteModel? parent = null)
-    {
-        Note = new(NoteSettings, _themeService.GetNewNoteColorSchemeName(parent?.ThemeColorScheme));
-
-        InitNotePosition(parent);
-        UpdateBrushes();
-        UpdateOpacity();
-
-        Note.IsOpen = true;
-
-        Note.Id = await _noteRepository.Create(Note.ToDto());
-
-        Note.IsSaved = true;
-
-        MessengerService.Publish<NoteActionMessage>(new(NoteActions.Created, Note.ToDto()));
-    }
-
-    private async Task LoadNote(int noteId)
-    {
-        Note = new(await _noteRepository.GetById((int)noteId), NoteSettings);
-
-        UpdateBrushes();
-        UpdateOpacity();
-
-        Note.IsOpen = true;
-
-        await SaveNote();
     }
 
     public void OnWindowLoaded(nint windowHandle)
@@ -115,8 +85,8 @@ public class NoteViewModel : BaseViewModel
 
     public void UpdateOpacity()
     {
-        TransparencyModes transparentMode = NoteSettings.TransparencyMode;
-        if (transparentMode == TransparencyModes.Disabled)
+        TransparencyMode transparentMode = NoteSettings.TransparencyMode;
+        if (transparentMode == TransparencyMode.Disabled)
         {
             Note.Opacity = 1.0;
             return;
@@ -127,7 +97,7 @@ public class NoteViewModel : BaseViewModel
         double opaqueOpacity = NoteSettings.OpaqueValue;
         double transparentOpacity = NoteSettings.TransparentValue;
 
-        if ((opaqueWhenFocused && Note.IsFocused) || (transparentMode == TransparencyModes.WhenPinned && !Note.IsPinned))
+        if ((opaqueWhenFocused && Note.IsFocused) || (transparentMode == TransparencyMode.WhenPinned && !Note.IsPinned))
             Note.Opacity = opaqueOpacity;
         else
             Note.Opacity = transparentOpacity;
@@ -143,6 +113,70 @@ public class NoteViewModel : BaseViewModel
         uint uFlags = SWP.NOMOVE | SWP.NOSIZE | SWP.NOACTIVATE;
 
         _ = User32.SetWindowPos(Note.WindowHandle, hWndInsertAfter, 0, 0, 0, 0, uFlags);
+    }
+
+    public async Task SaveNote()
+    {
+        if (Note.IsSaved)
+            return;
+
+        await _noteRepository.Update(
+            Note.ToDto()
+        );
+
+        Note.IsSaved = true;
+
+        MessengerService.Publish<NoteActionMessage>(new(NoteAction.Updated, Note.ToDto()));
+    }
+
+    public async Task<bool> CloseNote()
+    {
+        _saveTimer.Stop();
+
+        MessengerService.Publish<NoteActionMessage>(new(NoteAction.Closed, Note.ToDto()));
+
+        if (string.IsNullOrEmpty(Note.Content))
+        {
+            // Delete note if empty, TO DO: Add setting for this behaviour
+            await _noteRepository.Delete(Note.Id);
+            MessengerService.Publish<NoteActionMessage>(new(NoteAction.Deleted, Note.ToDto()));
+            return false;
+        }
+
+        // IsOpen is updated when users closes note via close button,
+        // it's left true if windows is closed by exiting app so it will re-open with app.
+        await SaveNote();
+
+        return false;
+    }
+
+    private async Task CreateNewNote(NoteModel? parent = null)
+    {
+        Note = new(NoteSettings, _themeService.GetNewNoteColourSchemeName(parent?.ThemeColourScheme));
+
+        InitNotePosition(parent);
+        UpdateBrushes();
+        UpdateOpacity();
+
+        Note.IsOpen = true;
+
+        Note.Id = await _noteRepository.Create(Note.ToDto());
+
+        Note.IsSaved = true;
+
+        MessengerService.Publish<NoteActionMessage>(new(NoteAction.Created, Note.ToDto()));
+    }
+
+    private async Task LoadNote(int noteId)
+    {
+        Note = new(await _noteRepository.GetById((int)noteId), NoteSettings);
+
+        UpdateBrushes();
+        UpdateOpacity();
+
+        Note.IsOpen = true;
+
+        await SaveNote();
     }
 
     private async void OnSaveTimerTick(object? sender, EventArgs e)
@@ -174,21 +208,21 @@ public class NoteViewModel : BaseViewModel
 
             switch (NoteSettings.StartupPosition)
             {
-                case StartupPositions.TopLeft:
-                case StartupPositions.MiddleLeft:
-                case StartupPositions.BottomLeft:
+                case StartupPosition.TopLeft:
+                case StartupPosition.MiddleLeft:
+                case StartupPosition.BottomLeft:
                     position.X = screenMargin;
                     Note.GravityX = 1;
                     break;
-                case StartupPositions.TopCenter:
-                case StartupPositions.MiddleCenter:
-                case StartupPositions.BottomCenter:
+                case StartupPosition.TopCentre:
+                case StartupPosition.MiddleCentre:
+                case StartupPosition.BottomCentre:
                     position.X = screenBounds.Width / 2 - Note.Width / 2;
                     Note.GravityX = 1;
                     break;
-                case StartupPositions.TopRight:
-                case StartupPositions.MiddleRight:
-                case StartupPositions.BottomRight:
+                case StartupPosition.TopRight:
+                case StartupPosition.MiddleRight:
+                case StartupPosition.BottomRight:
                     position.X = (screenBounds.Width - screenMargin) - Note.Width;
                     Note.GravityX = -1;
                     break;
@@ -196,21 +230,21 @@ public class NoteViewModel : BaseViewModel
 
             switch (NoteSettings.StartupPosition)
             {
-                case StartupPositions.TopLeft:
-                case StartupPositions.TopCenter:
-                case StartupPositions.TopRight:
+                case StartupPosition.TopLeft:
+                case StartupPosition.TopCentre:
+                case StartupPosition.TopRight:
                     position.Y = screenMargin;
                     Note.GravityY = 1;
                     break;
-                case StartupPositions.MiddleLeft:
-                case StartupPositions.MiddleCenter:
-                case StartupPositions.MiddleRight:
+                case StartupPosition.MiddleLeft:
+                case StartupPosition.MiddleCentre:
+                case StartupPosition.MiddleRight:
                     position.Y = screenBounds.Height / 2 - Note.Height / 2;
                     Note.GravityY = -1;
                     break;
-                case StartupPositions.BottomLeft:
-                case StartupPositions.BottomCenter:
-                case StartupPositions.BottomRight:
+                case StartupPosition.BottomLeft:
+                case StartupPosition.BottomCentre:
+                case StartupPosition.BottomRight:
                     position.Y = (screenBounds.Height - screenMargin) - Note.Height;
                     Note.GravityY = -1;
                     break;
@@ -250,15 +284,15 @@ public class NoteViewModel : BaseViewModel
 
     private void UpdateBrushes()
     {
-        AppMetadataService.Metadata.ColorScheme = Note.ThemeColorScheme;
+        AppMetadataService.Metadata.ColourScheme = Note.ThemeColourScheme;
 
-        Palette palette = _themeService.GetPalette(Note.ThemeColorScheme, NoteSettings.ColorMode);
+        Palette palette = _themeService.GetPalette(Note.ThemeColourScheme, NoteSettings.ColourMode);
         Note.UpdateBrushes(palette);
     }
 
-    private void ChangeThemeColor(string colorScheme)
+    private void ChangeThemeColour(string colourScheme)
     {
-        Note.ThemeColorScheme = colorScheme;
+        Note.ThemeColourScheme = colourScheme;
         UpdateBrushes();
     }
 
@@ -272,7 +306,7 @@ public class NoteViewModel : BaseViewModel
             case nameof(NoteSettingsModel.TransparentValue):
                 UpdateOpacity();
                 break;
-            case nameof(NoteSettingsModel.ColorMode):
+            case nameof(NoteSettingsModel.ColourMode):
                 UpdateBrushes();
                 break;
             case nameof(NoteSettingsModel.VisibilityMode):
@@ -291,55 +325,20 @@ public class NoteViewModel : BaseViewModel
         switch (NoteSettings.VisibilityMode)
         {
             default:
-            case VisibilityModes.ShowInTaskbar:
+            case VisibilityMode.ShowInTaskbar:
                 exStyle &= ~WS_EX.TOOLWINDOW;
                 Note.ShowInTaskbar = true;
                 break;
-            case VisibilityModes.HideInTaskbar:
+            case VisibilityMode.HideInTaskbar:
                 exStyle &= ~WS_EX.TOOLWINDOW;
                 Note.ShowInTaskbar = false;
                 break;
-            case VisibilityModes.HideInTaskbarAndTaskSwitcher:
+            case VisibilityMode.HideInTaskbarAndTaskSwitcher:
                 exStyle |= WS_EX.TOOLWINDOW;
                 Note.ShowInTaskbar = false;
                 break;
         }
 
         _ = User32.SetWindowLongPtrW(Note.WindowHandle, GWL.EXSTYLE, exStyle);
-    }
-
-    public async Task SaveNote()
-    {
-        if (Note.IsSaved)
-            return;
-
-        await _noteRepository.Update(
-            Note.ToDto()
-        );
-
-        Note.IsSaved = true;
-
-        MessengerService.Publish<NoteActionMessage>(new(NoteActions.Updated, Note.ToDto()));
-    }
-
-    public async Task<bool> CloseNote()
-    {
-        _saveTimer.Stop();
-
-        MessengerService.Publish<NoteActionMessage>(new(NoteActions.Closed, Note.ToDto()));
-
-        if (string.IsNullOrEmpty(Note.Content))
-        {
-            // Delete note if empty, TO DO: Add setting for this behaviour
-            await _noteRepository.Delete(Note.Id);
-            MessengerService.Publish<NoteActionMessage>(new(NoteActions.Deleted, Note.ToDto()));
-            return false;
-        }
-
-        // IsOpen is updated when users closes note via close button,
-        // it's left true if windows is closed by exiting app so it will re-open with app.
-        await SaveNote();
-
-        return false;
     }
 }

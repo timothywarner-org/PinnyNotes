@@ -23,7 +23,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
             GravityX            INTEGER,
             GravityY            INTEGER,
 
-            ThemeColorScheme    TEXT,
+            ThemeColourScheme   TEXT,
 
             IsPinned            INTEGER,
             IsOpen              INTEGER
@@ -50,7 +50,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
                     GravityX,
                     GravityY,
 
-                    ThemeColorScheme,
+                    ThemeColourScheme,
 
                     IsPinned,
                     IsOpen
@@ -67,7 +67,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
                     @gravityX,
                     @gravityY,
 
-                    @themeColorScheme,
+                    @themeColourScheme,
 
                     @isPinned,
                     @isOpen
@@ -84,7 +84,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
                 new("@gravityX", note.GravityX),
                 new("@gravityY", note.GravityY),
 
-                new("@themeColorScheme", note.ThemeColorScheme),
+                new("@themeColourScheme", note.ThemeColourScheme),
 
                 new("@isPinned", note.IsPinned),
                 new("@isOpen", note.IsOpen)
@@ -161,7 +161,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
                     GravityX = @gravityX,
                     GravityY = @gravityY,
 
-                    ThemeColorScheme = @themeColorScheme,
+                    ThemeColourScheme = @themeColourScheme,
 
                     IsPinned = @isPinned,
                     IsOpen = @isOpen
@@ -178,7 +178,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
                 new("@gravityX", note.GravityX),
                 new("@gravityY", note.GravityY),
 
-                new("@themeColorScheme", note.ThemeColorScheme),
+                new("@themeColourScheme", note.ThemeColourScheme),
 
                 new("@isPinned", note.IsPinned),
                 new("@isOpen", note.IsOpen),
@@ -223,7 +223,7 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
             GetInt(reader, "GravityX"),
             GetInt(reader, "GravityY"),
 
-            GetString(reader, "ThemeColorScheme"),
+            GetString(reader, "ThemeColourScheme"),
 
             GetBool(reader, "IsPinned"),
             GetBool(reader, "IsOpen")

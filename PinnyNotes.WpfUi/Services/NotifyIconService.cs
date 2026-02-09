@@ -25,17 +25,29 @@ public class NotifyIconService : IDisposable
         _applicationSettings = settingsService.ApplicationSettings;
         _applicationSettings.PropertyChanged += OnApplicationSettingsChanged;
 
-        if (_applicationSettings.ShowNotifiyIcon)
+        if (_applicationSettings.ShowNotifyIcon)
             InitializeNotifyIcon();
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _applicationSettings.PropertyChanged -= OnApplicationSettingsChanged;
+
+        DisposeNotifyIcon();
+
+        _disposed = true;
     }
 
     private void OnApplicationSettingsChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ApplicationSettingsModel.ShowNotifiyIcon))
+        if (e.PropertyName == nameof(ApplicationSettingsModel.ShowNotifyIcon))
         {
-            if (_applicationSettings.ShowNotifiyIcon && _notifyIcon == null)
+            if (_applicationSettings.ShowNotifyIcon && _notifyIcon is null)
                 InitializeNotifyIcon();
-            else if (!_applicationSettings.ShowNotifiyIcon && _notifyIcon != null)
+            else if (!_applicationSettings.ShowNotifyIcon && _notifyIcon != null)
                 DisposeNotifyIcon();
         }
     }
@@ -96,7 +108,7 @@ public class NotifyIconService : IDisposable
 
     private void DisposeNotifyIcon()
     {
-        if (_notifyIcon == null)
+        if (_notifyIcon is null)
             return;
 
         _notifyIcon.TrayLeftMouseDown -= NotifyIcon_TrayMouseLeftButtonDown;
@@ -108,7 +120,7 @@ public class NotifyIconService : IDisposable
 
     private void NotifyIcon_TrayMouseLeftButtonDown(object? sender, RoutedEventArgs e)
     {
-        _messengerService.Publish(new WindowActionMessage(WindowActions.Activate));
+        _messengerService.Publish(new WindowActionMessage(WindowAction.Activate));
     }
 
     private void NotifyIcon_TrayLeftMouseDoubleClick(object? sender, RoutedEventArgs e)
@@ -133,18 +145,6 @@ public class NotifyIconService : IDisposable
 
     private void Exit_Click(object? sender, EventArgs e)
     {
-        _messengerService.Publish(new ApplicationActionMessage(ApplicationActions.Close));
-    }
-
-    public void Dispose()
-    {
-        if (_disposed)
-            return;
-
-        _applicationSettings.PropertyChanged -= OnApplicationSettingsChanged;
-
-        DisposeNotifyIcon();
-
-        _disposed = true;
+        _messengerService.Publish(new ApplicationActionMessage(ApplicationAction.Close));
     }
 }

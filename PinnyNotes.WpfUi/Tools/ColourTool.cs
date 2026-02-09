@@ -6,7 +6,7 @@ using PinnyNotes.WpfUi.Controls;
 
 namespace PinnyNotes.WpfUi.Tools;
 
-public partial class ColorTool : BaseTool, ITool
+public partial class ColourTool : BaseTool, ITool
 {
     private enum ToolActions
     {
@@ -14,18 +14,18 @@ public partial class ColorTool : BaseTool, ITool
         HexToRgb
     }
 
-    public ToolStates State => ToolSettings.ColorToolState;
-
-    public ColorTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
+    public ColourTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
-            "Color",
+            "Colour",
             [
                 new ToolMenuAction("RGB to Hex", new RelayCommand(() => MenuAction(ToolActions.RgbToHex))),
                 new ToolMenuAction("Hex to RGB", new RelayCommand(() => MenuAction(ToolActions.HexToRgb)))
             ]
         );
     }
+
+    public ToolState State => ToolSettings.ColourToolState;
 
     private void MenuAction(Enum action)
     {
@@ -58,7 +58,7 @@ public partial class ColorTool : BaseTool, ITool
                         string hexValue = match.Groups["hex"].Value;
                         bool isShorthand = (hexValue.Length == 3);
 
-                        int r = (isShorthand) ? Convert.ToInt32(new string(hexValue[0], 2), 16) : Convert.ToInt32(hexValue.Substring(0, 2), 16);
+                        int r = (isShorthand) ? Convert.ToInt32(new string(hexValue[0], 2), 16) : Convert.ToInt32(hexValue[..2], 16);
                         int g = (isShorthand) ? Convert.ToInt32(new string(hexValue[1], 2), 16) : Convert.ToInt32(hexValue.Substring(2, 2), 16);
                         int b = (isShorthand) ? Convert.ToInt32(new string(hexValue[2], 2), 16) : Convert.ToInt32(hexValue.Substring(4, 2), 16);
 

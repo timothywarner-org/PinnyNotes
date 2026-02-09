@@ -1,14 +1,14 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum StartupPositions
+public enum StartupPosition
 {
     TopLeft = 0,
-    TopCenter = 1,
+    TopCentre = 1,
     TopRight = 2,
     MiddleLeft = 3,
-    MiddleCenter = 4,
+    MiddleCentre = 4,
     MiddleRight = 5,
     BottomLeft = 6,
-    BottomCenter = 7,
+    BottomCentre = 7,
     BottomRight = 8
 }

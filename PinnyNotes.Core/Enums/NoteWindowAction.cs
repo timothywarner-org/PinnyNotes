@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum NoteWindowActions
+public enum NoteWindowAction
 {
     Open,
     Close

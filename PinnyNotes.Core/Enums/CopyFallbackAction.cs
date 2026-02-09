@@ -1,6 +1,6 @@
 ﻿namespace PinnyNotes.Core.Enums;
 
-public enum CopyFallbackActions
+public enum CopyFallbackAction
 {
     None,
     CopyLine,

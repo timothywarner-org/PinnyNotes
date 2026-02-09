@@ -21,8 +21,6 @@ public class RemoveTool : BaseTool, ITool
 
     private string? _selectedText = null;
 
-    public ToolStates State => ToolSettings.RemoveToolState;
-
     public RemoveTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -40,6 +38,8 @@ public class RemoveTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.RemoveToolState;
 
     private void MenuAction(ToolActions action)
     {

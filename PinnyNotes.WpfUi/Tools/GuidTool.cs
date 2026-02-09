@@ -12,8 +12,6 @@ public class GuidTool : BaseTool, ITool
         GuidV7
     }
 
-    public ToolStates State => ToolSettings.GuidToolState;
-
     public GuidTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
         InitializeMenuItem(
@@ -24,6 +22,8 @@ public class GuidTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.GuidToolState;
 
     private void MenuAction(ToolActions action)
     {

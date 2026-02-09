@@ -8,26 +8,22 @@ public class SettingsService(SettingsRepository settingsRepository)
 {
     private readonly SettingsRepository _settingsRepository = settingsRepository;
 
-    public ApplicationSettingsModel ApplicationSettings => _applicationSettings;
-    private ApplicationSettingsModel _applicationSettings = null!;
-    public NoteSettingsModel NoteSettings => _noteSettings;
-    private NoteSettingsModel _noteSettings = null!;
-    public EditorSettingsModel EditorSettings => _editorSettings;
-    private EditorSettingsModel _editorSettings = null!;
-    public ToolSettingsModel ToolSettings => _toolSettings;
-    private ToolSettingsModel _toolSettings = null!;
+    public ApplicationSettingsModel ApplicationSettings { get; private set; } = null!;
+    public NoteSettingsModel NoteSettings { get; private set; } = null!;
+    public EditorSettingsModel EditorSettings { get; private set; } = null!;
+    public ToolSettingsModel ToolSettings { get; private set; } = null!;
 
     public async Task Load()
     {
         SettingsDataDto settings = await _settingsRepository.GetById(1);
 
-        _applicationSettings = new()
+        ApplicationSettings = new()
         {
-            ShowNotifiyIcon = settings.ShowTrayIcon,
+            ShowNotifyIcon = settings.ShowTrayIcon,
             CheckForUpdates = settings.CheckForUpdates
         };
 
-        _noteSettings = new()
+        NoteSettings = new()
         {
             DefaultWidth = settings.DefaultNoteWidth,
             DefaultHeight = settings.DefaultNoteHeight,
@@ -35,15 +31,15 @@ public class SettingsService(SettingsRepository settingsRepository)
             MinimizeMode = settings.MinimizeMode,
             VisibilityMode = settings.VisibilityMode,
             HideTitleBar = settings.HideTitleBar,
-            CycleColors = settings.CycleColors,
-            ColorMode = settings.ColorMode,
+            CycleColours = settings.CycleColours,
+            ColourMode = settings.ColourMode,
             TransparencyMode = settings.TransparencyMode,
             OpaqueWhenFocused = settings.OpaqueWhenFocused,
             OpaqueValue = settings.OpaqueOpacity,
             TransparentValue = settings.TransparentOpacity
         };
 
-        _editorSettings = new()
+        EditorSettings = new()
         {
             CheckSpelling = settings.SpellCheck,
             NewLineAtEnd = settings.NewLineAtEnd,
@@ -72,12 +68,12 @@ public class SettingsService(SettingsRepository settingsRepository)
             MiddleClickPaste = settings.MiddleClickPaste
         };
 
-        _toolSettings = new()
+        ToolSettings = new()
         {
             Base64ToolState = settings.Base64State,
             BracketToolState = settings.BracketState,
             CaseToolState = settings.CaseState,
-            ColorToolState = settings.ColorState,
+            ColourToolState = settings.ColourState,
             DateTimeToolState = settings.DateTimeState,
             GibberishToolState = settings.GibberishState,
             GuidToolState = settings.GuidState,
@@ -103,68 +99,68 @@ public class SettingsService(SettingsRepository settingsRepository)
             new SettingsDataDto(
                 Id: 1,
 
-                ShowTrayIcon: _applicationSettings.ShowNotifiyIcon,
-                CheckForUpdates: _applicationSettings.CheckForUpdates,
+                ShowTrayIcon: ApplicationSettings.ShowNotifyIcon,
+                CheckForUpdates: ApplicationSettings.CheckForUpdates,
 
-                DefaultNoteWidth: _noteSettings.DefaultWidth,
-                DefaultNoteHeight: _noteSettings.DefaultHeight,
-                StartupPosition: _noteSettings.StartupPosition,
-                MinimizeMode: _noteSettings.MinimizeMode,
-                VisibilityMode: _noteSettings.VisibilityMode,
-                HideTitleBar: _noteSettings.HideTitleBar,
-                CycleColors: _noteSettings.CycleColors,
-                ColorMode: _noteSettings.ColorMode,
-                TransparencyMode: _noteSettings.TransparencyMode,
-                OpaqueWhenFocused: _noteSettings.OpaqueWhenFocused,
-                OpaqueOpacity: _noteSettings.OpaqueValue,
-                TransparentOpacity: _noteSettings.TransparentValue,
+                DefaultNoteWidth: NoteSettings.DefaultWidth,
+                DefaultNoteHeight: NoteSettings.DefaultHeight,
+                StartupPosition: NoteSettings.StartupPosition,
+                MinimizeMode: NoteSettings.MinimizeMode,
+                VisibilityMode: NoteSettings.VisibilityMode,
+                HideTitleBar: NoteSettings.HideTitleBar,
+                CycleColours: NoteSettings.CycleColours,
+                ColourMode: NoteSettings.ColourMode,
+                TransparencyMode: NoteSettings.TransparencyMode,
+                OpaqueWhenFocused: NoteSettings.OpaqueWhenFocused,
+                OpaqueOpacity: NoteSettings.OpaqueValue,
+                TransparentOpacity: NoteSettings.TransparentValue,
 
-                SpellCheck: _editorSettings.CheckSpelling,
-                NewLineAtEnd: _editorSettings.NewLineAtEnd,
-                KeepNewLineVisible: _editorSettings.KeepNewLineVisible,
-                WrapText: _editorSettings.WrapText,
-                StandardFontFamily: _editorSettings.StandardFontFamily,
-                MonoFontFamily: _editorSettings.MonoFontFamily,
-                UseMonoFont: _editorSettings.UseMonoFont,
-                AutoIndent: _editorSettings.AutoIndent,
-                TabUsesSpaces: _editorSettings.UseSpacesForTab,
-                ConvertIndentationOnPaste: _editorSettings.ConvertIndentationOnPaste,
-                TabWidth: _editorSettings.TabSpacesWidth,
-                CopyAction: _editorSettings.CopyAction,
-                TrimTextOnCopy: _editorSettings.TrimTextOnCopy,
-                CopyAltAction: _editorSettings.CopyAltAction,
-                TrimTextOnAltCopy: _editorSettings.TrimTextOnAltCopy,
-                CopyFallbackAction: _editorSettings.CopyFallbackAction,
-                TrimTextOnFallbackCopy: _editorSettings.TrimTextOnFallbackCopy,
-                CopyAltFallbackAction: _editorSettings.CopyAltFallbackAction,
-                TrimTextOnAltFallbackCopy: _editorSettings.TrimTextOnAltFallbackCopy,
-                CopyTextOnHighlight: _editorSettings.CopyOnSelect,
-                PasteAction: _editorSettings.PasteAction,
-                TrimTextOnPaste: _editorSettings.TrimTextOnPaste,
-                PasteAltAction: _editorSettings.PasteAltAction,
-                TrimTextOnAltPaste: _editorSettings.TrimTextOnAltPaste,
-                MiddleClickPaste: _editorSettings.MiddleClickPaste,
+                SpellCheck: EditorSettings.CheckSpelling,
+                NewLineAtEnd: EditorSettings.NewLineAtEnd,
+                KeepNewLineVisible: EditorSettings.KeepNewLineVisible,
+                WrapText: EditorSettings.WrapText,
+                StandardFontFamily: EditorSettings.StandardFontFamily,
+                MonoFontFamily: EditorSettings.MonoFontFamily,
+                UseMonoFont: EditorSettings.UseMonoFont,
+                AutoIndent: EditorSettings.AutoIndent,
+                TabUsesSpaces: EditorSettings.UseSpacesForTab,
+                ConvertIndentationOnPaste: EditorSettings.ConvertIndentationOnPaste,
+                TabWidth: EditorSettings.TabSpacesWidth,
+                CopyAction: EditorSettings.CopyAction,
+                TrimTextOnCopy: EditorSettings.TrimTextOnCopy,
+                CopyAltAction: EditorSettings.CopyAltAction,
+                TrimTextOnAltCopy: EditorSettings.TrimTextOnAltCopy,
+                CopyFallbackAction: EditorSettings.CopyFallbackAction,
+                TrimTextOnFallbackCopy: EditorSettings.TrimTextOnFallbackCopy,
+                CopyAltFallbackAction: EditorSettings.CopyAltFallbackAction,
+                TrimTextOnAltFallbackCopy: EditorSettings.TrimTextOnAltFallbackCopy,
+                CopyTextOnHighlight: EditorSettings.CopyOnSelect,
+                PasteAction: EditorSettings.PasteAction,
+                TrimTextOnPaste: EditorSettings.TrimTextOnPaste,
+                PasteAltAction: EditorSettings.PasteAltAction,
+                TrimTextOnAltPaste: EditorSettings.TrimTextOnAltPaste,
+                MiddleClickPaste: EditorSettings.MiddleClickPaste,
 
-                Base64State: _toolSettings.Base64ToolState,
-                BracketState: _toolSettings.BracketToolState,
-                CaseState: _toolSettings.CaseToolState,
-                ColorState: _toolSettings.ColorToolState,
-                DateTimeState: _toolSettings.DateTimeToolState,
-                GibberishState: _toolSettings.GibberishToolState,
-                GuidState: _toolSettings.GuidToolState,
-                HashState: _toolSettings.HashToolState,
-                HTMLEntityState: _toolSettings.HtmlEntityToolState,
-                IndentState: _toolSettings.IndentToolState,
-                JoinState: _toolSettings.JoinToolState,
-                JSONState: _toolSettings.JsonToolState,
-                ListState: _toolSettings.ListToolState,
-                QuoteState: _toolSettings.QuoteToolState,
-                RemoveState: _toolSettings.RemoveToolState,
-                SlashState: _toolSettings.SlashToolState,
-                SortState: _toolSettings.SortToolState,
-                SplitState: _toolSettings.SplitToolState,
-                TrimState: _toolSettings.TrimToolState,
-                UrlState: _toolSettings.UrlToolState
+                Base64State: ToolSettings.Base64ToolState,
+                BracketState: ToolSettings.BracketToolState,
+                CaseState: ToolSettings.CaseToolState,
+                ColourState: ToolSettings.ColourToolState,
+                DateTimeState: ToolSettings.DateTimeToolState,
+                GibberishState: ToolSettings.GibberishToolState,
+                GuidState: ToolSettings.GuidToolState,
+                HashState: ToolSettings.HashToolState,
+                HTMLEntityState: ToolSettings.HtmlEntityToolState,
+                IndentState: ToolSettings.IndentToolState,
+                JoinState: ToolSettings.JoinToolState,
+                JSONState: ToolSettings.JsonToolState,
+                ListState: ToolSettings.ListToolState,
+                QuoteState: ToolSettings.QuoteToolState,
+                RemoveState: ToolSettings.RemoveToolState,
+                SlashState: ToolSettings.SlashToolState,
+                SortState: ToolSettings.SortToolState,
+                SplitState: ToolSettings.SplitToolState,
+                TrimState: ToolSettings.TrimToolState,
+                UrlState: ToolSettings.UrlToolState
             )
         );
     }

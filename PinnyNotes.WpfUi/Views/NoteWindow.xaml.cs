@@ -58,14 +58,14 @@ public partial class NoteWindow : Window
     private void PopulateTitleBarContextMenu()
     {
         int insertIndex = TitleBarContextMenu.Items.IndexOf(ThemeMenuSeparator);
-        foreach (ColorScheme colorScheme in _themeService.CurrentTheme.ColorSchemes.Values)
+        foreach (ColourScheme colourScheme in _themeService.CurrentTheme.ColourSchemes.Values)
         {
             MenuItem menuItem = new()
             {
-                Header = colorScheme.Name,
-                Command = _viewModel.ChangeThemeColorCommand,
-                CommandParameter = colorScheme.Name,
-                Icon = colorScheme.Icon
+                Header = colourScheme.Name,
+                Command = _viewModel.ChangeThemeColourCommand,
+                CommandParameter = colourScheme.Name,
+                Icon = colourScheme.Icon
             };
 
             TitleBarContextMenu.Items.Insert(insertIndex, menuItem);
@@ -98,7 +98,7 @@ public partial class NoteWindow : Window
         if (WindowState != WindowState.Minimized)
             return;
 
-        if (_noteSettings.MinimizeMode == MinimizeModes.Prevent || (_noteSettings.MinimizeMode == MinimizeModes.PreventIfPinned && _viewModel.Note.IsPinned))
+        if (_noteSettings.MinimizeMode == MinimizeMode.Prevent || (_noteSettings.MinimizeMode == MinimizeMode.PreventIfPinned && _viewModel.Note.IsPinned))
             WindowState = WindowState.Normal;
     }
 
@@ -138,7 +138,7 @@ public partial class NoteWindow : Window
 
     private void OnWindowActionMessage(WindowActionMessage message)
     {
-        if (message.Action == WindowActions.Activate)
+        if (message.Action == WindowAction.Activate)
         {
             WindowState = WindowState.Normal;
             Activate();

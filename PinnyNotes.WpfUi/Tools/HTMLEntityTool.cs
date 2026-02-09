@@ -13,7 +13,6 @@ public class HtmlEntityTool : BaseTool, ITool
         EntityEncode,
         EntityDecode
     }
-    public ToolStates State => ToolSettings.HtmlEntityToolState;
 
     public HtmlEntityTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
@@ -25,6 +24,8 @@ public class HtmlEntityTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.HtmlEntityToolState;
 
     private void MenuAction(ToolActions action)
     {

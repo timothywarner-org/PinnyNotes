@@ -3,12 +3,12 @@ using System.Windows.Shapes;
 
 namespace PinnyNotes.WpfUi.Themes;
 
-public class ColorScheme(string name, string iconColorHex, Palette light, Palette dark)
+public class ColourScheme(string name, string iconColourHex, Palette light, Palette dark)
 {
     private const int IconSize = 16;
 
     public string Name { get; set; } = name;
-    public Color IconColor { get; set; } = (Color)ColorConverter.ConvertFromString(iconColorHex);
+    public Color IconColour { get; set; } = (Color)ColorConverter.ConvertFromString(iconColourHex);
     public Palette Light { get; set; } = light;
     public Palette Dark { get; set; } = dark;
 
@@ -20,7 +20,7 @@ public class ColorScheme(string name, string iconColorHex, Palette light, Palett
             {
                 Width = IconSize,
                 Height = IconSize,
-                Fill = new SolidColorBrush(IconColor)
+                Fill = new SolidColorBrush(IconColour)
             };
 
             return _icon;

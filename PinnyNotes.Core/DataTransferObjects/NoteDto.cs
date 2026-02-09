@@ -13,7 +13,7 @@ public record NoteDto(
     int GravityX,
     int GravityY,
 
-    string ThemeColorScheme,
+    string ThemeColourScheme,
 
     bool IsPinned,
     bool IsOpen

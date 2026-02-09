@@ -39,7 +39,7 @@ public class NoteTextBoxContextMenu : ContextMenu
             new Base64Tool(_noteTextBox),
             new BracketTool(_noteTextBox),
             new CaseTool(_noteTextBox),
-            new ColorTool(_noteTextBox),
+            new ColourTool(_noteTextBox),
             new DateTimeTool(_noteTextBox),
             new GibberishTool(_noteTextBox),
             new GuidTool(_noteTextBox),
@@ -220,7 +220,7 @@ public class NoteTextBoxContextMenu : ContextMenu
 
         _toolMenuItems.Clear();
 
-        IEnumerable<ITool> activeTools = _tools.Where(t => t.State != ToolStates.Disabled);
+        IEnumerable<ITool> activeTools = _tools.Where(t => t.State != ToolState.Disabled);
         if (!activeTools.Any())
             return;
 
@@ -231,10 +231,10 @@ public class NoteTextBoxContextMenu : ContextMenu
         {
             switch (tool.State)
             {
-                case ToolStates.Favourite:
+                case ToolState.Favourite:
                     _toolMenuItems.Add(tool.MenuItem);
                     break;
-                case ToolStates.Enabled:
+                case ToolState.Enabled:
                     _toolsMenuItem.Items.Add(tool.MenuItem);
                     hasEnabledTools = true;
                     break;

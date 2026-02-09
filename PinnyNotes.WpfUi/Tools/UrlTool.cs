@@ -11,7 +11,6 @@ public class UrlTool : BaseTool, ITool
         Encode,
         Decode
     }
-    public ToolStates State => ToolSettings.UrlToolState;
 
     public UrlTool(NoteTextBoxControl noteTextBox) : base(noteTextBox)
     {
@@ -23,6 +22,8 @@ public class UrlTool : BaseTool, ITool
             ]
         );
     }
+
+    public ToolState State => ToolSettings.UrlToolState;
 
     private void MenuAction(ToolActions action)
     {

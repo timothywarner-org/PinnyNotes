@@ -123,6 +123,9 @@ public partial class NoteWindow : Window
 
     private async void Window_Deactivated(object? sender, EventArgs e)
     {
+        if (!_viewModel.Note.IsOpen)
+            return;
+
         _viewModel.Note.IsFocused = false;
         _viewModel.UpdateOpacity();
         _viewModel.UpdateAlwaysOnTop();

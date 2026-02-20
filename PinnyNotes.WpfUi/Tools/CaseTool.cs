@@ -42,7 +42,7 @@ public class CaseTool : BaseTool, ITool
         {
             ToolActions.CaseLower => textInfo.ToLower(text),
             ToolActions.CaseUpper => textInfo.ToUpper(text),
-            ToolActions.CaseTitle => textInfo.ToTitleCase(text),
+            ToolActions.CaseTitle => textInfo.ToTitleCase(textInfo.ToLower(text)),
             _ => text,
         };
     }

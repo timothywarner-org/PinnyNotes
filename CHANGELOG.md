@@ -1,23 +1,22 @@
 # Change Log
 
 
-## v1.16.0 - Pending
+## v1.16.0 - 23/02/2026
 
 ### Added
 - GUID tool.
 - Auto save notes to database.
 - Management Window.
-- 
 
 ### Changed
 - Use exe dir for database when in debug mode.
 - Resize can now be done from any side or corner, rather than only with bottom right grip.
 - Transparency only enabled if required when loading notes.
 - Updated to .NET 10.
-- 
 
 ### Fixed
-- 
+- Notes getting stuck as Top Most (Still an ongoing issue, but is better)
+- Case Tool, Title case now works when text is all upper case.
 
 
 ## v1.15.0 - 03/10/2025

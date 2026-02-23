@@ -4,5 +4,6 @@ namespace PinnyNotes.WpfUi.Messages;
 
 public record OpenNoteWindowMessage(
     int? NoteId = null,
-    NoteModel? ParentNote = null
+    NoteModel? ParentNote = null,
+    bool isManagementWindowParent = false
 );

@@ -2,6 +2,7 @@
 
 using PinnyNotes.Core.Enums;
 using PinnyNotes.Core.Repositories;
+using PinnyNotes.WpfUi.Helpers;
 using PinnyNotes.WpfUi.Messages;
 using PinnyNotes.WpfUi.Models;
 using PinnyNotes.WpfUi.ViewModels;
@@ -64,7 +65,13 @@ public class WindowService
     }
 
     private void OnOpenNoteWindowMessage(OpenNoteWindowMessage message)
-        => _ = OpenNoteWindow(message.NoteId, message.ParentNote);
+    {
+        nint? managementWindowHandle = null;
+        if (_managementWindow is not null && message.isManagementWindowParent)
+            managementWindowHandle = ScreenHelper.GetWindowHandle(_managementWindow);
+
+        _ = OpenNoteWindow(message.NoteId, message.ParentNote, managementWindowHandle);
+    }
 
     private void OnMultipleNoteWindowActionMessage(MultipleNoteWindowActionMessage message)
     {
@@ -111,7 +118,7 @@ public class WindowService
     private void OnOpenManagementWindowMessage(OpenManagementWindowMessage message)
         => OpenManagementWindow();
 
-    private async Task OpenNoteWindow(int? noteId = null, NoteModel? parentNote = null)
+    private async Task OpenNoteWindow(int? noteId = null, NoteModel? parentNote = null, nint? managementWindowHandle = null)
     {
         NoteWindow window;
 
@@ -123,7 +130,7 @@ public class WindowService
         else
         {
             NoteViewModel viewModel = new(_noteRepository, _appMetadataService, _settingsService, _messengerService, _themeService);
-            await viewModel.Initialize(noteId, parentNote);
+            await viewModel.Initialize(noteId, parentNote, managementWindowHandle);
             window = new(_settingsService, _messengerService, _themeService, viewModel);
 
             window.Show();

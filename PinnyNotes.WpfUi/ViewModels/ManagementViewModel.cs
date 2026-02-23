@@ -98,7 +98,7 @@ public class ManagementViewModel : BaseViewModel
 
     private void OnNewNoteCommand()
     {
-        MessengerService.Publish(new OpenNoteWindowMessage());
+        MessengerService.Publish(new OpenNoteWindowMessage(isManagementWindowParent: true));
     }
 
     private void OnOpenNotesCommand()

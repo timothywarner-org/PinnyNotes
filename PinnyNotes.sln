@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		CHANGELOG.md = CHANGELOG.md
 		README.md = README.md
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinnyNotes.Core", "PinnyNotes.Core\PinnyNotes.Core.csproj", "{EF5F8C24-B2F0-41A1-B4B4-CECBF6704E3F}"

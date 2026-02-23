@@ -1,9 +1,9 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-
+﻿using PinnyNotes.WpfUi.Helpers;
 using PinnyNotes.WpfUi.Models;
 using PinnyNotes.WpfUi.ViewModels;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace PinnyNotes.WpfUi.Views;
 

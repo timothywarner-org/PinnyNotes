@@ -53,10 +53,10 @@ public class NoteViewModel : BaseViewModel
 
     public NoteModel Note { get; set; } = null!;
 
-    public async Task Initialize(int? noteId = null, NoteModel? parent = null)
+    public async Task Initialize(int? noteId = null, NoteModel? parent = null, nint? managementWindowHandle = null)
     {
         if (noteId is null)
-            await CreateNewNote(parent);
+            await CreateNewNote(parent, managementWindowHandle);
         else
             await LoadNote((int)noteId);
     }
@@ -150,11 +150,11 @@ public class NoteViewModel : BaseViewModel
         return false;
     }
 
-    private async Task CreateNewNote(NoteModel? parent = null)
+    private async Task CreateNewNote(NoteModel? parent = null, nint? managementWindowHandle = null)
     {
         Note = new(NoteSettings, _themeService.GetNewNoteColourSchemeName(parent?.ThemeColourScheme));
 
-        InitNotePosition(parent);
+        InitNotePosition(parent, managementWindowHandle);
         UpdateBrushes();
         UpdateOpacity();
 
@@ -184,7 +184,7 @@ public class NoteViewModel : BaseViewModel
         await SaveNote();
     }
 
-    private void InitNotePosition(NoteModel? parent = null)
+    private void InitNotePosition(NoteModel? parent = null, nint? managementWindowHandle = null)
     {
         int noteMargin = 45;
 
@@ -204,26 +204,29 @@ public class NoteViewModel : BaseViewModel
         else
         {
             int screenMargin = 78;
-            screenBounds = ScreenHelper.GetPrimaryScreenBounds();
+            if (managementWindowHandle is not null)
+                screenBounds = ScreenHelper.GetCurrentScreenBounds((nint)managementWindowHandle);
+            else
+                screenBounds = ScreenHelper.GetPrimaryScreenBounds();
 
             switch (NoteSettings.StartupPosition)
             {
                 case StartupPosition.TopLeft:
                 case StartupPosition.MiddleLeft:
                 case StartupPosition.BottomLeft:
-                    position.X = screenMargin;
+                    position.X = screenBounds.Left + screenMargin;
                     Note.GravityX = 1;
                     break;
                 case StartupPosition.TopCentre:
                 case StartupPosition.MiddleCentre:
                 case StartupPosition.BottomCentre:
-                    position.X = screenBounds.Width / 2 - Note.Width / 2;
+                    position.X = screenBounds.Left + screenBounds.Width / 2 - Note.Width / 2;
                     Note.GravityX = 1;
                     break;
                 case StartupPosition.TopRight:
                 case StartupPosition.MiddleRight:
                 case StartupPosition.BottomRight:
-                    position.X = (screenBounds.Width - screenMargin) - Note.Width;
+                    position.X = screenBounds.Left + screenBounds.Width - screenMargin - Note.Width;
                     Note.GravityX = -1;
                     break;
             }
@@ -233,19 +236,19 @@ public class NoteViewModel : BaseViewModel
                 case StartupPosition.TopLeft:
                 case StartupPosition.TopCentre:
                 case StartupPosition.TopRight:
-                    position.Y = screenMargin;
+                    position.Y = screenBounds.Top + screenMargin;
                     Note.GravityY = 1;
                     break;
                 case StartupPosition.MiddleLeft:
                 case StartupPosition.MiddleCentre:
                 case StartupPosition.MiddleRight:
-                    position.Y = screenBounds.Height / 2 - Note.Height / 2;
+                    position.Y = screenBounds.Top + screenBounds.Height / 2 - Note.Height / 2;
                     Note.GravityY = -1;
                     break;
                 case StartupPosition.BottomLeft:
                 case StartupPosition.BottomCentre:
                 case StartupPosition.BottomRight:
-                    position.Y = (screenBounds.Height - screenMargin) - Note.Height;
+                    position.Y = screenBounds.Top + screenBounds.Height - screenMargin - Note.Height;
                     Note.GravityY = -1;
                     break;
             }

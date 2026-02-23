@@ -18,6 +18,7 @@
 ## 🚀 Features
 
 - **Pin / Always on Top:** Keep notes visible above all other windows.
+- **Auto Save:** Automatically saves notes.
 - **Block Minimizing:** Prevent notes from being minimized, even with the Show Desktop button.
 - **Colours:** Choose from multiple colours or have new notes cycle through them automatically.
 - **Dark Mode:** Dark theme with colour-matched accents.

@@ -52,10 +52,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.10.0.x64"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    "Name" = "8:.NET 10.0 Desktop Runtime (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.10.0.x64"
                     }
                 }
             }
@@ -84,10 +84,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.10.0.x64"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    "Name" = "8:.NET 10.0 Desktop Runtime (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.10.0.x64"
                     }
                 }
             }
@@ -218,15 +218,15 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.16.0"
-        "Manufacturer" = "8:63BeetleSmurf"
+        "Manufacturer" = "8:timothywarner-org"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:https://github.com/63BeetleSmurf/pinny_notes/issues"
+        "ARPHELPLINK" = "8:https://github.com/timothywarner-org/PinnyNotes/issues"
         "Title" = "8:Pinny Notes Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:63BeetleSmurf"
+        "ARPCONTACT" = "8:timothywarner-org"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:https://github.com/63BeetleSmurf/pinny_notes"
+        "ARPURLINFOABOUT" = "8:https://github.com/timothywarner-org/PinnyNotes"
         "ARPPRODUCTICON" = "8:_1EE56608B0534F68AEAFC5EA4B77F147"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -759,7 +759,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_986FCBA950114798AC8BD4B2D210DD8A"
             {
-            "SourcePath" = "8:..\\PinnyNotes.WpfUi\\obj\\x64\\Release\\net9.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\PinnyNotes.WpfUi\\obj\\x64\\Release\\net10.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_7785C5DEE194483AA2B024842491A9A3"

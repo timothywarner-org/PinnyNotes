@@ -1,0 +1,88 @@
+graph TB
+    subgraph Views["Views (XAML + Code-Behind)"]
+        NW[NoteWindow]
+        SW[SettingsWindow]
+        MW[ManagementWindow]
+        STD[SetTitleDialog]
+    end
+
+    subgraph ViewModels["ViewModels"]
+        NVM[NoteViewModel]
+        SVM[SettingsViewModel]
+        MVM[ManagementViewModel]
+    end
+
+    subgraph Models["Models (INotifyPropertyChanged)"]
+        NM[NoteModel]
+        ASM[ApplicationSettingsModel]
+        NSM[NoteSettingsModel]
+        ESM[EditorSettingsModel]
+        TSM[ToolSettingsModel]
+        NPM[NotePreviewModel]
+        AMM[AppMetadataModel]
+    end
+
+    subgraph Services["Services (Singleton DI)"]
+        WS[WindowService]
+        SS[SettingsService]
+        MS[MessengerService]
+        TS[ThemeService]
+        AMS[AppMetadataService]
+        NIS[NotifyIconService]
+    end
+
+    subgraph Core["PinnyNotes.Core (Data Layer)"]
+        NR[NoteRepository]
+        SR[SettingsRepository]
+        AMR[AppMetadataRepository]
+        DC[DatabaseConfiguration]
+        DI[DatabaseInitialiser]
+        MIG[Schema Migrations]
+        DB[(SQLite Database)]
+    end
+
+    subgraph Tools["Tools System (Template Method)"]
+        BT[BaseTool]
+        T1[CaseTool]
+        T2[HashTool]
+        T3["... 18 more tools"]
+    end
+
+    NW -->|DataBinding| NVM
+    SW -->|DataBinding| SVM
+    MW -->|DataBinding| MVM
+
+    NVM --> NM
+    NVM --> NR
+    SVM --> SS
+    MVM --> NR
+
+    WS -->|Creates| NW
+    WS -->|Creates| SW
+    WS -->|Creates| MW
+    MS -.->|Pub/Sub Messages| WS
+    MS -.->|Pub/Sub Messages| NVM
+    MS -.->|Pub/Sub Messages| MVM
+
+    SS --> ASM
+    SS --> NSM
+    SS --> ESM
+    SS --> TSM
+
+    NR --> DC
+    SR --> DC
+    AMR --> DC
+    DC --> DB
+    DI --> MIG
+    DI --> DB
+
+    BT --> T1
+    BT --> T2
+    BT --> T3
+
+    style Views fill:#4a90d9,color:#fff
+    style ViewModels fill:#7b68ee,color:#fff
+    style Models fill:#e8a838,color:#fff
+    style Services fill:#50c878,color:#fff
+    style Core fill:#cd5c5c,color:#fff
+    style Tools fill:#9370db,color:#fff

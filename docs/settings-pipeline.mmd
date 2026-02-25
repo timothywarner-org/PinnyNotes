@@ -1,0 +1,69 @@
+flowchart LR
+    subgraph Storage["Storage Layer"]
+        DB[(SQLite\nDatabase)]
+    end
+
+    subgraph Repository["Repository Layer"]
+        SR[SettingsRepository]
+    end
+
+    subgraph DTO["Data Transfer"]
+        SDTO[SettingsDataDto\n--- record type ---\nImmutable snapshot\nof all settings]
+    end
+
+    subgraph Service["Service Layer"]
+        SS[SettingsService]
+    end
+
+    subgraph ModelLayer["Model Layer"]
+        ASM[ApplicationSettingsModel\n--- ShowNotifyIcon ---\n--- CheckForUpdates ---]
+        NSM[NoteSettingsModel\n--- StartupPosition ---\n--- ColourMode ---\n--- TransparencyMode ---]
+        ESM[EditorSettingsModel\n--- CheckSpelling ---\n--- AutoIndent ---\n--- CopyAction ---]
+        TSM[ToolSettingsModel\n--- Base64ToolState ---\n--- CaseToolState ---\n--- 18 more states ---]
+    end
+
+    subgraph VMLayer["ViewModel Layer"]
+        SVM[SettingsViewModel\nExposes models\nto settings UI]
+        NVM[NoteViewModel\nReads NoteSettings\nand EditorSettings]
+    end
+
+    subgraph UILayer["View Layer"]
+        SWX[SettingsWindow.xaml\nTwo-way binding\nto ViewModel]
+        NWX[NoteWindow.xaml\nReads editor and\nnote preferences]
+    end
+
+    DB -->|"SELECT"| SR
+    SR -->|"Returns"| SDTO
+    SDTO -->|"Load()"| SS
+    SS -->|"Maps fields to"| ASM
+    SS -->|"Maps fields to"| NSM
+    SS -->|"Maps fields to"| ESM
+    SS -->|"Maps fields to"| TSM
+
+    ASM -->|"PropertyChanged"| SVM
+    NSM -->|"PropertyChanged"| SVM
+    ESM -->|"PropertyChanged"| SVM
+    TSM -->|"PropertyChanged"| SVM
+    NSM -->|"PropertyChanged"| NVM
+    ESM -->|"PropertyChanged"| NVM
+
+    SVM -->|DataBinding| SWX
+    NVM -->|DataBinding| NWX
+
+    SWX -.->|"User edits"| SVM
+    SVM -.->|"Updates"| ASM
+    SVM -.->|"Updates"| NSM
+    SVM -.->|"Updates"| ESM
+    SVM -.->|"Updates"| TSM
+
+    SS -->|"Save() on exit"| SDTO
+    SDTO -->|"UPDATE"| SR
+    SR -->|"Writes"| DB
+
+    style Storage fill:#cd5c5c,color:#fff
+    style Repository fill:#cd5c5c,color:#fff
+    style DTO fill:#e8a838,color:#fff
+    style Service fill:#50c878,color:#fff
+    style ModelLayer fill:#e8a838,color:#fff
+    style VMLayer fill:#7b68ee,color:#fff
+    style UILayer fill:#4a90d9,color:#fff

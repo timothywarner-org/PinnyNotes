@@ -1,0 +1,63 @@
+stateDiagram-v2
+    [*] --> Creating: User clicks New Note\nor second instance signal
+
+    state Creating {
+        direction LR
+        WS_Open: WindowService\nreceives message
+        VM_Init: NoteViewModel\n.Initialize()
+        NM_New: NoteModel created\nwith default settings
+        DB_Insert: NoteRepository\n.Create()
+        Win_Show: NoteWindow\n.Show()
+
+        WS_Open --> VM_Init
+        VM_Init --> NM_New
+        NM_New --> DB_Insert
+        DB_Insert --> Win_Show
+    }
+
+    Creating --> Active: Window loaded
+
+    state Active {
+        direction LR
+        Editing: User edits\nnote text
+        Timer: DispatcherTimer\n5s interval
+        AutoSave: SaveNote()\ncalled
+        Publish: NoteActionMessage\npublished
+
+        Editing --> Timer: Text changed\nIsSaved = false
+        Timer --> AutoSave: Timer tick
+        AutoSave --> Publish: NoteAction.Updated
+    }
+
+    Active --> Closing: User closes note\nor app exits
+
+    state Closing {
+        direction LR
+        StopTimer: Save timer\nstopped
+        CheckEmpty: Is note\nempty?
+        SaveFinal: Final save\nto database
+        Delete: Delete from\ndatabase
+
+        StopTimer --> CheckEmpty
+        CheckEmpty --> SaveFinal: Has content
+        CheckEmpty --> Delete: Empty note
+    }
+
+    state Loading {
+        direction LR
+        WS_Load: WindowService\nreceives Open message
+        VM_Load: NoteViewModel\n.Initialize(noteId)
+        DB_Get: NoteRepository\n.GetById()
+        NM_Load: NoteModel\npopulated from DTO
+        Win_Load: NoteWindow\n.Show()
+
+        WS_Load --> VM_Load
+        VM_Load --> DB_Get
+        DB_Get --> NM_Load
+        NM_Load --> Win_Load
+    }
+
+    [*] --> Loading: Open existing note\nfrom Management window
+
+    Loading --> Active: Window loaded
+    Closing --> [*]: Window closed

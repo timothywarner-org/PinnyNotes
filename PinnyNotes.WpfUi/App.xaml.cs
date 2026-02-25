@@ -49,53 +49,66 @@ public partial class App : Application
             return;
         }
 
-        base.OnStartup(e);
+        try
+        {
+            base.OnStartup(e);
 
-        ServiceCollection services = new();
-        ConfigureServices(services);
-        Services = services.BuildServiceProvider();
+            ServiceCollection services = new();
+            ConfigureServices(services);
+            Services = services.BuildServiceProvider();
 
-        DatabaseConfiguration databaseConfiguration = Services.GetRequiredService<DatabaseConfiguration>();
-        await DatabaseInitialiser.Initialise(databaseConfiguration.ConnectionString);
+            DatabaseConfiguration databaseConfiguration = Services.GetRequiredService<DatabaseConfiguration>();
+            await DatabaseInitialiser.Initialise(databaseConfiguration.ConnectionString);
 
-        _settingsService = Services.GetRequiredService<SettingsService>();
-        await _settingsService.Load();
-        _applicationSettings = _settingsService.ApplicationSettings;
-        _applicationSettings.PropertyChanged += OnApplicationSettingsChanged;
+            _settingsService = Services.GetRequiredService<SettingsService>();
+            await _settingsService.Load();
+            _applicationSettings = _settingsService.ApplicationSettings;
+            _applicationSettings.PropertyChanged += OnApplicationSettingsChanged;
 
-        _appMetadataService = Services.GetRequiredService<AppMetadataService>();
-        await _appMetadataService.Load();
-        _ = Services.GetRequiredService<WindowService>();
-        _notifyIconService = Services.GetRequiredService<NotifyIconService>();
+            _appMetadataService = Services.GetRequiredService<AppMetadataService>();
+            await _appMetadataService.Load();
+            _ = Services.GetRequiredService<WindowService>();
+            _notifyIconService = Services.GetRequiredService<NotifyIconService>();
 
-        MessengerService messengerService = Services.GetRequiredService<MessengerService>();
-        messengerService.Subscribe<ApplicationActionMessage>(OnApplicationActionMessage);
+            MessengerService messengerService = Services.GetRequiredService<MessengerService>();
+            messengerService.Subscribe<ApplicationActionMessage>(OnApplicationActionMessage);
 
-        // Spawn a thread which will be waiting for our event
-        Thread thread = new(
-            () => {
-                while (_eventWaitHandle.WaitOne())
-                    Current.Dispatcher.BeginInvoke(
-                        () => messengerService.Publish(new ApplicationActionMessage(ApplicationAction.NewInstance))
-                    );
+            // Spawn a thread which will be waiting for our event
+            Thread thread = new(
+                () => {
+                    while (_eventWaitHandle.WaitOne())
+                        Current.Dispatcher.BeginInvoke(
+                            () => messengerService.Publish(new ApplicationActionMessage(ApplicationAction.NewInstance))
+                        );
+                }
+            )
+            {
+                // It is important mark it as background otherwise it will prevent app from exiting.
+                IsBackground = true
+            };
+
+            thread.Start();
+
+            messengerService.Publish(new ApplicationActionMessage(ApplicationAction.Start));
+
+            ShutdownMode = (_applicationSettings.ShowNotifyIcon) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
+
+            if (_settingsService.ApplicationSettings.CheckForUpdates)
+            {
+                DateTimeOffset date = DateTimeOffset.UtcNow;
+                if (await VersionHelper.CheckForNewRelease(_appMetadataService.Metadata.LastUpdateCheck, date))
+                    _appMetadataService.Metadata.LastUpdateCheck = date.ToUnixTimeSeconds();
             }
-        )
+        }
+        catch (Exception ex)
         {
-            // It is important mark it as background otherwise it will prevent app from exiting.
-            IsBackground = true
-        };
-
-        thread.Start();
-
-        messengerService.Publish(new ApplicationActionMessage(ApplicationAction.Start));
-
-        ShutdownMode = (_applicationSettings.ShowNotifyIcon) ? ShutdownMode.OnExplicitShutdown : ShutdownMode.OnLastWindowClose;
-
-        if (_settingsService.ApplicationSettings.CheckForUpdates)
-        {
-            DateTimeOffset date = DateTimeOffset.UtcNow;
-            if (await VersionHelper.CheckForNewRelease(_appMetadataService.Metadata.LastUpdateCheck, date))
-                _appMetadataService.Metadata.LastUpdateCheck = date.ToUnixTimeSeconds();
+            MessageBox.Show(
+                $"Pinny Notes failed to start:{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+                "Startup Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
+            Shutdown();
         }
     }
 

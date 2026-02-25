@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
 using PinnyNotes.WpfUi.Controls;
@@ -58,30 +58,21 @@ public abstract class BaseTool
     {
         if (NoteTextBox.HasSelectedText)
         {
-            NoteTextBox.SelectedText = function(NoteTextBox.SelectedText, action);
+            NoteTextBox.Selection.Text = function(NoteTextBox.Selection.Text, action);
         }
         else
         {
-            string noteText = NoteTextBox.Text;
-            // Ignore trailing new line if it was automatically added
-            if (NoteTextBox.NewLineAtEnd && NoteTextBox.Text.EndsWith(Environment.NewLine))
-                noteText = noteText[..^Environment.NewLine.Length];
+            string noteText = NoteTextBox.GetPlainText();
             NoteTextBox.SelectAll();
-            NoteTextBox.SelectedText = function(noteText, action);
-            NoteTextBox.SelectionLength = 0;
-            if (NoteTextBox.Text.Length > 0)
-                NoteTextBox.CaretIndex = NoteTextBox.Text.Length - 1;
+            NoteTextBox.Selection.Text = function(noteText, action);
         }
     }
 
     protected void ApplyFunctionToEachLine(Func<string, int, Enum, string?> function, Enum action)
     {
-        string noteText = (NoteTextBox.HasSelectedText) ? NoteTextBox.SelectedText : NoteTextBox.Text;
+        string noteText = NoteTextBox.HasSelectedText ? NoteTextBox.Selection.Text : NoteTextBox.GetPlainText();
 
         string[] lines = noteText.Split(Environment.NewLine);
-        // Ignore trailing new line if it was automatically added
-        if (NoteTextBox.NewLineAtEnd && lines[^1] == "")
-            lines = lines[..^1];
 
         List<string> newLines = [];
         for (int i = 0; i < lines.Length; i++)
@@ -94,26 +85,21 @@ public abstract class BaseTool
         noteText = string.Join(Environment.NewLine, newLines);
 
         if (NoteTextBox.HasSelectedText)
-            NoteTextBox.SelectedText = noteText;
+        {
+            NoteTextBox.Selection.Text = noteText;
+        }
         else
         {
             NoteTextBox.SelectAll();
-            NoteTextBox.SelectedText = noteText;
-            NoteTextBox.SelectionLength = 0;
-            if (NoteTextBox.Text.Length > 0)
-                NoteTextBox.CaretIndex = NoteTextBox.Text.Length - 1;
+            NoteTextBox.Selection.Text = noteText;
         }
     }
 
     protected void InsertIntoNoteText(string text)
     {
-        int caretIndex = (NoteTextBox.HasSelectedText) ? NoteTextBox.SelectionStart : NoteTextBox.CaretIndex;
-        bool caretAtEnd = (caretIndex == NoteTextBox.Text.Length);
+        NoteTextBox.Selection.Text = text;
 
-        NoteTextBox.SelectedText = text;
-
-        NoteTextBox.CaretIndex = caretIndex + text.Length;
-        if (!NoteTextBox.HasSelectedText && NoteTextBox.KeepNewLineAtEndVisible && caretAtEnd)
+        if (NoteTextBox.KeepNewLineAtEndVisible)
             NoteTextBox.ScrollToEnd();
     }
 }

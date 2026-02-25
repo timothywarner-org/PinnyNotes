@@ -35,7 +35,7 @@ public class DateTimeTool : BaseTool, ITool
 
     private string GetSortableDateTime()
     {
-        string selectedText = NoteTextBox.SelectedText;
+        string selectedText = NoteTextBox.Selection.Text;
         return GetDateTime("s", selectedText);
     }
 

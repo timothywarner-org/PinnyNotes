@@ -1,4 +1,8 @@
-﻿using System.Windows.Media;
+﻿using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 using PinnyNotes.Core.DataTransferObjects;
 using PinnyNotes.Core.Enums;
@@ -106,5 +110,24 @@ public class NoteModel : BaseModel
         );
 
         return noteDto;
+    }
+
+    public static string GetPlainTextFromContent(string content)
+    {
+        if (string.IsNullOrEmpty(content))
+            return "";
+
+        if (!content.TrimStart().StartsWith(@"{\rtf"))
+            return content;
+
+        FlowDocument doc = new();
+        TextRange range = new(doc.ContentStart, doc.ContentEnd);
+        using MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
+        range.Load(stream, DataFormats.Rtf);
+
+        string text = new TextRange(doc.ContentStart, doc.ContentEnd).Text;
+        if (text.EndsWith("\r\n"))
+            text = text[..^2];
+        return text;
     }
 }

@@ -135,7 +135,7 @@ public class NoteViewModel : BaseViewModel
 
         MessengerService.Publish<NoteActionMessage>(new(NoteAction.Closed, Note.ToDto()));
 
-        if (string.IsNullOrEmpty(Note.Content))
+        if (string.IsNullOrEmpty(NoteModel.GetPlainTextFromContent(Note.Content)))
         {
             // Delete note if empty, TO DO: Add setting for this behaviour
             await _noteRepository.Delete(Note.Id);

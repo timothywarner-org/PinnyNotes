@@ -1,7 +1,8 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Media;
 
 using PinnyNotes.Core.Enums;
 using PinnyNotes.WpfUi.Commands;
@@ -21,6 +22,7 @@ public class NoteTextBoxContextMenu : ContextMenu
     private readonly MenuItem _selectAllMenuItem;
     private readonly MenuItem _clearMenuItem;
     private readonly MenuItem _lockedMenuItem;
+    private readonly MenuItem _formatMenuItem;
     private readonly MenuItem _countsMenuItem;
     private readonly MenuItem _lineCountMenuItem;
     private readonly MenuItem _wordCountMenuItem;
@@ -93,7 +95,7 @@ public class NoteTextBoxContextMenu : ContextMenu
             Header = "Locked",
             IsCheckable = true,
             Command = _noteTextBox.SetReadOnlyCommand,
-            CommandParameter = true // Will bind IsChecked to this below
+            CommandParameter = true
         };
         _lockedMenuItem.SetBinding(
             MenuItem.CommandParameterProperty,
@@ -102,6 +104,8 @@ public class NoteTextBoxContextMenu : ContextMenu
                 Source = _lockedMenuItem
             }
         );
+
+        _formatMenuItem = BuildFormatMenu();
 
         _countsMenuItem = new()
         {
@@ -130,7 +134,7 @@ public class NoteTextBoxContextMenu : ContextMenu
 
     public void Update()
     {
-        bool hasText = (_noteTextBox.Text.Length > 0);
+        bool hasText = (_noteTextBox.GetPlainText().Length > 0);
 
         UpdateSpellingErrorMenuItems();
 
@@ -165,10 +169,98 @@ public class NoteTextBoxContextMenu : ContextMenu
 
         Items.Add(new Separator());
 
+        Items.Add(_formatMenuItem);
+
+        Items.Add(new Separator());
+
         _countsMenuItem.Items.Add(_lineCountMenuItem);
         _countsMenuItem.Items.Add(_wordCountMenuItem);
         _countsMenuItem.Items.Add(_charCountMenuItem);
         Items.Add(_countsMenuItem);
+    }
+
+    private MenuItem BuildFormatMenu()
+    {
+        MenuItem formatMenu = new() { Header = "Format" };
+
+        // Font submenu
+        MenuItem fontMenu = new() { Header = "Font" };
+        string[] fonts = ["Segoe UI", "Arial", "Calibri", "Consolas", "Courier New", "Times New Roman"];
+        foreach (string font in fonts)
+        {
+            fontMenu.Items.Add(new MenuItem
+            {
+                Header = font,
+                Command = new RelayCommand(() => _noteTextBox.ApplyFontFamily(font))
+            });
+        }
+        formatMenu.Items.Add(fontMenu);
+
+        // Size submenu
+        MenuItem sizeMenu = new() { Header = "Size" };
+        double[] sizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 36];
+        foreach (double size in sizes)
+        {
+            sizeMenu.Items.Add(new MenuItem
+            {
+                Header = size.ToString(),
+                Command = new RelayCommand(() => _noteTextBox.ApplyFontSize(size))
+            });
+        }
+        formatMenu.Items.Add(sizeMenu);
+
+        // Color submenu
+        MenuItem colorMenu = new() { Header = "Color" };
+        (string Name, Color Color)[] colors = [
+            ("Black", Colors.Black),
+            ("Red", Colors.Red),
+            ("Blue", Colors.Blue),
+            ("Green", Colors.Green),
+            ("Orange", Colors.Orange),
+            ("Purple", Colors.Purple),
+            ("Brown", Colors.Brown),
+            ("Gray", Colors.Gray)
+        ];
+        foreach (var (name, color) in colors)
+        {
+            colorMenu.Items.Add(new MenuItem
+            {
+                Header = name,
+                Command = new RelayCommand(() => _noteTextBox.ApplyForeground(color))
+            });
+        }
+        formatMenu.Items.Add(colorMenu);
+
+        formatMenu.Items.Add(new Separator());
+
+        formatMenu.Items.Add(new MenuItem
+        {
+            Header = "Bold",
+            InputGestureText = "Ctrl+B",
+            Command = new RelayCommand(() => _noteTextBox.ToggleBold())
+        });
+        formatMenu.Items.Add(new MenuItem
+        {
+            Header = "Italic",
+            InputGestureText = "Ctrl+I",
+            Command = new RelayCommand(() => _noteTextBox.ToggleItalic())
+        });
+        formatMenu.Items.Add(new MenuItem
+        {
+            Header = "Underline",
+            InputGestureText = "Ctrl+U",
+            Command = new RelayCommand(() => _noteTextBox.ToggleUnderline())
+        });
+
+        formatMenu.Items.Add(new Separator());
+
+        formatMenu.Items.Add(new MenuItem
+        {
+            Header = "Clear Formatting",
+            Command = new RelayCommand(() => _noteTextBox.ClearFormatting())
+        });
+
+        return formatMenu;
     }
 
     private void UpdateSpellingErrorMenuItems()
@@ -178,8 +270,7 @@ public class NoteTextBoxContextMenu : ContextMenu
 
         _spellingErrorMenuItems.Clear();
 
-        int caretIndex = _noteTextBox.CaretIndex;
-        SpellingError spellingError = _noteTextBox.GetSpellingError(caretIndex);
+        SpellingError? spellingError = _noteTextBox.GetSpellingError(_noteTextBox.CaretPosition);
         if (spellingError != null)
         {
             if (!spellingError.Suggestions.Any())

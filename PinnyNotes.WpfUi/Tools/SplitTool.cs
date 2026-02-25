@@ -40,8 +40,8 @@ public class SplitTool : BaseTool, ITool
         }
         else
         {
-            _selectedText = NoteTextBox.SelectedText;
-            NoteTextBox.SelectionLength = 0;
+            _selectedText = NoteTextBox.Selection.Text;
+            NoteTextBox.Selection.Select(NoteTextBox.CaretPosition, NoteTextBox.CaretPosition);
         }
 
         ApplyFunctionToNoteText(ModifyTextCallback, action);

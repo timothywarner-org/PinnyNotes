@@ -1,7 +1,10 @@
-﻿using System.IO;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 
 using PinnyNotes.Core.Enums;
 using PinnyNotes.WpfUi.Commands;
@@ -9,9 +12,11 @@ using PinnyNotes.WpfUi.Controls.ContextMenus;
 
 namespace PinnyNotes.WpfUi.Controls;
 
-public partial class NoteTextBoxControl : TextBox
+public partial class NoteTextBoxControl : RichTextBox
 {
     private readonly NoteTextBoxContextMenu _contextMenu;
+
+    private bool _isUpdatingRtfContent;
 
     public NoteTextBoxControl() : base()
     {
@@ -26,7 +31,6 @@ public partial class NoteTextBoxControl : TextBox
         PreviewDragOver += OnPreviewDragOver;
         PreviewDrop += OnPreviewDrop;
         MouseDoubleClick += OnMouseDoubleClick;
-        MouseDown += OnMouseDown;
         MouseUp += OnMouseUp;
         PreviewKeyDown += OnPreviewKeyDown;
         ContextMenuOpening += OnContextMenuOpening;
@@ -34,7 +38,7 @@ public partial class NoteTextBoxControl : TextBox
         CopyCommand = new(Copy);
         CutCommand = new(Cut);
         PasteCommand = new(Paste);
-        ClearCommand = new(Clear);
+        ClearCommand = new(ClearDocument);
         SetReadOnlyCommand = new(SetReadOnly);
 
         CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, OnCopyExecuted));
@@ -48,9 +52,34 @@ public partial class NoteTextBoxControl : TextBox
         InputBindings.Add(new InputBinding(PasteCommand, new KeyGesture(Key.V, ModifierKeys.Control)));
         InputBindings.Add(new InputBinding(PasteCommand, new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift)));
 
+        // Formatting shortcuts
+        InputBindings.Add(new InputBinding(new RelayCommand(ToggleBold), new KeyGesture(Key.B, ModifierKeys.Control)));
+        InputBindings.Add(new InputBinding(new RelayCommand(ToggleItalic), new KeyGesture(Key.I, ModifierKeys.Control)));
+        InputBindings.Add(new InputBinding(new RelayCommand(ToggleUnderline), new KeyGesture(Key.U, ModifierKeys.Control)));
+
+        // Override built-in bold/italic/underline commands to use our handlers
+        CommandBindings.Add(new CommandBinding(EditingCommands.ToggleBold, (s, e) => ToggleBold()));
+        CommandBindings.Add(new CommandBinding(EditingCommands.ToggleItalic, (s, e) => ToggleItalic()));
+        CommandBindings.Add(new CommandBinding(EditingCommands.ToggleUnderline, (s, e) => ToggleUnderline()));
+
         _contextMenu = new NoteTextBoxContextMenu(this);
         ContextMenu = _contextMenu;
     }
+
+    #region DependencyProperties
+
+    // RTF Content (for binding to model)
+    public string RtfContent
+    {
+        get => (string)GetValue(RtfContentProperty);
+        set => SetValue(RtfContentProperty, value);
+    }
+    public static readonly DependencyProperty RtfContentProperty = DependencyProperty.Register(
+        nameof(RtfContent),
+        typeof(string),
+        typeof(NoteTextBoxControl),
+        new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnRtfContentChanged)
+    );
 
     // General
     public bool AutoIndent
@@ -224,6 +253,9 @@ public partial class NoteTextBoxControl : TextBox
     }
     public static readonly DependencyProperty MiddleClickPasteProperty = DependencyProperty.Register(nameof(MiddleClickPaste), typeof(bool), typeof(NoteTextBoxControl));
 
+    #endregion
+
+    #region Commands
 
     public RelayCommand CopyCommand;
     public RelayCommand CutCommand;
@@ -231,42 +263,146 @@ public partial class NoteTextBoxControl : TextBox
     public RelayCommand ClearCommand;
     public RelayCommand<bool> SetReadOnlyCommand;
 
-    public new int LineCount()
+    #endregion
+
+    #region Public Helpers
+
+    public string GetPlainText()
     {
-        int count;
-        if (HasSelectedText)
-            count = GetLineIndexFromCharacterIndex(SelectionStart + SelectionLength)
-                - GetLineIndexFromCharacterIndex(SelectionStart)
-                + 1;
-        else
-            count = GetLineIndexFromCharacterIndex(Text.Length) + ((NewLineAtEnd) ? 0 : 1);
-        return count;
+        TextRange range = new(Document.ContentStart, Document.ContentEnd);
+        string text = range.Text;
+        // FlowDocument always appends a trailing \r\n; remove it for consistency
+        if (text.EndsWith("\r\n"))
+            text = text[..^2];
+        return text;
+    }
+
+    public bool HasSelectedText
+        => !Selection.IsEmpty;
+
+    public int LineCount()
+    {
+        string text = HasSelectedText ? Selection.Text : GetPlainText();
+        if (string.IsNullOrEmpty(text))
+            return 0;
+        return text.Split(Environment.NewLine).Length;
     }
 
     public int WordCount()
     {
-        string text = (HasSelectedText) ? SelectedText : Text;
-        if (text.Length == 0)
+        string text = HasSelectedText ? Selection.Text : GetPlainText();
+        if (string.IsNullOrEmpty(text))
             return 0;
-        return text.Split((char[])[' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length;
+        return text.Split([' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length;
     }
 
     public int CharCount()
     {
-        string text = (HasSelectedText) ? SelectedText : Text;
-        if (text.Length == 0)
+        string text = HasSelectedText ? Selection.Text : GetPlainText();
+        if (string.IsNullOrEmpty(text))
             return 0;
-        return text.Length - text.Count(c => c == '\n' || c == '\r'); // Subtract new lines from count.
+        return text.Length - text.Count(c => c == '\n' || c == '\r');
     }
 
-    public bool HasSelectedText
-        => (SelectionLength > 0);
-
     public string GetCurrentLineText()
-        => GetLineText(GetLineIndexFromCharacterIndex(CaretIndex));
+    {
+        TextPointer lineStart = CaretPosition.GetLineStartPosition(0);
+        TextPointer? lineEnd = CaretPosition.GetLineStartPosition(1);
+        if (lineStart == null)
+            return "";
+        TextRange lineRange = new(lineStart, lineEnd ?? Document.ContentEnd);
+        return lineRange.Text.TrimEnd('\r', '\n');
+    }
+
+    #endregion
+
+    #region RTF Serialization
+
+    private static void OnRtfContentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is NoteTextBoxControl control && !control._isUpdatingRtfContent)
+            control.LoadRtfContent((string)e.NewValue);
+    }
+
+    private void LoadRtfContent(string rtf)
+    {
+        _isUpdatingRtfContent = true;
+        try
+        {
+            TextRange range = new(Document.ContentStart, Document.ContentEnd);
+            if (!string.IsNullOrEmpty(rtf) && rtf.TrimStart().StartsWith(@"{\rtf"))
+            {
+                using MemoryStream stream = new(Encoding.UTF8.GetBytes(rtf));
+                range.Load(stream, DataFormats.Rtf);
+            }
+            else
+            {
+                range.Text = rtf ?? "";
+            }
+        }
+        finally
+        {
+            _isUpdatingRtfContent = false;
+        }
+    }
+
+    private string SerializeRtfContent()
+    {
+        TextRange range = new(Document.ContentStart, Document.ContentEnd);
+        using MemoryStream stream = new();
+        range.Save(stream, DataFormats.Rtf);
+        return Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    #endregion
+
+    #region Formatting
+
+    public void ApplyFontFamily(string fontFamily)
+        => Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, new FontFamily(fontFamily));
+
+    public void ApplyFontSize(double size)
+        => Selection.ApplyPropertyValue(TextElement.FontSizeProperty, size);
+
+    public void ApplyForeground(Color color)
+        => Selection.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(color));
+
+    public void ToggleBold()
+    {
+        object weight = Selection.GetPropertyValue(TextElement.FontWeightProperty);
+        FontWeight newWeight = weight is FontWeight fw && fw == FontWeights.Bold
+            ? FontWeights.Normal
+            : FontWeights.Bold;
+        Selection.ApplyPropertyValue(TextElement.FontWeightProperty, newWeight);
+    }
+
+    public void ToggleItalic()
+    {
+        object style = Selection.GetPropertyValue(TextElement.FontStyleProperty);
+        FontStyle newStyle = style is FontStyle fs && fs == FontStyles.Italic
+            ? FontStyles.Normal
+            : FontStyles.Italic;
+        Selection.ApplyPropertyValue(TextElement.FontStyleProperty, newStyle);
+    }
+
+    public void ToggleUnderline()
+    {
+        object decorations = Selection.GetPropertyValue(Inline.TextDecorationsProperty);
+        if (decorations is TextDecorationCollection tdc && tdc.Count > 0)
+            Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, new TextDecorationCollection());
+        else
+            Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+    }
+
+    public void ClearFormatting()
+        => Selection.ClearAllProperties();
+
+    #endregion
+
+    #region Copy / Paste
 
     private static bool IsShiftPressed(bool exclusive = false)
-        => (exclusive) ? (Keyboard.Modifiers == ModifierKeys.Shift) : Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+        => exclusive ? (Keyboard.Modifiers == ModifierKeys.Shift) : Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
 
     private void OnCopyExecuted(object sender, ExecutedRoutedEventArgs e)
         => Copy();
@@ -306,7 +442,7 @@ public partial class NoteTextBoxControl : TextBox
             {
                 CopyFallbackAction.CopyLine => HandleLineCopyOrCut(fallbackTrim, cut),
                 CopyFallbackAction.CopyNote => HandleNoteCopyOrCut(fallbackTrim, cut),
-                _ => string.Empty // Default, CopyFallbackActions.None
+                _ => string.Empty
             };
             return text;
         }
@@ -316,7 +452,7 @@ public partial class NoteTextBoxControl : TextBox
             CopyAction.CopySelected => HandleSelectedTextCopyOrCut(trim, cut),
             CopyAction.CopyLine => HandleLineCopyOrCut(trim, cut),
             CopyAction.CopyAll => HandleNoteCopyOrCut(trim, cut),
-            _ => string.Empty // Default, CopyActions.None
+            _ => string.Empty
         };
 
         return text;
@@ -324,44 +460,44 @@ public partial class NoteTextBoxControl : TextBox
 
     private string HandleSelectedTextCopyOrCut(bool trim, bool cut)
     {
-        string text = SelectedText;
+        string text = Selection.Text;
 
         if (trim)
             text = text.Trim();
 
         if (cut)
-            SelectedText = string.Empty;
+            Selection.Text = string.Empty;
 
         return text;
     }
 
     private string HandleLineCopyOrCut(bool trim, bool cut)
     {
-        int lineIndex = GetLineIndexFromCharacterIndex(CaretIndex);
-        string lineText = GetLineText(lineIndex);
+        TextPointer lineStart = CaretPosition.GetLineStartPosition(0);
+        TextPointer? lineEnd = CaretPosition.GetLineStartPosition(1);
+        if (lineStart == null)
+            return string.Empty;
 
-        string text = (trim) ? lineText.Trim() : lineText;
+        TextRange lineRange = new(lineStart, lineEnd ?? Document.ContentEnd);
+        string lineText = lineRange.Text;
+        string text = trim ? lineText.Trim() : lineText;
 
         if (cut)
-        {
-            int lineStart = GetCharacterIndexFromLineIndex(lineIndex);
-            int lineLength = GetLineLength(lineIndex);
-
-            Select(lineStart, lineLength);
-            SelectedText = string.Empty;
-        }
+            lineRange.Text = string.Empty;
 
         return text;
     }
 
     private string HandleNoteCopyOrCut(bool trim, bool cut)
     {
-        string text = (trim) ? Text.Trim() : Text;
+        string text = GetPlainText();
+        if (trim)
+            text = text.Trim();
 
         if (cut)
         {
             SelectAll();
-            SelectedText = string.Empty;
+            Selection.Text = string.Empty;
         }
 
         return text;
@@ -382,7 +518,6 @@ public partial class NoteTextBoxControl : TextBox
             action = PasteAction;
         }
 
-        // Do nothing if action is None or clipboard does not contain text.
         if (action == PasteAction.None || !Clipboard.ContainsText())
             return;
 
@@ -402,7 +537,6 @@ public partial class NoteTextBoxControl : TextBox
         if (string.IsNullOrEmpty(clipboardString))
             return;
 
-        // Conversion indentation
         if (ConvertIndentation)
         {
             string spaces = string.Empty.PadLeft(TabWidth, ' ');
@@ -415,73 +549,40 @@ public partial class NoteTextBoxControl : TextBox
         switch (action)
         {
             case PasteAction.Paste:
-                HandelPaste(clipboardString);
+                Selection.Text = clipboardString;
+                CaretPosition = Selection.End;
                 break;
             case PasteAction.PasteAndReplaceAll:
-                HandelPasteAndReplaceAll(clipboardString);
+                SelectAll();
+                Selection.Text = clipboardString;
+                CaretPosition = Selection.End;
                 break;
             case PasteAction.PasteAtEnd:
-                HandelPasteAtEnd(clipboardString);
+                CaretPosition = Document.ContentEnd;
+                Selection.Text = clipboardString;
+                CaretPosition = Selection.End;
                 break;
         }
     }
 
-    private void HandelPaste(string pasteText)
-    {
-        int originalCaretIndex = SelectionStart;
+    #endregion
 
-        SelectedText = pasteText;
-        SelectionLength = 0;
-        CaretIndex = originalCaretIndex + pasteText.Length;
-
-        EnforceNewLineAtEnd();
-    }
-
-    private void HandelPasteAndReplaceAll(string pasteText)
-    {
-        SelectAll();
-        SelectedText = pasteText;
-        SelectionLength = 0;
-        CaretIndex = pasteText.Length;
-
-        EnforceNewLineAtEnd();
-    }
-
-    private void HandelPasteAtEnd(string pasteText)
-    {
-        // Find the position before trailing newline if NewLineAtEnd is active
-        int insertPosition = Text.Length;
-        if (NewLineAtEnd && Text.EndsWith(Environment.NewLine))
-            insertPosition -= Environment.NewLine.Length;
-
-        CaretIndex = insertPosition;
-        SelectionLength = 0;
-        SelectedText = pasteText;
-        CaretIndex = insertPosition + pasteText.Length;
-
-        EnforceNewLineAtEnd();
-    }
-
-    private void EnforceNewLineAtEnd()
-    {
-        if (!NewLineAtEnd || Text.Length == 0 || Text.EndsWith(Environment.NewLine))
-            return;
-
-        // Store caret position
-        int caretPosition = CaretIndex;
-        int selectionStart = SelectionStart;
-        int selectionLength = SelectionLength;
-
-        AppendText(Environment.NewLine);
-
-        CaretIndex = caretPosition;
-        SelectionStart = selectionStart;
-        SelectionLength = selectionLength;
-    }
+    #region Event Handlers
 
     private void OnTextChanged(object sender, TextChangedEventArgs e)
     {
-        EnforceNewLineAtEnd();
+        if (!_isUpdatingRtfContent)
+        {
+            _isUpdatingRtfContent = true;
+            try
+            {
+                RtfContent = SerializeRtfContent();
+            }
+            finally
+            {
+                _isUpdatingRtfContent = false;
+            }
+        }
     }
 
     private void OnSelectionChanged(object sender, RoutedEventArgs e)
@@ -503,9 +604,11 @@ public partial class NoteTextBoxControl : TextBox
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            Text = File.ReadAllText(
+            string fileText = File.ReadAllText(
                 ((string[])e.Data.GetData(DataFormats.FileDrop))[0]
             );
+            Document.Blocks.Clear();
+            Document.Blocks.Add(new Paragraph(new Run(fileText)));
         }
     }
 
@@ -513,39 +616,6 @@ public partial class NoteTextBoxControl : TextBox
     {
         if (HasSelectedText && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
             Copy();
-    }
-
-    private void OnMouseDown(object sender, MouseButtonEventArgs e)
-    {
-        // Triple click to select line, quadruple click to select entire wrapped line
-        if (e.ClickCount < 3 || e.ClickCount > 4)
-            return;
-
-        TextBox textBox = (TextBox)sender;
-
-        int lineIndex = textBox.GetLineIndexFromCharacterIndex(textBox.CaretIndex);
-        int lineLength = textBox.GetLineLength(lineIndex);
-
-        // If there was no new line and is not the last row, line must be wrapped.
-        if (e.ClickCount == 4 && lineIndex < textBox.LineCount - 1 && !textBox.GetLineText(lineIndex).EndsWith(Environment.NewLine))
-        {
-            // Expand length until new line or last line found
-            int nextLineIndex = lineIndex;
-            do
-            {
-                nextLineIndex++;
-                lineLength += textBox.GetLineLength(nextLineIndex);
-            } while (nextLineIndex < textBox.LineCount - 1 && !textBox.GetLineText(nextLineIndex).EndsWith(Environment.NewLine));
-        }
-
-        textBox.SelectionStart = textBox.GetCharacterIndexFromLineIndex(lineIndex);
-        textBox.SelectionLength = lineLength;
-
-        // Don't select new line char(s)
-        if (textBox.SelectedText.EndsWith(Environment.NewLine))
-            textBox.SelectionLength -= Environment.NewLine.Length;
-
-        OnMouseDoubleClick(sender, e);
     }
 
     private void OnMouseUp(object sender, MouseButtonEventArgs e)
@@ -558,31 +628,20 @@ public partial class NoteTextBoxControl : TextBox
     {
         if (e.Key == Key.Tab)
         {
-            e.Handled = HandledTabPressed();
+            e.Handled = HandleTabPressed();
         }
         else if (e.Key == Key.Return && AutoIndent)
         {
-            // If there is selected text remove it and set caret to correct position
+            string lineText = GetCurrentLineText();
+            string whitespace = new([.. lineText.TakeWhile(char.IsWhiteSpace)]);
+
             if (HasSelectedText)
-            {
-                int selectionStart = SelectionStart;
-                Text = Text.Remove(selectionStart, SelectionLength);
-                CaretIndex = selectionStart;
-            }
+                Selection.Text = "";
 
-            // Store caret position for positioning later
-            int caretIndex = CaretIndex;
+            EditingCommands.EnterParagraphBreak.Execute(null, this);
 
-            // Get the current line of text, trimming any new lines
-            string line = GetLineText(GetLineIndexFromCharacterIndex(caretIndex)).TrimEnd(Environment.NewLine.ToCharArray());
-
-            // Get the whitespace from the beginning of the line and create our indent string
-            string precedingWhitespace = new([..line.TakeWhile(char.IsWhiteSpace)]);
-            string indent = Environment.NewLine + precedingWhitespace;
-
-            // Add the indent and restore caret position
-            Text = Text.Insert(caretIndex, indent);
-            CaretIndex = caretIndex + indent.Length;
+            if (whitespace.Length > 0)
+                CaretPosition.InsertTextInRun(whitespace);
 
             e.Handled = true;
         }
@@ -593,92 +652,68 @@ public partial class NoteTextBoxControl : TextBox
         _contextMenu.Update();
     }
 
-    private bool HandledTabPressed()
-    {
-        if ((!HasSelectedText || !SelectedText.Contains(Environment.NewLine)) && !IsShiftPressed() && TabSpaces)
-        {
-            int spaceCount = TabWidth;
-            int caretIndex = (HasSelectedText) ? SelectionStart : CaretIndex;
+    #endregion
 
-            int lineStart = GetCharacterIndexFromLineIndex(
-                GetLineIndexFromCharacterIndex(caretIndex)
-            );
-            if (lineStart != caretIndex)
-            {
-                int lineCaretIndex = caretIndex - lineStart;
-                int tabWidth = lineCaretIndex % spaceCount;
-                if (tabWidth > 0)
-                    spaceCount -= tabWidth;
-            }
+    #region Tab Handling
+
+    private bool HandleTabPressed()
+    {
+        if ((!HasSelectedText || !Selection.Text.Contains(Environment.NewLine)) && !IsShiftPressed() && TabSpaces)
+        {
+            // Single line tab: insert spaces
+            TextPointer? lineStart = CaretPosition.GetLineStartPosition(0);
+            string textBeforeCaret = (lineStart != null)
+                ? new TextRange(lineStart, CaretPosition).Text
+                : "";
+
+            int lineCaretIndex = textBeforeCaret.Length;
+            int spaceCount = TabWidth - (lineCaretIndex % TabWidth);
+            if (spaceCount == 0) spaceCount = TabWidth;
             string spaces = "".PadLeft(spaceCount, ' ');
 
-            if (!HasSelectedText)
-            {
-                Text = Text.Insert(caretIndex, spaces);
-                CaretIndex = caretIndex + spaceCount;
-            }
-            else
-            {
-                SelectedText = spaces;
-                SelectionLength = 0;
-                CaretIndex = caretIndex + spaceCount;
-            }
+            Selection.Text = spaces;
             return true;
         }
         else if (!HasSelectedText && IsShiftPressed(true))
         {
-            int caretIndex = CaretIndex;
-            if (caretIndex > 0)
+            // Shift+Tab: remove preceding whitespace
+            TextPointer? lineStart = CaretPosition.GetLineStartPosition(0);
+            if (lineStart == null)
+                return true;
+
+            string textBeforeCaret = new TextRange(lineStart, CaretPosition).Text;
+            int tabLength = 0;
+
+            if (textBeforeCaret.Length > 0 && textBeforeCaret[^1] == '\t')
             {
-                int tabLength = 0;
-                int charIndex = caretIndex - 1; 
+                tabLength = 1;
+            }
+            else if (textBeforeCaret.Length > 0 && textBeforeCaret[^1] == ' ')
+            {
+                for (int i = textBeforeCaret.Length - 1; i >= 0 && textBeforeCaret[i] == ' ' && tabLength < TabWidth; i--)
+                    tabLength++;
+            }
 
-                if (Text[charIndex] == '\t')
+            if (tabLength > 0)
+            {
+                // Select the whitespace before caret and delete
+                TextRange deleteRange = new(lineStart, CaretPosition);
+                string lineText = deleteRange.Text;
+                if (lineText.Length >= tabLength)
                 {
-                    tabLength = 1;
-                }
-                else if (Text[charIndex] == ' ')
-                {
-                    while (charIndex >= 0 && Text[charIndex] == ' ' && tabLength < TabWidth)
-                    {
-                        tabLength++;
-                        charIndex--;
-                    }
-                }
-
-                if (tabLength > 0)
-                {
-                    Text = Text.Remove(caretIndex - tabLength, tabLength);
-                    CaretIndex = caretIndex - tabLength;
+                    string newText = lineText[..^tabLength];
+                    deleteRange.Text = newText;
                 }
             }
+
             return true;
         }
-        else if (HasSelectedText && SelectedText.Contains(Environment.NewLine))
+        else if (HasSelectedText && Selection.Text.Contains(Environment.NewLine))
         {
-            int selectionStart = SelectionStart;
-            int selectionEnd = SelectionStart + SelectionLength;
+            // Multi-line indent/dedent
+            string indentation = TabSpaces ? "".PadLeft(TabWidth, ' ') : "\t";
+            string[] lines = Selection.Text.Split(Environment.NewLine);
 
-            // Fix the selection so full lines, not wrapped lines, are selected
-            // Find the starting line by making sure the previous line ends with a new line
-            int startLineIndex = GetLineIndexFromCharacterIndex(selectionStart);
-            while (startLineIndex > 0 && !GetLineText(startLineIndex - 1).Contains(Environment.NewLine))
-                startLineIndex--;
-            selectionStart = GetCharacterIndexFromLineIndex(startLineIndex);
-
-            // Find the end line by making sure it ends with a new line
-            int endLineIndex = GetLineIndexFromCharacterIndex(selectionEnd);
-            int lineCount = LineCount();
-            while (endLineIndex < lineCount - 1 && !GetLineText(endLineIndex).Contains(Environment.NewLine))
-                endLineIndex++;
-            selectionEnd = GetCharacterIndexFromLineIndex(endLineIndex) + GetLineLength(endLineIndex) - Environment.NewLine.Length;
-
-            // Select the full lines so we can now easily get the required selected text
-            Select(selectionStart, selectionEnd - selectionStart);
-
-            // Loop though each line adding or removing the indentation where required
-            string indentation = (TabSpaces) ? "".PadLeft(TabWidth, ' ') : "\t";
-            string[] lines = SelectedText.Split(Environment.NewLine);
             for (int i = 0; i < lines.Length; i++)
             {
                 if (IsShiftPressed(true))
@@ -697,15 +732,8 @@ public partial class NoteTextBoxControl : TextBox
                                 concurrentSpaces++;
                             }
 
-                            switch (concurrentSpaces)
-                            {
-                                case >= 4:
-                                    lines[i] = lines[i][4..];
-                                    break;
-                                case 1:
-                                    lines[i] = lines[i][concurrentSpaces..];
-                                    break;
-                            }
+                            int toRemove = Math.Min(concurrentSpaces, TabWidth);
+                            lines[i] = lines[i][toRemove..];
                         }
                     }
                 }
@@ -715,13 +743,16 @@ public partial class NoteTextBoxControl : TextBox
                 }
             }
 
-            SelectedText = string.Join(Environment.NewLine, lines);
-
+            Selection.Text = string.Join(Environment.NewLine, lines);
             return true;
         }
 
         return false;
     }
+
+    #endregion
+
+    #region Font / Wrap Updates
 
     private static void OnFontPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -731,9 +762,10 @@ public partial class NoteTextBoxControl : TextBox
 
     private void UpdateFont()
     {
-        this.FontFamily = new(
-            (UseMonoFont) ? MonoFontFamily : StandardFontFamily
-        );
+        FontFamily newFont = new(UseMonoFont ? MonoFontFamily : StandardFontFamily);
+        FontFamily = newFont;
+        if (Document != null)
+            Document.FontFamily = newFont;
     }
 
     private static void OnWrapTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -744,11 +776,28 @@ public partial class NoteTextBoxControl : TextBox
 
     private void UpdateTextWrapping()
     {
-        TextWrapping = (WrapText) ? TextWrapping.Wrap : TextWrapping.NoWrap;
+        if (Document == null)
+            return;
+
+        if (WrapText)
+            Document.PageWidth = double.NaN;
+        else
+            Document.PageWidth = double.MaxValue;
+    }
+
+    #endregion
+
+    #region Utility
+
+    private void ClearDocument()
+    {
+        Document.Blocks.Clear();
     }
 
     private void SetReadOnly(bool isReadOnly)
     {
         IsReadOnly = isReadOnly;
     }
+
+    #endregion
 }

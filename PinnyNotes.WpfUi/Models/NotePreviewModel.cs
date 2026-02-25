@@ -25,7 +25,8 @@ public class NotePreviewModel : BaseModel
         get;
         set
         {
-            string trimmedText = value.Trim();
+            string plainText = NoteModel.GetPlainTextFromContent(value);
+            string trimmedText = plainText.Trim();
             int previewLength = Math.Min(trimmedText.Length, MaxPreviewLength);
             string previewText = trimmedText[..previewLength];
 

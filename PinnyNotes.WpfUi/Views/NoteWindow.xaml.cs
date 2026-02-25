@@ -197,13 +197,16 @@ public partial class NoteWindow : Window
     {
         SaveFileDialog saveFileDialog = new()
         {
-            Filter = "Text Documents (*.txt)|*.txt|All Files|*"
+            Filter = "Rich Text (*.rtf)|*.rtf|Text Documents (*.txt)|*.txt|All Files|*"
         };
 
         if (saveFileDialog.ShowDialog(this) == false)
             return;
 
-        File.WriteAllText(saveFileDialog.FileName, NoteTextBox.Text);
+        if (saveFileDialog.FileName.EndsWith(".rtf", StringComparison.OrdinalIgnoreCase))
+            File.WriteAllText(saveFileDialog.FileName, NoteTextBox.RtfContent);
+        else
+            File.WriteAllText(saveFileDialog.FileName, NoteTextBox.GetPlainText());
     }
 
     private void ResetMenuItem_Click(object sender, RoutedEventArgs e)

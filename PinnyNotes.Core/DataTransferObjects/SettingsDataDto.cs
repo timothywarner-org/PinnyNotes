@@ -46,6 +46,8 @@ public record SettingsDataDto(
      PasteAction PasteAltAction,
      bool TrimTextOnAltPaste,
      bool MiddleClickPaste,
+     double CaretThickness,
+     CaretColour CaretColour,
 
      ToolState Base64State,
      ToolState BracketState,

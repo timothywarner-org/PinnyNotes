@@ -55,6 +55,8 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
             Editor_PasteAltAction               INTEGER DEFAULT 1,
             Editor_TrimTextOnAltPaste           INTEGER DEFAULT 1,
             Editor_MiddleClickPaste             INTEGER DEFAULT 1,
+            Editor_CaretThickness               REAL    DEFAULT 2.0,
+            Editor_CaretColour                  INTEGER DEFAULT 0,
 
             Tool_Base64State                    INTEGER DEFAULT 1,
             Tool_BracketState                   INTEGER DEFAULT 1,
@@ -142,6 +144,8 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
             PasteAltAction: GetEnum<PasteAction>(reader, "Editor_PasteAltAction"),
             TrimTextOnAltPaste: GetBool(reader, "Editor_TrimTextOnAltPaste"),
             MiddleClickPaste: GetBool(reader, "Editor_MiddleClickPaste"),
+            CaretThickness: GetDouble(reader, "Editor_CaretThickness"),
+            CaretColour: GetEnum<CaretColour>(reader, "Editor_CaretColour"),
 
             Base64State: GetEnum<ToolState>(reader, "Tool_Base64State"),
             BracketState: GetEnum<ToolState>(reader, "Tool_BracketState"),
@@ -218,6 +222,8 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
                     Editor_PasteAltAction = @editor_PasteAltAction,
                     Editor_TrimTextOnAltPaste = @editor_TrimTextOnAltPaste,
                     Editor_MiddleClickPaste = @editor_MiddleClickPaste,
+                    Editor_CaretThickness = @editor_CaretThickness,
+                    Editor_CaretColour = @editor_CaretColour,
 
                     Tool_Base64State = @tool_Base64State,
                     Tool_BracketState = @tool_BracketState,
@@ -284,6 +290,8 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
                 new("@editor_PasteAltAction", settings.PasteAltAction),
                 new("@editor_TrimTextOnAltPaste", settings.TrimTextOnAltPaste),
                 new("@editor_MiddleClickPaste", settings.MiddleClickPaste),
+                new("@editor_CaretThickness", settings.CaretThickness),
+                new("@editor_CaretColour", settings.CaretColour),
 
                 new("@tool_Base64State", settings.Base64State),
                 new("@tool_BracketState", settings.BracketState),

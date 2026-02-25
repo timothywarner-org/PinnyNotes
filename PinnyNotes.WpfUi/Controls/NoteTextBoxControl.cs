@@ -64,6 +64,8 @@ public partial class NoteTextBoxControl : RichTextBox
 
         _contextMenu = new NoteTextBoxContextMenu(this);
         ContextMenu = _contextMenu;
+
+        Loaded += (_, _) => UpdateCaretAppearance();
     }
 
     #region DependencyProperties
@@ -79,6 +81,31 @@ public partial class NoteTextBoxControl : RichTextBox
         typeof(string),
         typeof(NoteTextBoxControl),
         new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnRtfContentChanged)
+    );
+
+    // Caret
+    public double CaretThickness
+    {
+        get => (double)GetValue(CaretThicknessProperty);
+        set => SetValue(CaretThicknessProperty, value);
+    }
+    public static readonly DependencyProperty CaretThicknessProperty = DependencyProperty.Register(
+        nameof(CaretThickness),
+        typeof(double),
+        typeof(NoteTextBoxControl),
+        new PropertyMetadata(2.0, OnCaretPropertyChanged)
+    );
+
+    public CaretColour CaretColour
+    {
+        get => (CaretColour)GetValue(CaretColourProperty);
+        set => SetValue(CaretColourProperty, value);
+    }
+    public static readonly DependencyProperty CaretColourProperty = DependencyProperty.Register(
+        nameof(CaretColour),
+        typeof(CaretColour),
+        typeof(NoteTextBoxControl),
+        new PropertyMetadata(CaretColour.Default, OnCaretPropertyChanged)
     );
 
     // General
@@ -748,6 +775,97 @@ public partial class NoteTextBoxControl : RichTextBox
         }
 
         return false;
+    }
+
+    #endregion
+
+    #region Caret Updates
+
+    static NoteTextBoxControl()
+    {
+        ForegroundProperty.OverrideMetadata(
+            typeof(NoteTextBoxControl),
+            new FrameworkPropertyMetadata(OnForegroundChanged)
+        );
+    }
+
+    private static void OnForegroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is NoteTextBoxControl control && control.CaretColour == CaretColour.Default)
+            control.UpdateCaretAppearance();
+    }
+
+    private static void OnCaretPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is NoteTextBoxControl control)
+            control.UpdateCaretAppearance();
+    }
+
+    private void UpdateCaretAppearance()
+    {
+        Color caretColor = GetCaretColor();
+        double thickness = CaretThickness;
+
+        if (double.IsNaN(thickness) || double.IsInfinity(thickness) || thickness < 1.0)
+            thickness = 2.0;
+        else if (thickness > 10.0)
+            thickness = 10.0;
+
+        if (thickness <= 1.0)
+        {
+            SolidColorBrush solidBrush = new(caretColor);
+            solidBrush.Freeze();
+            CaretBrush = solidBrush;
+            return;
+        }
+
+        // Use a DrawingBrush to simulate a wider caret.
+        // The caret is rendered as a 1px-wide region by WPF;
+        // a DrawingBrush that fills a rectangle wider than 1px
+        // and uses Viewport/TileMode to stretch gives the visual
+        // effect of a thicker caret.
+        DrawingBrush brush = new()
+        {
+            Stretch = Stretch.None,
+            AlignmentX = AlignmentX.Left,
+            AlignmentY = AlignmentY.Top,
+            Viewbox = new Rect(0, 0, thickness, 1),
+            ViewboxUnits = BrushMappingMode.Absolute,
+            Viewport = new Rect(0, 0, thickness, 1),
+            ViewportUnits = BrushMappingMode.Absolute,
+            TileMode = TileMode.Tile,
+            Drawing = new GeometryDrawing
+            {
+                Brush = new SolidColorBrush(caretColor),
+                Geometry = new RectangleGeometry(new Rect(0, 0, thickness, 1))
+            }
+        };
+        brush.Freeze();
+        CaretBrush = brush;
+    }
+
+    private Color GetCaretColor()
+    {
+        if (CaretColour == CaretColour.Default)
+        {
+            if (Foreground is SolidColorBrush foregroundBrush)
+                return foregroundBrush.Color;
+            return Colors.Black;
+        }
+
+        return CaretColour switch
+        {
+            CaretColour.Black => Colors.Black,
+            CaretColour.White => Colors.White,
+            CaretColour.Red => Colors.Red,
+            CaretColour.Blue => Colors.Blue,
+            CaretColour.Green => Colors.Green,
+            CaretColour.Orange => Colors.Orange,
+            CaretColour.Purple => Colors.Purple,
+            CaretColour.Brown => Colors.Brown,
+            CaretColour.Gray => Colors.Gray,
+            _ => Colors.Black
+        };
     }
 
     #endregion

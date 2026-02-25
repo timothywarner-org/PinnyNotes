@@ -86,6 +86,30 @@ public class SettingsViewModel : BaseViewModel
         new(CopyFallbackAction.CopyNote, "Copy note")
     ];
 
+    public static KeyValuePair<double, string>[] CaretThicknessList { get; } = [
+        new(1.0, "1.0"),
+        new(1.5, "1.5"),
+        new(2.0, "2.0"),
+        new(2.5, "2.5"),
+        new(3.0, "3.0"),
+        new(3.5, "3.5"),
+        new(4.0, "4.0"),
+        new(5.0, "5.0")
+    ];
+
+    public static KeyValuePair<CaretColour, string>[] CaretColourList { get; } = [
+        new(CaretColour.Default, "Default"),
+        new(CaretColour.Black, "Black"),
+        new(CaretColour.White, "White"),
+        new(CaretColour.Red, "Red"),
+        new(CaretColour.Blue, "Blue"),
+        new(CaretColour.Green, "Green"),
+        new(CaretColour.Orange, "Orange"),
+        new(CaretColour.Purple, "Purple"),
+        new(CaretColour.Brown, "Brown"),
+        new(CaretColour.Gray, "Gray")
+    ];
+
     public static KeyValuePair<ToolState, string>[] ToolStateList { get; } = [
         new(ToolState.Disabled, "Disabled"),
         new(ToolState.Enabled, "Enabled"),

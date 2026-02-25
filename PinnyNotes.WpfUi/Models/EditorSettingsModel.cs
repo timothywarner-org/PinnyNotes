@@ -10,6 +10,10 @@ public class EditorSettingsModel : BaseModel
     public bool KeepNewLineVisible { get; set => SetProperty(ref field, value); }
     public bool WrapText { get; set => SetProperty(ref field, value); }
 
+    // Caret
+    public double CaretThickness { get; set => SetProperty(ref field, value); } = 2.0;
+    public CaretColour CaretColour { get; set => SetProperty(ref field, value); }
+
     // Fonts
     public string StandardFontFamily { get; set => SetProperty(ref field, value); } = string.Empty;
     public string MonoFontFamily { get; set => SetProperty(ref field, value); } = string.Empty;

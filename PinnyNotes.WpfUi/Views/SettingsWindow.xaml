@@ -255,6 +255,37 @@
                             </Grid>
                         </GroupBox>
 
+                        <!-- Editor Caret Group -->
+                        <GroupBox Header="Caret">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Thickness"/>
+                                <ComboBox Grid.Column="1" Grid.Row="0"
+                                          Width="120"
+                                          ItemsSource="{Binding CaretThicknessList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CaretThickness, Mode=TwoWay}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Colour"/>
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+                                          Width="120"
+                                          ItemsSource="{Binding CaretColourList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CaretColour, Mode=TwoWay}" />
+
+                            </Grid>
+                        </GroupBox>
+
                         <!-- Editor Indentation Group -->
                         <GroupBox Header="Indentation">
                             <Grid>

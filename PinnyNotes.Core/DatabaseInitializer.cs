@@ -14,6 +14,9 @@ public class DatabaseInitialiser
         using SqliteConnection connection = new(connectionString);
         connection.Open();
 
+        using (SqliteCommand walCommand = new("PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;", connection))
+            walCommand.ExecuteNonQuery();
+
         if (!SchemaTableExists(connection))
         {
             await CreateDatabase(connection);

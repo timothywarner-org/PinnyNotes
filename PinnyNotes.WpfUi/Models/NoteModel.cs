@@ -120,14 +120,23 @@ public class NoteModel : BaseModel
         if (!content.TrimStart().StartsWith(@"{\rtf"))
             return content;
 
-        FlowDocument doc = new();
-        TextRange range = new(doc.ContentStart, doc.ContentEnd);
-        using MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
-        range.Load(stream, DataFormats.Rtf);
+        try
+        {
+            FlowDocument doc = new();
+            TextRange range = new(doc.ContentStart, doc.ContentEnd);
+            using MemoryStream stream = new(Encoding.UTF8.GetBytes(content));
+            range.Load(stream, DataFormats.Rtf);
 
-        string text = new TextRange(doc.ContentStart, doc.ContentEnd).Text;
-        if (text.EndsWith("\r\n"))
-            text = text[..^2];
-        return text;
+            string text = new TextRange(doc.ContentStart, doc.ContentEnd).Text;
+            if (text.EndsWith("\r\n"))
+                text = text[..^2];
+            return text;
+        }
+        catch (Exception ex)
+        {
+            // If RTF parsing fails, return the raw content to prevent accidental deletion
+            System.Diagnostics.Debug.WriteLine($"Failed to parse RTF content: {ex.Message}");
+            return content;
+        }
     }
 }

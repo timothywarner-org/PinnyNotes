@@ -41,7 +41,7 @@ public class NoteViewModel : BaseViewModel
 
         _saveTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(5)
+            Interval = TimeSpan.FromSeconds(2)
         };
         _saveTimer.Tick += OnSaveTimerTick;
     }
@@ -120,13 +120,20 @@ public class NoteViewModel : BaseViewModel
         if (Note.IsSaved)
             return;
 
-        await _noteRepository.Update(
-            Note.ToDto()
-        );
+        try
+        {
+            await _noteRepository.Update(
+                Note.ToDto()
+            );
 
-        Note.IsSaved = true;
+            Note.IsSaved = true;
 
-        MessengerService.Publish<NoteActionMessage>(new(NoteAction.Updated, Note.ToDto()));
+            MessengerService.Publish<NoteActionMessage>(new(NoteAction.Updated, Note.ToDto()));
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to save note {Note.Id}: {ex.Message}");
+        }
     }
 
     public async Task<bool> CloseNote()
@@ -135,12 +142,22 @@ public class NoteViewModel : BaseViewModel
 
         MessengerService.Publish<NoteActionMessage>(new(NoteAction.Closed, Note.ToDto()));
 
-        if (string.IsNullOrEmpty(NoteModel.GetPlainTextFromContent(Note.Content)))
+        try
         {
-            // Delete note if empty, TO DO: Add setting for this behaviour
-            await _noteRepository.Delete(Note.Id);
-            MessengerService.Publish<NoteActionMessage>(new(NoteAction.Deleted, Note.ToDto()));
-            return false;
+            bool isEmpty = string.IsNullOrEmpty(NoteModel.GetPlainTextFromContent(Note.Content));
+
+            if (isEmpty)
+            {
+                // Delete note if empty, TO DO: Add setting for this behaviour
+                await _noteRepository.Delete(Note.Id);
+                MessengerService.Publish<NoteActionMessage>(new(NoteAction.Deleted, Note.ToDto()));
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            // If we can't determine emptiness, err on the side of preserving data
+            System.Diagnostics.Debug.WriteLine($"Failed to check note emptiness on close: {ex.Message}");
         }
 
         // IsOpen is updated when users closes note via close button,
@@ -181,7 +198,14 @@ public class NoteViewModel : BaseViewModel
 
     private async void OnSaveTimerTick(object? sender, EventArgs e)
     {
-        await SaveNote();
+        try
+        {
+            await SaveNote();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Save timer tick failed: {ex.Message}");
+        }
     }
 
     private void InitNotePosition(NoteModel? parent = null, nint? managementWindowHandle = null)

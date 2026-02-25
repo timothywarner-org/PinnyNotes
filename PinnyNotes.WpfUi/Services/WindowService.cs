@@ -50,6 +50,21 @@ public class WindowService
         _messengerService.Subscribe<OpenManagementWindowMessage>(OnOpenManagementWindowMessage);
     }
 
+    public async Task SaveAllOpenNotes()
+    {
+        foreach (KeyValuePair<int, NoteWindow> entry in _openNoteWindows)
+        {
+            try
+            {
+                await entry.Value.ViewModel.SaveNote();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to save note {entry.Key} on exit: {ex.Message}");
+            }
+        }
+    }
+
     private void OnApplicationActionMessage(ApplicationActionMessage message)
     {
         // TO DO: Add settings for this behaviour.

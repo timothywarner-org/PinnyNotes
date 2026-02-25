@@ -24,6 +24,8 @@ public partial class NoteWindow : Window
 
     private readonly NoteViewModel _viewModel;
 
+    public NoteViewModel ViewModel => _viewModel;
+
     #region NoteWindow
 
     public NoteWindow(SettingsService settingsService, MessengerService messengerService, ThemeService themeService, NoteViewModel viewModel)
@@ -131,7 +133,14 @@ public partial class NoteWindow : Window
         _viewModel.UpdateAlwaysOnTop();
         HideTitleBar();
 
-        await _viewModel.SaveNote();
+        try
+        {
+            await _viewModel.SaveNote();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to save note on deactivate: {ex.Message}");
+        }
     }
 
     private async void Window_Closing(object? sender, CancelEventArgs e)

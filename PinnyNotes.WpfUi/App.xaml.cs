@@ -31,6 +31,7 @@ public partial class App : Application
     private AppMetadataService _appMetadataService = null!;
     private SettingsService _settingsService = null!;
     private NotifyIconService _notifyIconService = null!;
+    private DatabaseBackupService _databaseBackupService = null!;
 
     private EventWaitHandle _eventWaitHandle = null!;
 
@@ -59,6 +60,9 @@ public partial class App : Application
 
             DatabaseConfiguration databaseConfiguration = Services.GetRequiredService<DatabaseConfiguration>();
             await DatabaseInitialiser.Initialise(databaseConfiguration.ConnectionString);
+
+            _databaseBackupService = Services.GetRequiredService<DatabaseBackupService>();
+            _databaseBackupService.Start();
 
             _settingsService = Services.GetRequiredService<SettingsService>();
             await _settingsService.Load();
@@ -129,6 +133,7 @@ public partial class App : Application
         services.AddSingleton<WindowService>();
         services.AddTransient<NotifyIconService>();
         services.AddSingleton<ThemeService>();
+        services.AddSingleton<DatabaseBackupService>();
 
         services.AddTransient<SettingsWindow>();
         services.AddTransient<SettingsViewModel>();
@@ -139,6 +144,17 @@ public partial class App : Application
 
     protected override async void OnExit(ExitEventArgs e)
     {
+        try
+        {
+            WindowService windowService = Services.GetRequiredService<WindowService>();
+            await windowService.SaveAllOpenNotes();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to save notes on exit: {ex.Message}");
+        }
+
+        _databaseBackupService.Stop();
         await _appMetadataService.Save();
         await _settingsService.Save();
         _notifyIconService.Dispose();

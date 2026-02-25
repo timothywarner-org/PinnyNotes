@@ -26,8 +26,6 @@
         ShowInTaskbar="{Binding Note.ShowInTaskbar}"
         Background="{Binding Note.Background}"
         BorderBrush="{Binding Note.BorderBrush}"
-        Topmost="{Binding Note.IsPinned}"
-
         d:DataContext="{d:DesignInstance Type=vm:NoteViewModel}"
         d:Height="300"
         d:Width="300"
@@ -110,38 +108,30 @@
                 </Button.Template>
             </Button>
 
-            <!-- Pin Button -->
-            <ToggleButton Name="PinButton"
-                          HorizontalAlignment="Center"
-                          ToolTip="Toggle On Top"
-                          Style="{StaticResource TitleBarButtonStyle}"
-                          IsChecked="{Binding Note.IsPinned}">
-                <ToggleButton.Template>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Canvas>
-                            <Rectangle Width="20" Height="20" Fill="Transparent" />
-                            <Path Data="M 5,0 h 10 c 1,0 1,2 0,2 h -2 l 1,6 c 0,0 4,1 4,5 0,1 -7,1 -7,1 0,0 0,6 -1,6 C 9,20 9,14 9,14 9,14 2,14 2,13 2,9 6,8 6,8 L 7,2 H 5 C 4,2 4,0 5,0 Z"
-                                  Fill="{Binding Note.TitleGridButtonForeground}"
-                                  RenderTransformOrigin="0.5,0.5"
-                                  d:Fill="#464646">
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=IsChecked}" Value="False">
-                                                <Setter Property="RenderTransform">
-                                                    <Setter.Value>
-                                                        <RotateTransform Angle="45"/>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                        </Canvas>
-                    </ControlTemplate>
-                </ToggleButton.Template>
-            </ToggleButton>
+            <!-- Title Display -->
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="{Binding Note.Title}"
+                       FontFamily="Segoe UI"
+                       FontSize="13"
+                       Foreground="{Binding Note.TitleGridButtonForeground}"
+                       TextTrimming="CharacterEllipsis"
+                       MaxWidth="160"
+                       d:Text="My Note Title"
+                       d:Foreground="#464646">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Note.Title}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Note.Title}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
 
             <!-- Close Button -->
             <Button Name="CloseButton"
@@ -167,6 +157,8 @@
             <!-- Context Menu -->
             <Grid.ContextMenu>
                 <ContextMenu Name="TitleBarContextMenu">
+                    <MenuItem Header="Set Title" Click="SetTitleMenuItem_Click" />
+                    <Separator />
                     <MenuItem Header="Save" Click="SaveMenuItem_Click" />
                     <Separator />
                     <MenuItem Header="Reset size" Click="ResetMenuItem_Click" />

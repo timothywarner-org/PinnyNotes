@@ -98,7 +98,7 @@ public partial class NoteWindow : Window
         if (WindowState != WindowState.Minimized)
             return;
 
-        if (_noteSettings.MinimizeMode == MinimizeMode.Prevent || (_noteSettings.MinimizeMode == MinimizeMode.PreventIfPinned && _viewModel.Note.IsPinned))
+        if (_noteSettings.MinimizeMode == MinimizeMode.Prevent)
             WindowState = WindowState.Normal;
     }
 
@@ -210,6 +210,17 @@ public partial class NoteWindow : Window
     {
         Width = _noteSettings.DefaultWidth;
         Height = _noteSettings.DefaultHeight;
+    }
+
+    private void SetTitleMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        SetTitleDialog dialog = new(_viewModel.Note.Title)
+        {
+            Owner = this
+        };
+
+        if (dialog.ShowDialog() == true)
+            _viewModel.Note.Title = dialog.NoteTitle;
     }
 
     private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)

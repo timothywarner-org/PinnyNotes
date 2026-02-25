@@ -25,8 +25,8 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
 
             ThemeColourScheme   TEXT,
 
-            IsPinned            INTEGER,
-            IsOpen              INTEGER
+            IsOpen              INTEGER,
+            Title               TEXT
         )
     ";
 
@@ -52,8 +52,8 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
 
                     ThemeColourScheme,
 
-                    IsPinned,
-                    IsOpen
+                    IsOpen,
+                    Title
                 )
                 VALUES
                 (
@@ -69,8 +69,8 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
 
                     @themeColourScheme,
 
-                    @isPinned,
-                    @isOpen
+                    @isOpen,
+                    @title
                 );
             ",
             parameters: [
@@ -86,8 +86,8 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
 
                 new("@themeColourScheme", note.ThemeColourScheme),
 
-                new("@isPinned", note.IsPinned),
-                new("@isOpen", note.IsOpen)
+                new("@isOpen", note.IsOpen),
+                new("@title", (object?)note.Title ?? DBNull.Value)
             ]
         );
 
@@ -163,8 +163,8 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
 
                     ThemeColourScheme = @themeColourScheme,
 
-                    IsPinned = @isPinned,
-                    IsOpen = @isOpen
+                    IsOpen = @isOpen,
+                    Title = @title
                 WHERE Id = @id;
             ",
             parameters: [
@@ -180,8 +180,8 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
 
                 new("@themeColourScheme", note.ThemeColourScheme),
 
-                new("@isPinned", note.IsPinned),
                 new("@isOpen", note.IsOpen),
+                new("@title", (object?)note.Title ?? DBNull.Value),
 
                 new("@id", note.Id)
             ]
@@ -225,8 +225,8 @@ public class NoteRepository(DatabaseConfiguration databaseConfiguration) : BaseR
 
             GetString(reader, "ThemeColourScheme"),
 
-            GetBool(reader, "IsPinned"),
-            GetBool(reader, "IsOpen")
+            GetBool(reader, "IsOpen"),
+            GetStringNullable(reader, "Title")
         );
 
         return noteDto;

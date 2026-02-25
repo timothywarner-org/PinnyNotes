@@ -35,8 +35,8 @@ public class NoteModel : BaseModel
 
         ThemeColourScheme = noteDto.ThemeColourScheme;
 
-        IsPinned = noteDto.IsPinned;
         IsOpen = noteDto.IsOpen;
+        Title = noteDto.Title;
 
         TransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyMode.Disabled);
     }
@@ -56,8 +56,8 @@ public class NoteModel : BaseModel
 
     public string ThemeColourScheme { get; set => SetProperty(ref field, value); }
 
-    public bool IsPinned { get; set => SetProperty(ref field, value); }
     public bool IsOpen { get; set => SetProperty(ref field, value); }
+    public string? Title { get; set => SetProperty(ref field, value); }
 
 
     public nint WindowHandle { get; set; }
@@ -101,8 +101,8 @@ public class NoteModel : BaseModel
 
             ThemeColourScheme,
 
-            IsPinned,
-            IsOpen
+            IsOpen,
+            Title
         );
 
         return noteDto;

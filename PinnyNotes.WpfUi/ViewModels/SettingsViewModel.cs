@@ -41,8 +41,7 @@ public class SettingsViewModel : BaseViewModel
 
     public static KeyValuePair<MinimizeMode, string>[] MinimizeModeList { get; } = [
         new(MinimizeMode.Allow, "Yes"),
-        new(MinimizeMode.Prevent, "No"),
-        new(MinimizeMode.PreventIfPinned, "When not pinned")
+        new(MinimizeMode.Prevent, "No")
     ];
 
     public static KeyValuePair<VisibilityMode, string>[] VisibilityModeList { get; } = [
@@ -59,8 +58,7 @@ public class SettingsViewModel : BaseViewModel
 
     public static KeyValuePair<TransparencyMode, string>[] TransparencyModeList { get; } = [
         new(TransparencyMode.Disabled, "Disabled"),
-        new(TransparencyMode.Enabled, "Enabled"),
-        new(TransparencyMode.WhenPinned, "Only when pinned")
+        new(TransparencyMode.Enabled, "Enabled")
     ];
 
     public static KeyValuePair<string, string>[] FontFamilyList { get; } = [..

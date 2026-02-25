@@ -15,6 +15,6 @@ public record NoteDto(
 
     string ThemeColourScheme,
 
-    bool IsPinned,
-    bool IsOpen
+    bool IsOpen,
+    string? Title
 );

@@ -3,6 +3,5 @@
 public enum TransparencyMode
 {
     Disabled,
-    Enabled,
-    WhenPinned
+    Enabled
 }

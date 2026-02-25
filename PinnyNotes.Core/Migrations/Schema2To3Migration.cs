@@ -1,6 +1,4 @@
-﻿using PinnyNotes.Core.Repositories;
-
-namespace PinnyNotes.Core.Migrations;
+﻿namespace PinnyNotes.Core.Migrations;
 
 public class Schema2To3Migration : SchemaMigration
 {
@@ -30,9 +28,26 @@ public class Schema2To3Migration : SchemaMigration
         ALTER TABLE Settings 
         RENAME COLUMN Tool_ColorState TO Tool_ColourState;
 
-        -- Create Notes Table
-        CREATE TABLE IF NOT EXISTS {NoteRepository.TableName}
-            {NoteRepository.TableSchema};
+        -- Create Notes Table (schema as of v3, hardcoded for migration stability)
+        CREATE TABLE IF NOT EXISTS Notes
+        (
+            Id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            Content             TEXT,
+
+            X                   REAL,
+            Y                   REAL,
+            Width               REAL,
+            Height              REAL,
+
+            GravityX            INTEGER,
+            GravityY            INTEGER,
+
+            ThemeColourScheme   TEXT,
+
+            IsPinned            INTEGER,
+            IsOpen              INTEGER
+        );
 
         -- Update schema version
         UPDATE SchemaInfo

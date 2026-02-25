@@ -97,7 +97,7 @@ public class NoteViewModel : BaseViewModel
         double opaqueOpacity = NoteSettings.OpaqueValue;
         double transparentOpacity = NoteSettings.TransparentValue;
 
-        if ((opaqueWhenFocused && Note.IsFocused) || (transparentMode == TransparencyMode.WhenPinned && !Note.IsPinned))
+        if (opaqueWhenFocused && Note.IsFocused)
             Note.Opacity = opaqueOpacity;
         else
             Note.Opacity = transparentOpacity;
@@ -108,7 +108,7 @@ public class NoteViewModel : BaseViewModel
         if (Note.WindowHandle == 0)
             return;
 
-        nint hWndInsertAfter = (Note.IsFocused || Note.IsPinned) ? HWND.TOPMOST : HWND.NOTOPMOST;
+        nint hWndInsertAfter = Note.IsFocused ? HWND.TOPMOST : HWND.NOTOPMOST;
 
         uint uFlags = SWP.NOMOVE | SWP.NOSIZE | SWP.NOACTIVATE;
 

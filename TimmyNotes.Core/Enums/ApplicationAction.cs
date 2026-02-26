@@ -1,8 +1,0 @@
-﻿namespace TimmyNotes.Core.Enums;
-
-public enum ApplicationAction
-{
-    Start,
-    NewInstance,
-    Close
-}

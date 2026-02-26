@@ -1,0 +1,230 @@
+<Window x:Class="TimmyTools.WpfUi.Views.BreakTimerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:TimmyTools.WpfUi.ViewModels"
+        Title="Break Timer"
+        Width="600" Height="400"
+        MinWidth="400" MinHeight="250"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        d:DataContext="{d:DesignInstance Type=vm:BreakTimerViewModel}"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="PresetButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#555555"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#666666"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#444444"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#555555"/>
+            <Setter Property="Padding" Value="24,10"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#666666"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#444444"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="Background" Value="#333333"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                    <Setter Property="Background" Value="#2E7D32"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+
+    <Viewbox Stretch="Uniform" Margin="20">
+        <Grid Width="560" Height="320">
+
+            <!-- Idle State: Preset Selection -->
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding IsIdle, Converter={StaticResource BoolToVis}}">
+
+                <!-- Preset Buttons -->
+                <WrapPanel HorizontalAlignment="Center" Margin="0,0,0,20">
+                    <Button Content="5 min" Style="{StaticResource PresetButtonStyle}"
+                            Command="{Binding StartPresetCommand}" CommandParameter="5"/>
+                    <Button Content="10 min" Style="{StaticResource PresetButtonStyle}"
+                            Command="{Binding StartPresetCommand}" CommandParameter="10"/>
+                    <Button Content="15 min" Style="{StaticResource PresetButtonStyle}"
+                            Command="{Binding StartPresetCommand}" CommandParameter="15"/>
+                    <Button Content="20 min" Style="{StaticResource PresetButtonStyle}"
+                            Command="{Binding StartPresetCommand}" CommandParameter="20"/>
+                </WrapPanel>
+
+                <!-- Custom Input -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Custom:"
+                               FontSize="18" Foreground="#AAAAAA"
+                               VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox Text="{Binding CustomMinutes, UpdateSourceTrigger=PropertyChanged}"
+                             Width="60" FontSize="18"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center"
+                             Padding="4"/>
+                    <TextBlock Text="min"
+                               FontSize="18" Foreground="#AAAAAA"
+                               VerticalAlignment="Center" Margin="10,0,10,0"/>
+                    <Button Content="Start" Style="{StaticResource PresetButtonStyle}"
+                            Command="{Binding StartCustomCommand}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Active State: Running / Paused / Completed -->
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+
+                <!-- Countdown / Break Over Text -->
+                <Grid HorizontalAlignment="Center" Margin="0,0,0,8">
+                    <!-- Countdown (visible when not completed) -->
+                    <TextBlock Text="{Binding TimeRemainingText}"
+                               FontSize="84"
+                               FontFamily="Segoe UI Light"
+                               Foreground="White"
+                               HorizontalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <!-- Break Over (visible when completed) -->
+                    <TextBlock Text="Break Over"
+                               FontSize="84"
+                               FontFamily="Segoe UI Light"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               Visibility="{Binding IsCompleted, Converter={StaticResource BoolToVis}}"/>
+                </Grid>
+
+                <!-- Verbose Time Text -->
+                <TextBlock Text="{Binding VerboseTimeText}"
+                           FontSize="24"
+                           Foreground="#AAAAAA"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,20">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Progress Bar -->
+                <Grid Height="30" Margin="0,0,0,20">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Background -->
+                    <Border Background="#555555" CornerRadius="4"/>
+                    <!-- Elapsed fill -->
+                    <Border Background="#4CAF50" CornerRadius="4"
+                            HorizontalAlignment="Left">
+                        <Border.Width>
+                            <MultiBinding>
+                                <MultiBinding.Converter>
+                                    <local:FractionToWidthConverter xmlns:local="clr-namespace:TimmyTools.WpfUi.Views"/>
+                                </MultiBinding.Converter>
+                                <Binding Path="ProgressFraction"/>
+                                <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType=Grid}"/>
+                            </MultiBinding>
+                        </Border.Width>
+                    </Border>
+                </Grid>
+
+                <!-- Action Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <!-- Pause (visible when running) -->
+                    <Button Content="Pause" Style="{StaticResource ActionButtonStyle}"
+                            Command="{Binding PauseCommand}"
+                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
+
+                    <!-- Resume (visible when paused) -->
+                    <Button Content="Resume" Style="{StaticResource ActionButtonStyle}"
+                            Command="{Binding ResumeCommand}"
+                            Visibility="{Binding IsPaused, Converter={StaticResource BoolToVis}}"/>
+
+                    <!-- Reset (always visible when active) -->
+                    <Button Content="Reset" Style="{StaticResource ActionButtonStyle}"
+                            Command="{Binding ResetCommand}"/>
+                </StackPanel>
+            </StackPanel>
+
+        </Grid>
+    </Viewbox>
+</Window>

@@ -24,7 +24,7 @@ public partial class AtomicClockWindow : Window
 
     private void AtomicClockWindow_Closed(object? sender, EventArgs e)
     {
-        _viewModel.StopTimers();
+        _viewModel.Dispose();
     }
 
     private void DrawTickMarks()

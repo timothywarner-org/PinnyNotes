@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 
@@ -23,6 +24,10 @@ public partial class NoteWindow : Window
     private readonly ThemeService _themeService;
 
     private readonly NoteViewModel _viewModel;
+
+    private bool _isRolledUp;
+    private double _savedHeight;
+    private double _savedMinHeight;
 
     public NoteViewModel ViewModel => _viewModel;
 
@@ -173,12 +178,57 @@ public partial class NoteWindow : Window
     {
         if (e.ClickCount >= 2)
         {
-            if (WindowState == WindowState.Normal)
-                WindowState = WindowState.Maximized;
-            else
-                WindowState = WindowState.Normal;
+            e.Handled = true;
+            ToggleRollUp();
         }
     }
+
+    private void ToggleRollUp()
+    {
+        if (_isRolledUp)
+        {
+            // Restore: re-bind Height to the model, expand body
+            NoteBodyGrid.Visibility = Visibility.Visible;
+            MinHeight = _savedMinHeight;
+            ResizeMode = ResizeMode.CanResize;
+
+            Binding heightBinding = new("Note.Height")
+            {
+                Mode = BindingMode.TwoWay
+            };
+            SetBinding(HeightProperty, heightBinding);
+            Height = _savedHeight;
+
+            _isRolledUp = false;
+        }
+        else
+        {
+            _savedHeight = ActualHeight;
+            _savedMinHeight = MinHeight;
+
+            // Detach the two-way Height binding so the collapsed height
+            // doesn't flow into Note.Height and get persisted by auto-save.
+            BindingOperations.ClearBinding(this, HeightProperty);
+
+            NoteBodyGrid.Visibility = Visibility.Collapsed;
+
+            double titleBarHeight = TitleBarGrid.ActualHeight;
+            double borderHeight = BorderThickness.Top + BorderThickness.Bottom;
+            double rolledUpHeight = titleBarHeight + borderHeight;
+
+            MinHeight = rolledUpHeight;
+            Height = rolledUpHeight;
+            ResizeMode = ResizeMode.NoResize;
+            _isRolledUp = true;
+        }
+    }
+
+    /// <summary>
+    /// Returns the height that should be persisted to the database.
+    /// When rolled up, returns the saved pre-rollup height to avoid
+    /// persisting the collapsed title-bar-only height.
+    /// </summary>
+    public double PersistableHeight => _isRolledUp ? _savedHeight : ActualHeight;
 
     private void NewButton_Click(object sender, RoutedEventArgs e)
     {
@@ -222,8 +272,8 @@ public partial class NoteWindow : Window
 
     private void BeginStoryboard(string resourceKey)
     {
-        Storyboard hideTitleBar = (Storyboard)FindResource(resourceKey);
-        hideTitleBar.Begin();
+        Storyboard storyboard = (Storyboard)FindResource(resourceKey);
+        storyboard.Begin();
     }
 
     private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
@@ -236,16 +286,36 @@ public partial class NoteWindow : Window
         if (saveFileDialog.ShowDialog(this) == false)
             return;
 
-        if (saveFileDialog.FileName.EndsWith(".rtf", StringComparison.OrdinalIgnoreCase))
-            File.WriteAllText(saveFileDialog.FileName, NoteTextBox.RtfContent);
-        else
-            File.WriteAllText(saveFileDialog.FileName, NoteTextBox.GetPlainText());
+        try
+        {
+            if (saveFileDialog.FileName.EndsWith(".rtf", StringComparison.OrdinalIgnoreCase))
+                File.WriteAllText(saveFileDialog.FileName, NoteTextBox.RtfContent);
+            else
+                File.WriteAllText(saveFileDialog.FileName, NoteTextBox.GetPlainText());
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            MessageBox.Show(
+                $"Failed to save file: {ex.Message}",
+                "Save Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
+        }
     }
 
     private void ResetMenuItem_Click(object sender, RoutedEventArgs e)
     {
         Width = _noteSettings.DefaultWidth;
-        Height = _noteSettings.DefaultHeight;
+
+        if (_isRolledUp)
+        {
+            _savedHeight = _noteSettings.DefaultHeight;
+        }
+        else
+        {
+            Height = _noteSettings.DefaultHeight;
+        }
     }
 
     private void SetTitleMenuItem_Click(object sender, RoutedEventArgs e)

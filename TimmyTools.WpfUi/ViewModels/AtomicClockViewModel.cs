@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 
@@ -6,7 +7,7 @@ using TimmyTools.WpfUi.Services;
 
 namespace TimmyTools.WpfUi.ViewModels;
 
-public class AtomicClockViewModel : INotifyPropertyChanged
+public class AtomicClockViewModel : INotifyPropertyChanged, IDisposable
 {
     private readonly NtpService _ntpService;
     private readonly DispatcherTimer _displayTimer;
@@ -88,6 +89,13 @@ public class AtomicClockViewModel : INotifyPropertyChanged
         _syncTimer.Stop();
     }
 
+    public void Dispose()
+    {
+        StopTimers();
+        _displayTimer.Tick -= DisplayTimer_Tick;
+        // _syncTimer.Tick uses a lambda and cannot be unhooked; stopping is sufficient.
+    }
+
     private DateTime CurrentTime => DateTime.Now + _ntpOffset;
 
     private void DisplayTimer_Tick(object? sender, EventArgs e)
@@ -99,8 +107,8 @@ public class AtomicClockViewModel : INotifyPropertyChanged
     {
         DateTime now = CurrentTime;
 
-        DateText = now.ToString("ddd, MMM dd, yyyy");
-        TimeText = now.ToString("h:mm:ss tt");
+        DateText = now.ToString("ddd, MMM dd, yyyy", CultureInfo.InvariantCulture);
+        TimeText = now.ToString("h:mm:ss tt", CultureInfo.InvariantCulture);
 
         double hours = now.Hour % 12;
         double minutes = now.Minute;

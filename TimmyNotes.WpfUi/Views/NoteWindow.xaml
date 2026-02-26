@@ -133,11 +133,11 @@
                 </TextBlock.Style>
             </TextBlock>
 
-            <!-- Break Timer Button -->
-            <Button Name="BreakTimerButton"
+            <!-- Atomic Clock Button -->
+            <Button Name="AtomicClockButton"
                     HorizontalAlignment="Right"
-                    Margin="0,0,62,0"
-                    ToolTip="Break Timer"
+                    Margin="0,0,88,0"
+                    ToolTip="Atomic Clock"
                     Style="{StaticResource TitleBarButtonStyle}">
                 <Button.Template>
                     <ControlTemplate>
@@ -150,6 +150,41 @@
                             <Path Data="M 10,5 V 10 H 14"
                                   Stroke="{Binding Note.TitleGridButtonForeground}"
                                   StrokeThickness="2"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  d:Stroke="#464646"/>
+                        </Canvas>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <!-- Break Timer Button -->
+            <Button Name="BreakTimerButton"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,62,0"
+                    ToolTip="Break Timer"
+                    Style="{StaticResource TitleBarButtonStyle}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Canvas>
+                            <Rectangle Width="20" Height="20" Fill="Transparent" />
+                            <!-- Cup body (U shape) -->
+                            <Path Data="M 3,7 V 17 H 12 V 7"
+                                  Stroke="{Binding Note.TitleGridButtonForeground}"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  StrokeLineJoin="Round"
+                                  d:Stroke="#464646"/>
+                            <!-- Handle -->
+                            <Path Data="M 12,9 C 16,9 16,14 12,14"
+                                  Stroke="{Binding Note.TitleGridButtonForeground}"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  Fill="Transparent"
+                                  d:Stroke="#464646"/>
+                            <!-- Steam wisps -->
+                            <Path Data="M 6,2 Q 7,4 6,5 M 9,2 Q 10,4 9,5"
+                                  Stroke="{Binding Note.TitleGridButtonForeground}"
+                                  StrokeThickness="1.5"
                                   StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                   d:Stroke="#464646"/>
                         </Canvas>

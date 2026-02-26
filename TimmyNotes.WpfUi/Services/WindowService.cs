@@ -23,6 +23,7 @@ public class WindowService
     private SettingsWindow? _settingsWindow;
     private ManagementWindow? _managementWindow;
     private BreakTimerWindow? _breakTimerWindow;
+    private AtomicClockWindow? _atomicClockWindow;
 
     public WindowService(
         IServiceProvider serviceProvider,
@@ -51,6 +52,8 @@ public class WindowService
         _messengerService.Subscribe<OpenManagementWindowMessage>(OnOpenManagementWindowMessage);
 
         _messengerService.Subscribe<OpenBreakTimerWindowMessage>(OnOpenBreakTimerWindowMessage);
+
+        _messengerService.Subscribe<OpenAtomicClockWindowMessage>(OnOpenAtomicClockWindowMessage);
     }
 
     public async Task SaveAllOpenNotes()
@@ -148,6 +151,20 @@ public class WindowService
             _breakTimerWindow.Show();
 
         _breakTimerWindow.Activate();
+    }
+
+    private void OnOpenAtomicClockWindowMessage(OpenAtomicClockWindowMessage message)
+    {
+        if (_atomicClockWindow is null || !_atomicClockWindow.IsLoaded)
+        {
+            _atomicClockWindow = _serviceProvider.GetRequiredService<AtomicClockWindow>();
+            _atomicClockWindow.Closed += (s, e) => _atomicClockWindow = null;
+        }
+
+        if (!_atomicClockWindow.IsVisible)
+            _atomicClockWindow.Show();
+
+        _atomicClockWindow.Activate();
     }
 
     private async Task OpenNoteWindow(int? noteId = null, NoteModel? parentNote = null, nint? managementWindowHandle = null)

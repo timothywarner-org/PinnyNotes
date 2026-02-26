@@ -52,6 +52,7 @@ public partial class NoteWindow : Window
 
         TitleBarGrid.MouseDown += TitleBar_MouseDown;
         NewButton.Click += NewButton_Click;
+        AtomicClockButton.Click += AtomicClockButton_Click;
         BreakTimerButton.Click += BreakTimerButton_Click;
         MinimizeButton.Click += MinimizeButton_Click;
         CloseButton.Click += CloseButton_Click;
@@ -184,6 +185,11 @@ public partial class NoteWindow : Window
         _messengerService.Publish(
             new OpenNoteWindowMessage(ParentNote: _viewModel.Note)
         );
+    }
+
+    private void AtomicClockButton_Click(object sender, RoutedEventArgs e)
+    {
+        _messengerService.Publish(new OpenAtomicClockWindowMessage());
     }
 
     private void BreakTimerButton_Click(object sender, RoutedEventArgs e)

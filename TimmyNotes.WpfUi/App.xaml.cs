@@ -143,6 +143,10 @@ public partial class App : Application
 
         services.AddTransient<BreakTimerWindow>();
         services.AddTransient<BreakTimerViewModel>();
+
+        services.AddSingleton<NtpService>();
+        services.AddTransient<AtomicClockWindow>();
+        services.AddTransient<AtomicClockViewModel>();
     }
 
     protected override async void OnExit(ExitEventArgs e)

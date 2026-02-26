@@ -49,7 +49,7 @@ public abstract class BaseRepository
 
     protected async static Task<SqliteDataReader> ExecuteReader(SqliteConnection connection, string query, IEnumerable<KeyValuePair<string, object?>>? parameters = null)
     {
-        using SqliteCommand command = CreateCommand(connection, query, parameters);
+        SqliteCommand command = CreateCommand(connection, query, parameters);
         return await command.ExecuteReaderAsync();
     }
 

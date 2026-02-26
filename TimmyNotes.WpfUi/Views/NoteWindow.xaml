@@ -199,7 +199,7 @@
                                          Foreground="{Binding Note.ContentTextBoxForeground}"
                                          CaretThickness="{Binding EditorSettings.CaretThickness}"
                                          CaretColour="{Binding EditorSettings.CaretColour}"
-                                         FontSize="16"
+                                         FontSize="18"
                                          x:Name="NoteTextBox"
                                          Padding="5,5,5,5"
                                          RtfContent="{Binding Note.Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

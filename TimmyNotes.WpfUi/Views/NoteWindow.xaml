@@ -133,6 +133,27 @@
                 </TextBlock.Style>
             </TextBlock>
 
+            <!-- Minimize Button -->
+            <Button Name="MinimizeButton"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,36,0"
+                    ToolTip="Minimize"
+                    Style="{StaticResource TitleBarButtonStyle}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Canvas>
+                            <Rectangle Width="20" Height="20" Fill="Transparent" />
+                            <Path Data="M 3,15 h 14"
+                                  Stroke="{Binding Note.TitleGridButtonForeground}"
+                                  StrokeThickness="3"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  d:Stroke="#464646">
+                            </Path>
+                        </Canvas>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
             <!-- Close Button -->
             <Button Name="CloseButton"
                     HorizontalAlignment="Right"

@@ -52,6 +52,7 @@ public partial class NoteWindow : Window
 
         TitleBarGrid.MouseDown += TitleBar_MouseDown;
         NewButton.Click += NewButton_Click;
+        MinimizeButton.Click += MinimizeButton_Click;
         CloseButton.Click += CloseButton_Click;
 
         PopulateTitleBarContextMenu();
@@ -97,11 +98,15 @@ public partial class NoteWindow : Window
 
     private void NoteWindow_StateChanged(object? sender, EventArgs e)
     {
-        if (WindowState != WindowState.Minimized)
-            return;
-
-        if (_noteSettings.MinimizeMode == MinimizeMode.Prevent)
-            WindowState = WindowState.Normal;
+        if (WindowState == WindowState.Minimized)
+        {
+            if (_noteSettings.MinimizeMode == MinimizeMode.Prevent)
+                WindowState = WindowState.Normal;
+        }
+        else if (WindowState == WindowState.Normal)
+        {
+            _viewModel.UpdateVisibility();
+        }
     }
 
     private void Window_MouseEnter(object sender, MouseEventArgs e)
@@ -178,6 +183,12 @@ public partial class NoteWindow : Window
         _messengerService.Publish(
             new OpenNoteWindowMessage(ParentNote: _viewModel.Note)
         );
+    }
+
+    private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+    {
+        _viewModel.Note.ShowInTaskbar = true;
+        WindowState = WindowState.Minimized;
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

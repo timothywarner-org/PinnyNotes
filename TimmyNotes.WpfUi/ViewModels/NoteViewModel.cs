@@ -342,7 +342,7 @@ public class NoteViewModel : BaseViewModel
         }
     }
 
-    private void UpdateVisibility()
+    public void UpdateVisibility()
     {
         if (Note.WindowHandle == 0)
             return;

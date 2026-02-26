@@ -51,13 +51,20 @@ public class ManagementViewModel : BaseViewModel
 
     private async void LoadNotes()
     {
-        ColourMode colourMode = SettingsService.NoteSettings.ColourMode;
+        try
+        {
+            ColourMode colourMode = SettingsService.NoteSettings.ColourMode;
 
-        ClearNotePreviews();
+            ClearNotePreviews();
 
-        IEnumerable<NoteDto> noteDtos = await _noteRepository.GetAll();
-        foreach (NoteDto noteDto in noteDtos)
-            AddNotePreview(noteDto, colourMode);
+            IEnumerable<NoteDto> noteDtos = await _noteRepository.GetAll();
+            foreach (NoteDto noteDto in noteDtos)
+                AddNotePreview(noteDto, colourMode);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to load notes: {ex.Message}");
+        }
     }
 
     private void OnNoteActionMessage(NoteActionMessage message)
@@ -121,19 +128,26 @@ public class ManagementViewModel : BaseViewModel
 
     private async void OnDeleteNotesCommand()
     {
-        List<int> selectedNoteIds = [.._selectedNotePreviews.Keys]; // Selected
-        if (selectedNoteIds.Count == 0)
-            return; // No delete all
-
-        MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowAction.Close));
-
-        foreach (int noteId in selectedNoteIds)
+        try
         {
-            if (!_notePreviewIdIndexMap.ContainsKey(noteId))
-                continue; // Note may have been deleted due to being empty when closed above
+            List<int> selectedNoteIds = [.._selectedNotePreviews.Keys]; // Selected
+            if (selectedNoteIds.Count == 0)
+                return; // No delete all
 
-            RemoveNotePreview(noteId);
-            await _noteRepository.Delete(noteId);
+            MessengerService.Publish(new MultipleNoteWindowActionMessage(selectedNoteIds, NoteWindowAction.Close));
+
+            foreach (int noteId in selectedNoteIds)
+            {
+                if (!_notePreviewIdIndexMap.ContainsKey(noteId))
+                    continue; // Note may have been deleted due to being empty when closed above
+
+                RemoveNotePreview(noteId);
+                await _noteRepository.Delete(noteId);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to delete notes: {ex.Message}");
         }
     }
 

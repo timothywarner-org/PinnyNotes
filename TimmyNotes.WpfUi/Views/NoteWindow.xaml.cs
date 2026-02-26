@@ -145,6 +145,7 @@ public partial class NoteWindow : Window
 
     private async void Window_Closing(object? sender, CancelEventArgs e)
     {
+        _messengerService.Unsubscribe<WindowActionMessage>(OnWindowActionMessage);
         e.Cancel = await _viewModel.CloseNote();
     }
 

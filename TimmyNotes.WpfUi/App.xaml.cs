@@ -154,10 +154,10 @@ public partial class App : Application
             System.Diagnostics.Debug.WriteLine($"Failed to save notes on exit: {ex.Message}");
         }
 
-        _databaseBackupService.Stop();
-        await _appMetadataService.Save();
-        await _settingsService.Save();
-        _notifyIconService.Dispose();
+        _databaseBackupService?.Stop();
+        if (_appMetadataService != null) await _appMetadataService.Save();
+        if (_settingsService != null) await _settingsService.Save();
+        _notifyIconService?.Dispose();
 
         _mutex?.ReleaseMutex();
         _mutex?.Dispose();

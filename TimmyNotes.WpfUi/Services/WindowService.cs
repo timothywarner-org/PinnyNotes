@@ -135,22 +135,29 @@ public class WindowService
 
     private async Task OpenNoteWindow(int? noteId = null, NoteModel? parentNote = null, nint? managementWindowHandle = null)
     {
-        NoteWindow window;
-
-        if (noteId is not null && _openNoteWindows.TryGetValue((int)noteId, out NoteWindow? existingWindow))
+        try
         {
-            window = existingWindow;
-            window.Activate();
+            NoteWindow window;
+
+            if (noteId is not null && _openNoteWindows.TryGetValue((int)noteId, out NoteWindow? existingWindow))
+            {
+                window = existingWindow;
+                window.Activate();
+            }
+            else
+            {
+                NoteViewModel viewModel = new(_noteRepository, _appMetadataService, _settingsService, _messengerService, _themeService);
+                await viewModel.Initialize(noteId, parentNote, managementWindowHandle);
+                window = new(_settingsService, _messengerService, _themeService, viewModel);
+
+                window.Show();
+
+                _openNoteWindows[viewModel.Note.Id] = window;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            NoteViewModel viewModel = new(_noteRepository, _appMetadataService, _settingsService, _messengerService, _themeService);
-            await viewModel.Initialize(noteId, parentNote, managementWindowHandle);
-            window = new(_settingsService, _messengerService, _themeService, viewModel);
-
-            window.Show();
-
-            _openNoteWindows[viewModel.Note.Id] = window;
+            System.Diagnostics.Debug.WriteLine($"Failed to open note window: {ex.Message}");
         }
     }
 
@@ -168,7 +175,7 @@ public class WindowService
         if (_managementWindow is null || !_managementWindow.IsLoaded)
         {
             _managementWindow = _serviceProvider.GetRequiredService<ManagementWindow>();
-            _managementWindow.Closed += (s, e) => _settingsWindow = null;
+            _managementWindow.Closed += (s, e) => _managementWindow = null;
         }
 
         if (!_managementWindow.IsVisible)

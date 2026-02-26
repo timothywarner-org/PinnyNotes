@@ -4,16 +4,17 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows)](https://github.com/timothywarner-org/TimmyTools)
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
 
-![Timmy Tools Screenshot](assets/Screenshot.png)
+**Timmy Tools** is Tim Warner's teaching sidecar app -- a Windows desktop utility designed to run alongside his technical training courses. What started as a sticky notes application has grown into a multi-tool suite that includes persistent rich-text sticky notes with formatting tools, an NTP-synced atomic clock, and a configurable break timer for pacing training sessions.
 
-**Timmy Tools** is a Windows sticky notes application built with WPF and .NET 10.0. Pin notes to stay always on top, transform text with 20 built-in tools, manage multiple notes with color themes and transparency, and persist everything in a local SQLite database. Forked from [63BeetleSmurf/TimmyTools](https://github.com/63BeetleSmurf/TimmyTools), with the goal of replicating and extending functionality inspired by Zhorn Software's Stickies.
+Built with WPF and .NET 10.0, Timmy Tools keeps everything you need during a live training session one click away.
 
 ---
 
 ## Table of Contents
 
-- [Features](#features)
-- [Text Transformation Tools](#text-transformation-tools)
+- [Tools Overview](#tools-overview)
+- [Sticky Notes Features](#sticky-notes-features)
+- [Context Menu Tools](#context-menu-tools)
 - [Installation](#installation)
 - [Building from Source](#building-from-source)
 - [Project Structure](#project-structure)
@@ -22,13 +23,33 @@
   - [Settings Pipeline](#settings-pipeline)
   - [Note Lifecycle](#note-lifecycle)
 - [Technical Details](#technical-details)
+- [Attribution](#attribution)
 - [License](#license)
 
 ---
 
-## Features
+## Tools Overview
+
+Timmy Tools includes three integrated utilities, all accessible from the system tray:
+
+### Sticky Notes
+
+Pin-to-top rich-text notes with auto-save, color themes, dark mode, transparency, and a full formatting context menu. Manage multiple notes across monitors with a local SQLite database backing everything.
+
+### Atomic Clock
+
+An NTP-synced time display window that shows the precise current time, synchronized with internet time servers. Useful for keeping training sessions on schedule and coordinating across time zones.
+
+### Break Timer
+
+A configurable countdown timer (egg timer) for pacing training breaks. Set the duration, start the countdown, and get a clear visual indicator when break time is over.
+
+---
+
+## Sticky Notes Features
 
 ### Note Management
+
 - **Pin / Always on Top** -- Keep notes visible above all other windows.
 - **Auto Save** -- Notes are automatically saved on a 5-second interval and on close.
 - **Note Titles** -- Assign titles to notes for easy identification.
@@ -36,13 +57,16 @@
 - **Lock Text** -- Make a note read-only to prevent accidental edits.
 
 ### Appearance
+
 - **Color Themes** -- Choose from multiple colors or cycle through them automatically.
 - **Dark Mode** -- Dark theme with color-matched accents.
 - **Transparency** -- Make notes semi-transparent; optionally opaque when focused.
 - **Start Position** -- Configure where on screen new notes appear (9-point grid).
-- **Font Control** -- Choose between standard and monospace fonts.
+- **Font Control** -- Choose from multiple font families directly in the context menu.
+- **Rich Text Formatting** -- Bold, italic, underline, font size, font color, and paragraph alignment via the context menu.
 
 ### Editor
+
 - **Spell Checking** -- Integrated spell checker.
 - **Auto Indent** -- New lines automatically match the indentation of the previous line.
 - **Tab Indentation** -- Indent selected text with Tab; configurable spaces vs. tabs.
@@ -51,6 +75,7 @@
 - **Line/Word/Character Counts** -- View counts for selected or full text.
 
 ### Clipboard and Selection
+
 - **Copy/Paste Trim** -- Automatically trim whitespace when copying or pasting.
 - **Middle Click Paste** -- Paste clipboard contents with a middle-click.
 - **Ctrl+Click Copy** -- Hold Ctrl and click to copy selected text.
@@ -60,6 +85,7 @@
 - **Quadruple-Click** -- Select the full line ignoring wrapping.
 
 ### System Integration
+
 - **System Tray Icon** -- Launch new notes or bring all notes to front from the tray.
 - **Taskbar/Task Switcher Visibility** -- Show or hide notes from Taskbar and Alt+Tab.
 - **Single Instance** -- Only one instance runs; launching again creates a new note in the existing instance.
@@ -68,32 +94,22 @@
 
 ---
 
-## Text Transformation Tools
+## Context Menu Tools
 
-20 built-in tools are accessible via right-click context menu on any note. Each tool can be set to Disabled, Enabled, or Favorite in settings.
+The right-click context menu on each note provides rich text editing and text transformation tools in a Stickies-style interface:
 
-| Tool | Description |
-|------|-------------|
-| **Base64** | Encode/decode Base64 text |
-| **Bracket** | Add/remove parentheses, square brackets, or curly braces |
-| **Case** | Convert to lower, upper, or proper case |
-| **Color** | Convert RGB to/from HEX values |
-| **DateTime** | Insert the current date in sortable format |
-| **Gibberish** | Generate placeholder words, sentences, paragraphs, or names |
-| **GUID** | Generate GUIDs/UUIDs |
-| **Hash** | Generate MD5, SHA1, SHA256/384/512 hashes |
-| **HTML Entity** | Encode/decode HTML entities |
-| **Indent** | Indent all lines using 2/4 spaces or tabs |
-| **Join** | Join multiple lines with commas, spaces, or tabs |
-| **JSON** | Prettify JSON data |
-| **List** | Add numbering/bullets, sort lines, or remove markers |
-| **Quote** | Add/remove single, double, or backtick quotes |
-| **Remove** | Strip whitespace, slashes, or repeated text |
-| **Slash** | Toggle or remove forward/back slashes |
-| **Sort** | Sort lines alphabetically or in reverse |
-| **Split** | Split text by commas, tabs, spaces, or patterns |
-| **Trim** | Remove leading/trailing whitespace or blank lines |
-| **URL** | Encode/decode text for URLs |
+| Menu | Actions |
+|------|---------|
+| **Font** | Segoe UI, Arial, Calibri, Consolas, Courier New, Times New Roman |
+| **Size** | 8, 10, 12, 14, 16, 18, 20, 24, 28, 36 |
+| **Style** | Bold, Italic, Underline, Clear Formatting |
+| **Case** | Lower, Upper, Title |
+| **Font Color** | Black, Red, Blue, Green, Orange, Purple, Brown, Gray |
+| **Paragraph** | Left/Center/Right/Justified alignment, Bullets, Numbered, Lettered lists, Tab spacing |
+| **Counts** | Line count, Word count, Character count |
+| **Locked** | Toggle read-only mode |
+
+Additional context menu features include Undo/Redo, Copy/Cut/Paste, Select All, and inline spelling suggestions.
 
 ---
 
@@ -146,7 +162,6 @@ TimmyTools/
 ├── .editorconfig                       # Code style rules (explicit types, Allman braces)
 │
 ├── assets/                             # Repository assets
-│   ├── Screenshot.png                  #   App screenshot for README
 │   └── icon.svg                        #   Source icon file
 │
 ├── docs/                               # Architecture documentation
@@ -165,11 +180,11 @@ TimmyTools/
 │   │   └── AppMetadataDataDto.cs       #   App metadata record (immutable)
 │   ├── Enums/                          #   Shared enumerations
 │   │   ├── ColourMode.cs               #     Light/Dark theme mode
+│   │   ├── CaseTransform.cs            #     Lower/Upper/Title case
 │   │   ├── StartupPosition.cs          #     9-point screen position grid
-│   │   ├── ToolState.cs                #     Disabled/Enabled/Favourite
 │   │   ├── TransparencyMode.cs         #     Transparency behavior
 │   │   ├── VisibilityMode.cs           #     Taskbar/task-switcher visibility
-│   │   └── ...                         #     (12 enum files total)
+│   │   └── ...                         #     (14 enum files total)
 │   ├── Migrations/                     #   Sequential schema migrations (v1-v6)
 │   │   ├── _SchemaMigration.cs         #     Base migration class
 │   │   ├── Schema1To2Migration.cs      #     v1 -> v2
@@ -187,6 +202,8 @@ TimmyTools/
 │   │
 │   ├── Views/                           #   WPF Windows (XAML + code-behind)
 │   │   ├── NoteWindow.xaml/.cs          #     The sticky note window
+│   │   ├── AtomicClockWindow.xaml/.cs   #     NTP-synced atomic clock display
+│   │   ├── BreakTimerWindow.xaml/.cs    #     Configurable countdown break timer
 │   │   ├── SettingsWindow.xaml/.cs      #     Settings dialog
 │   │   ├── ManagementWindow.xaml/.cs    #     Note management/list window
 │   │   └── SetTitleDialog.xaml/.cs      #     Note title input dialog
@@ -194,6 +211,8 @@ TimmyTools/
 │   ├── ViewModels/                      #   MVVM ViewModels
 │   │   ├── _BaseViewModel.cs            #     Shared ViewModel base class
 │   │   ├── NoteViewModel.cs             #     Note logic (save, close, position)
+│   │   ├── AtomicClockViewModel.cs      #     Atomic clock NTP sync logic
+│   │   ├── BreakTimerViewModel.cs       #     Break timer countdown logic
 │   │   ├── SettingsViewModel.cs         #     Settings UI logic
 │   │   └── ManagementViewModel.cs       #     Note list/management logic
 │   │
@@ -201,16 +220,18 @@ TimmyTools/
 │   │   ├── _BaseModel.cs                #     SetProperty<T> + IsSaved tracking
 │   │   ├── NoteModel.cs                 #     Note state (content, position, color)
 │   │   ├── NotePreviewModel.cs          #     Lightweight note preview for lists
+│   │   ├── AppMetadataModel.cs          #     App metadata state
 │   │   ├── ApplicationSettingsModel.cs  #     App-level settings
 │   │   ├── NoteSettingsModel.cs         #     Note appearance/behavior settings
-│   │   ├── EditorSettingsModel.cs       #     Text editor settings
-│   │   └── ToolSettingsModel.cs         #     Per-tool enable/disable states
+│   │   └── EditorSettingsModel.cs       #     Text editor settings
 │   │
 │   ├── Services/                        #   Application services (DI singletons)
 │   │   ├── WindowService.cs             #     Creates/tracks windows, prevents dupes
 │   │   ├── SettingsService.cs           #     Loads/saves settings via repository
 │   │   ├── MessengerService.cs          #     Pub/sub typed message bus
 │   │   ├── ThemeService.cs              #     Color scheme + palette management
+│   │   ├── NtpService.cs               #     NTP time synchronization
+│   │   ├── DatabaseBackupService.cs     #     Database backup management
 │   │   ├── AppMetadataService.cs        #     App version + update check state
 │   │   └── NotifyIconService.cs         #     System tray icon management
 │   │
@@ -218,17 +239,12 @@ TimmyTools/
 │   │   ├── ApplicationActionMessage.cs  #     App start/close/new-instance
 │   │   ├── NoteActionMessage.cs         #     Note created/updated/deleted/closed
 │   │   ├── WindowActionMessage.cs       #     Generic window actions
+│   │   ├── MultipleNoteWindowActionMessage.cs  # Bulk note window actions
 │   │   ├── OpenNoteWindowMessage.cs     #     Request to open a note window
 │   │   ├── OpenSettingsWindowMessage.cs #     Request to open settings
-│   │   └── ...                          #     (7 message types total)
-│   │
-│   ├── Tools/                           #   20 text transformation tools
-│   │   ├── _Interfaces/ITool.cs         #     Tool interface
-│   │   ├── _BaseTool.cs                 #     Template Method base class
-│   │   ├── _ToolMenuAction.cs           #     Menu item descriptor
-│   │   ├── CaseTool.cs                  #     Lower/upper/proper case
-│   │   ├── HashTool.cs                  #     MD5, SHA1, SHA256/384/512
-│   │   └── ...                          #     (20 tool implementations)
+│   │   ├── OpenAtomicClockWindowMessage.cs  #  Request to open atomic clock
+│   │   ├── OpenBreakTimerWindowMessage.cs   #  Request to open break timer
+│   │   └── OpenManagementWindowMessage.cs   #  Request to open management window
 │   │
 │   ├── Commands/
 │   │   └── RelayCommand.cs              #   ICommand implementation + generic variant
@@ -236,7 +252,7 @@ TimmyTools/
 │   ├── Controls/                        #   Custom WPF controls
 │   │   ├── NoteTextBoxControl.cs        #     Extended RichTextBox for notes
 │   │   └── ContextMenus/
-│   │       └── NoteTextBoxContextMenu.cs#     Builds context menu with tools
+│   │       └── NoteTextBoxContextMenu.cs#     Builds Stickies-style context menu
 │   │
 │   ├── Helpers/                         #   Utility classes
 │   │   ├── ScreenHelper.cs              #     Multi-monitor bounds calculation
@@ -283,6 +299,8 @@ The application is split into two projects: **TimmyTools.Core** (data layer) and
 graph TB
     subgraph Views["Views (XAML + Code-Behind)"]
         NW[NoteWindow]
+        ACW[AtomicClockWindow]
+        BTW[BreakTimerWindow]
         SW[SettingsWindow]
         MW[ManagementWindow]
         STD[SetTitleDialog]
@@ -290,6 +308,8 @@ graph TB
 
     subgraph ViewModels["ViewModels"]
         NVM[NoteViewModel]
+        ACVM[AtomicClockViewModel]
+        BTVM[BreakTimerViewModel]
         SVM[SettingsViewModel]
         MVM[ManagementViewModel]
     end
@@ -299,7 +319,6 @@ graph TB
         ASM[ApplicationSettingsModel]
         NSM[NoteSettingsModel]
         ESM[EditorSettingsModel]
-        TSM[ToolSettingsModel]
     end
 
     subgraph Services["Services (Singleton DI)"]
@@ -307,6 +326,8 @@ graph TB
         SS[SettingsService]
         MS[MessengerService]
         TS[ThemeService]
+        NTP[NtpService]
+        DBS[DatabaseBackupService]
         AMS[AppMetadataService]
         NIS[NotifyIconService]
     end
@@ -319,10 +340,13 @@ graph TB
     end
 
     NW -->|DataBinding| NVM
+    ACW -->|DataBinding| ACVM
+    BTW -->|DataBinding| BTVM
     SW -->|DataBinding| SVM
     MW -->|DataBinding| MVM
     NVM --> NM
-    SS --> ASM & NSM & ESM & TSM
+    ACVM --> NTP
+    SS --> ASM & NSM & ESM
     MS -.->|Pub/Sub| WS & NVM & MVM
     NR & SR & AMR --> DB
 ```
@@ -330,13 +354,15 @@ graph TB
 </details>
 
 **Key design decisions:**
-- **Singleton services** -- `WindowService`, `SettingsService`, `MessengerService`, and `ThemeService` are registered as singletons to maintain shared state across the application.
+
+- **Singleton services** -- `WindowService`, `SettingsService`, `MessengerService`, `ThemeService`, and `NtpService` are registered as singletons to maintain shared state across the application.
 - **Transient windows** -- `SettingsWindow` and `ManagementWindow` are transient so they can be created and disposed independently.
 - **Message records** -- All pub/sub messages are C# `record` types in the `Messages/` folder, providing immutable, typed communication.
+- **Tool windows** -- The Atomic Clock and Break Timer are standalone windows managed by `WindowService`, following the same lifecycle as other tool windows.
 
 ### Settings Pipeline
 
-Settings flow from SQLite through the repository layer as immutable DTOs, get mapped into four observable model objects by `SettingsService`, bind to ViewModels, and render in XAML. Changes flow back through the same pipeline on application exit.
+Settings flow from SQLite through the repository layer as immutable DTOs, get mapped into three observable model objects by `SettingsService`, bind to ViewModels, and render in XAML. Changes flow back through the same pipeline on application exit.
 
 <p align="center">
   <img src="docs/settings-pipeline.svg" alt="Settings Pipeline Diagram" width="900" />
@@ -349,20 +375,21 @@ Settings flow from SQLite through the repository layer as immutable DTOs, get ma
 flowchart LR
     DB[(SQLite)] -->|SELECT| SR[SettingsRepository]
     SR -->|SettingsDataDto| SS[SettingsService]
-    SS --> ASM[ApplicationSettingsModel] & NSM[NoteSettingsModel] & ESM[EditorSettingsModel] & TSM[ToolSettingsModel]
-    ASM & NSM & ESM & TSM -->|PropertyChanged| SVM[SettingsViewModel]
+    SS --> ASM[ApplicationSettingsModel] & NSM[NoteSettingsModel] & ESM[EditorSettingsModel]
+    ASM & NSM & ESM -->|PropertyChanged| SVM[SettingsViewModel]
     SVM -->|DataBinding| SWX[SettingsWindow.xaml]
-    SWX -.->|User edits| SVM -.->|Updates| ASM & NSM & ESM & TSM
+    SWX -.->|User edits| SVM -.->|Updates| ASM & NSM & ESM
     SS -->|Save on exit| SR -->|UPDATE| DB
 ```
 
 </details>
 
 **How it works:**
+
 1. On startup, `SettingsService.Load()` reads a single `SettingsDataDto` record from the database.
-2. Fields are mapped into four model objects (`ApplicationSettingsModel`, `NoteSettingsModel`, `EditorSettingsModel`, `ToolSettingsModel`), each implementing `INotifyPropertyChanged`.
+2. Fields are mapped into three model objects (`ApplicationSettingsModel`, `NoteSettingsModel`, `EditorSettingsModel`), each implementing `INotifyPropertyChanged`.
 3. ViewModels and Views bind to these models. Changes propagate via `PropertyChanged` events.
-4. On exit, `SettingsService.Save()` constructs a new `SettingsDataDto` from all four models and writes it back to the database.
+4. On exit, `SettingsService.Save()` constructs a new `SettingsDataDto` from all three models and writes it back to the database.
 
 ### Note Lifecycle
 
@@ -416,6 +443,7 @@ stateDiagram-v2
 </details>
 
 **Key behaviors:**
+
 - **Auto-save** -- A `DispatcherTimer` fires every 5 seconds. If `IsSaved` is `false` (set automatically when any model property changes via `BaseModel.SetProperty<T>`), the note is persisted to the database.
 - **Empty note cleanup** -- When a note is closed, if its content is empty, it is automatically deleted from the database rather than saved.
 - **Duplicate prevention** -- `WindowService` tracks open note windows by ID. Attempting to open an already-open note activates the existing window instead of creating a duplicate.
@@ -443,17 +471,24 @@ Configured in `App.xaml.cs`:
 
 | Lifetime | Services |
 |----------|----------|
-| **Singleton** | `DatabaseConfiguration`, `NoteRepository`, `SettingsRepository`, `AppMetadataRepository`, `AppMetadataService`, `SettingsService`, `MessengerService`, `WindowService`, `ThemeService` |
-| **Transient** | `NotifyIconService`, `SettingsWindow`, `SettingsViewModel`, `ManagementWindow`, `ManagementViewModel` |
+| **Singleton** | `DatabaseConfiguration`, `SettingsRepository`, `AppMetadataRepository`, `NoteRepository`, `AppMetadataService`, `SettingsService`, `MessengerService`, `WindowService`, `ThemeService`, `DatabaseBackupService`, `NtpService` |
+| **Transient** | `NotifyIconService`, `SettingsWindow`, `SettingsViewModel`, `ManagementWindow`, `ManagementViewModel`, `BreakTimerWindow`, `BreakTimerViewModel`, `AtomicClockWindow`, `AtomicClockViewModel` |
 
-### Tools System
+### Context Menu System
 
-All 20 tools inherit from `BaseTool`, which implements the **Template Method** pattern. Each tool:
-1. Calls `InitializeMenuItem()` with a header and array of `ToolMenuAction` descriptors.
-2. Implements text transformation via `ApplyFunctionToNoteText()` or `ApplyFunctionToEachLine()`.
-3. Is instantiated in `NoteTextBoxContextMenu` and filtered by its `ToolState` setting (Disabled, Enabled, or Favourite).
+The right-click context menu is built by `NoteTextBoxContextMenu`, which constructs all submenus (Font, Size, Style, Case, Font Color, Paragraph, Counts) directly. Each submenu builder method creates `MenuItem` instances bound to commands on `NoteTextBoxControl`. The menu also includes inline spelling suggestions, undo/redo, clipboard operations, and a read-only lock toggle.
 
-To add a new tool: create a class extending `BaseTool`, implement the menu actions, and register it in the `NoteTextBoxContextMenu` constructor's tools array.
+To add a new context menu item: add a builder method in `NoteTextBoxContextMenu` and register it in the `Populate()` method.
+
+---
+
+## Attribution
+
+Timmy Tools builds on the work of several projects and inspirations:
+
+- **[PinnyNotes](https://github.com/63BeetleSmurf/PinnyNotes)** by 63BeetleSmurf -- The original sticky notes application that Timmy Tools was forked from. PinnyNotes provided the core note management, text transformation tools, and MVVM architecture that form the foundation of this project.
+- **Atomic Clock** -- The NTP-synced clock window was inspired by the need to display precise, server-synchronized time during live training sessions.
+- **Egg Timer** -- The break timer concept draws from classic egg timer utilities, adapted here as a training break countdown for pacing course sessions.
 
 ---
 

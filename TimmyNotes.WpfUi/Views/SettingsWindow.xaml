@@ -1,0 +1,413 @@
+﻿<Window x:Class="TimmyNotes.WpfUi.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:TimmyNotes.WpfUi.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
+        Title="Timmy Notes Settings"
+        ResizeMode="NoResize"
+        Width="340"
+        Height="445">
+
+    <Grid Margin="5,5,5,5">
+        <Grid.Resources>
+            <Style TargetType="TextBlock" >
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="4,4,4,0" />
+            </Style>
+            <Style TargetType="CheckBox" >
+                <Setter Property="Margin" Value="4,4,0,0" />
+            </Style>
+            <Style TargetType="ComboBox" >
+                <Setter Property="Margin" Value="0,4,0,0" />
+            </Style>
+            <Style TargetType="Slider" >
+                <Setter Property="Margin" Value="0,4,0,0" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0">
+
+            <!-- Application Tab -->
+            <TabItem Header="Application">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+
+                        <!-- Application General Group -->
+                        <GroupBox Header="General">
+                            <StackPanel>
+
+                                <CheckBox Content="Show tray icon" IsChecked="{Binding ApplicationSettings.ShowNotifyIcon}" />
+
+                                <CheckBox Content="Check for updates on startup" IsChecked="{Binding ApplicationSettings.CheckForUpdates}" />
+
+                            </StackPanel>
+                        </GroupBox>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Notes Tab -->
+            <TabItem Header="Notes">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+
+                        <!-- Notes General Group -->
+                        <GroupBox Header="General">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Default size (W x H)"/>
+                                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                                    <TextBox Width="50" Text="{Binding NoteSettings.DefaultWidth}" />
+                                    <TextBlock Text="x" />
+                                    <TextBox Width="50" Text="{Binding NoteSettings.DefaultHeight}" />
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Startup position"/>
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+                                          Width="120"
+                                          ItemsSource="{Binding StartupPositionsList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding NoteSettings.StartupPosition, Mode=TwoWay}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="2" Text="Allow notes to be minimized"/>
+                                <ComboBox Grid.Column="1" Grid.Row="2"
+                                          Width="120"
+                                          ItemsSource="{Binding MinimizeModeList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding NoteSettings.MinimizeMode, Mode=TwoWay}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="3" Text="Visibility mode"/>
+                                <ComboBox Grid.Column="1" Grid.Row="3"
+                                          Width="120"
+                                          ItemsSource="{Binding VisibilityModeList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding NoteSettings.VisibilityMode, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="4" Content="Hide title bar" IsChecked="{Binding NoteSettings.HideTitleBar}" />
+
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Notes Theme Group -->
+                        <GroupBox Header="Theme">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <CheckBox Grid.Column="0" Grid.Row="0" Content="Cycle colours" IsChecked="{Binding NoteSettings.CycleColours}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Colour mode"/>
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+                                          Width="120"
+                                          ItemsSource="{Binding ColourModeList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding NoteSettings.ColourMode, Mode=TwoWay}" />
+
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Notes Transparency Group -->
+                        <GroupBox Header="Transparency">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Grid.Row="0"
+                                           Grid.ColumnSpan="2"
+                                           FontStyle="Italic"
+                                           TextWrapping="Wrap"
+                                           Text="Transparency will slow performance, though mainly just with initial start-up."/>
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Mode"/>
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+                                          Width="120"
+                                          ItemsSource="{Binding TransparencyModeList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding NoteSettings.TransparencyMode, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="2" Margin="15,4,0,0" Content="Opaque when focused" IsEnabled="{Binding IsTransparencyEnabled}" IsChecked="{Binding NoteSettings.OpaqueWhenFocused}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="3" Text="Opaque value" />
+                                <Slider Grid.Column="1" Grid.Row="3" Minimum="0.1"
+                                        Maximum="1.0"
+                                        TickFrequency="0.1"
+                                        IsSnapToTickEnabled="True"
+                                        SmallChange="0.1"
+                                        LargeChange="0.1"
+                                        TickPlacement="BottomRight"
+                                        Width="120"
+                                        IsEnabled="{Binding IsTransparencyEnabled}"
+                                        Value="{Binding NoteSettings.OpaqueValue}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="4" Text="Transparent value" />
+                                <Slider Grid.Column="1" Grid.Row="4"
+                                        Minimum="0.1"
+                                        Maximum="1.0"
+                                        TickFrequency="0.1"
+                                        IsSnapToTickEnabled="True"
+                                        SmallChange="0.1"
+                                        LargeChange="0.1"
+                                        TickPlacement="BottomRight"
+                                        Width="120"
+                                        IsEnabled="{Binding IsTransparencyEnabled}"
+                                        Value="{Binding NoteSettings.TransparentValue}" />
+
+                            </Grid>
+                        </GroupBox>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Editor Tab -->
+            <TabItem Header="Editor" HorizontalAlignment="Left" Width="43">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+
+                        <!-- Editor General Group -->
+                        <GroupBox Header="General">
+                            <StackPanel>
+
+                                <CheckBox Grid.Column="0" Grid.Row="0" Content="Spell checker" IsChecked="{Binding EditorSettings.CheckSpelling}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="2" Content="New line at end" IsChecked="{Binding EditorSettings.NewLineAtEnd}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="3" Margin="15,4,0,0" Content="Keep new line at end visible" IsEnabled="{Binding EditorSettings.NewLineAtEnd}" IsChecked="{Binding EditorSettings.KeepNewLineVisible}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="4" Content="Wrap text" IsChecked="{Binding EditorSettings.WrapText}" />
+
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!-- Editor Fonts Group -->
+                        <GroupBox Header="Fonts">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Standard"/>
+                                <ComboBox Grid.Column="1" Grid.Row="0"
+                                          Width="120"
+                                          ItemsSource="{Binding FontFamilyList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.StandardFontFamily, Mode=TwoWay}" />
+
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Mono"/>
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+                                          Width="120"
+                                          ItemsSource="{Binding FontFamilyList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.MonoFontFamily, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="2" Margin="15,4,0,0" Content="Use mono font" IsChecked="{Binding EditorSettings.UseMonoFont}" />
+
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Editor Caret Group -->
+                        <GroupBox Header="Caret">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Thickness"/>
+                                <ComboBox Grid.Column="1" Grid.Row="0"
+                                          Width="120"
+                                          ItemsSource="{Binding CaretThicknessList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CaretThickness, Mode=TwoWay}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="1" Text="Colour"/>
+                                <ComboBox Grid.Column="1" Grid.Row="1"
+                                          Width="120"
+                                          ItemsSource="{Binding CaretColourList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CaretColour, Mode=TwoWay}" />
+
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Editor Indentation Group -->
+                        <GroupBox Header="Indentation">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <CheckBox Grid.Column="0" Grid.Row="0" Content="Auto indent" IsChecked="{Binding EditorSettings.AutoIndent}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="1" Content="Use spaces instead of tabs" IsChecked="{Binding EditorSettings.UseSpacesForTab}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="2" Content="Convert indentation in pasted text" IsChecked="{Binding EditorSettings.ConvertIndentationOnPaste}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="3" Text="Tab width"/>
+                                <TextBox Grid.Column="1" Grid.Row="3" Width="50" Text="{Binding EditorSettings.TabSpacesWidth}" />
+
+                            </Grid>
+                        </GroupBox>
+
+                        <!-- Editor Copy and Paste Group -->
+                        <GroupBox Header="Copy and Paste">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Column="0" Grid.Row="0" Text="Copy action"/>
+                                <ComboBox Grid.Column="1" Grid.Row="0"
+                                          Width="120"
+                                          ItemsSource="{Binding CopyActionList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CopyAction, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="1" Grid.Row="1" Content="Trim text" IsChecked="{Binding EditorSettings.TrimTextOnCopy}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="2" Text="Copy alt action (Hold Shift)"/>
+                                <ComboBox Grid.Column="1" Grid.Row="2"
+                                          Width="120"
+                                          ItemsSource="{Binding CopyActionList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CopyAltAction, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="1" Grid.Row="3" Content="Trim text" IsChecked="{Binding EditorSettings.TrimTextOnAltCopy}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="4" Text="Copy fallback action"/>
+                                <ComboBox Grid.Column="1" Grid.Row="4"
+                                          Width="120"
+                                          ItemsSource="{Binding CopyFallbackActionList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CopyFallbackAction, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="1" Grid.Row="5" Content="Trim text" IsChecked="{Binding EditorSettings.TrimTextOnFallbackCopy}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="6" Text="Copy alt fallback action"/>
+                                <ComboBox Grid.Column="1" Grid.Row="6"
+                                          Width="120"
+                                          ItemsSource="{Binding CopyFallbackActionList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.CopyAltFallbackAction, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="1" Grid.Row="7" Content="Trim text" IsChecked="{Binding EditorSettings.TrimTextOnAltFallbackCopy}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="8" Content="Auto copy" IsChecked="{Binding EditorSettings.CopyOnSelect}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="9" Text="Paste action"/>
+                                <ComboBox Grid.Column="1" Grid.Row="9"
+                                          Width="120"
+                                          ItemsSource="{Binding PasteActionList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.PasteAction, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="1" Grid.Row="10" Content="Trim text" IsChecked="{Binding EditorSettings.TrimTextOnPaste}" />
+
+                                <TextBlock Grid.Column="0" Grid.Row="11" Text="Paste alt action (Hold shift)"/>
+                                <ComboBox Grid.Column="1" Grid.Row="11"
+                                          Width="120"
+                                          ItemsSource="{Binding PasteActionList, Mode=OneTime}"
+                                          SelectedValuePath="Key"
+                                          DisplayMemberPath="Value"
+                                          SelectedValue="{Binding EditorSettings.PasteAltAction, Mode=TwoWay}" />
+
+                                <CheckBox Grid.Column="1" Grid.Row="12" Content="Trim text" IsChecked="{Binding EditorSettings.TrimTextOnAltPaste}" />
+
+                                <CheckBox Grid.Column="0" Grid.Row="13" Content="Middle click paste" IsChecked="{Binding EditorSettings.MiddleClickPaste}" />
+
+                            </Grid>
+                        </GroupBox>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+        </TabControl>
+
+    </Grid>
+</Window>

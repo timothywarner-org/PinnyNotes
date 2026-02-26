@@ -2,9 +2,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 
-using TimmyTools.WpfUi.Services;
+using TimmyNotes.WpfUi.Services;
 
-namespace TimmyTools.WpfUi.ViewModels;
+namespace TimmyNotes.WpfUi.ViewModels;
 
 public class AtomicClockViewModel : INotifyPropertyChanged
 {
@@ -99,7 +99,7 @@ public class AtomicClockViewModel : INotifyPropertyChanged
     {
         DateTime now = CurrentTime;
 
-        DateText = now.ToString("ddd, MMM dd, yyyy");
+        DateText = now.ToString("ddd, M, dd, yyyy");
         TimeText = now.ToString("h:mm:ss tt");
 
         double hours = now.Hour % 12;

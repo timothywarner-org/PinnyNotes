@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 
-using PinnyNotes.WpfUi.Interop.Structures;
+using TimmyNotes.WpfUi.Interop.Structures;
 
-namespace PinnyNotes.WpfUi.Interop;
+namespace TimmyNotes.WpfUi.Interop;
 
 internal partial class User32
 {

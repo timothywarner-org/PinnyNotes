@@ -1,10 +1,10 @@
 ﻿using Microsoft.Data.Sqlite;
 
-using PinnyNotes.Core.Configurations;
-using PinnyNotes.Core.DataTransferObjects;
-using PinnyNotes.Core.Enums;
+using TimmyNotes.Core.Configurations;
+using TimmyNotes.Core.DataTransferObjects;
+using TimmyNotes.Core.Enums;
 
-namespace PinnyNotes.Core.Repositories;
+namespace TimmyNotes.Core.Repositories;
 
 public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : BaseRepository(databaseConfiguration)
 {

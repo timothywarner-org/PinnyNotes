@@ -4,11 +4,11 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Commands;
-using PinnyNotes.WpfUi.Tools;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Commands;
+using TimmyNotes.WpfUi.Tools;
 
-namespace PinnyNotes.WpfUi.Controls.ContextMenus;
+namespace TimmyNotes.WpfUi.Controls.ContextMenus;
 
 public class NoteTextBoxContextMenu : ContextMenu
 {

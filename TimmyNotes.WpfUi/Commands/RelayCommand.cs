@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace PinnyNotes.WpfUi.Commands;
+namespace TimmyNotes.WpfUi.Commands;
 
 public class RelayCommand<T>(Action<T> execute, Predicate<T>? canExecute = null) : ICommand
 {

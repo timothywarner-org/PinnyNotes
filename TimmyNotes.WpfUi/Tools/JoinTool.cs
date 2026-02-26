@@ -1,8 +1,8 @@
-﻿using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Controls;
-using PinnyNotes.WpfUi.Commands;
+﻿using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Controls;
+using TimmyNotes.WpfUi.Commands;
 
-namespace PinnyNotes.WpfUi.Tools;
+namespace TimmyNotes.WpfUi.Tools;
 
 public class JoinTool : BaseTool, ITool
 {

@@ -1,10 +1,10 @@
 ﻿using System.Drawing.Text;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Models;
-using PinnyNotes.WpfUi.Services;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Models;
+using TimmyNotes.WpfUi.Services;
 
-namespace PinnyNotes.WpfUi.ViewModels;
+namespace TimmyNotes.WpfUi.ViewModels;
 
 public class SettingsViewModel : BaseViewModel
 {

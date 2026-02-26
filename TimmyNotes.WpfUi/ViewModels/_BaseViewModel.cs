@@ -1,6 +1,6 @@
-﻿using PinnyNotes.WpfUi.Services;
+﻿using TimmyNotes.WpfUi.Services;
 
-namespace PinnyNotes.WpfUi.ViewModels;
+namespace TimmyNotes.WpfUi.ViewModels;
 
 public abstract class BaseViewModel(AppMetadataService appMetadataService, SettingsService settingsService, MessengerService messengerService)
 {

@@ -1,6 +1,6 @@
-﻿using PinnyNotes.Core.Enums;
+﻿using TimmyNotes.Core.Enums;
 
-namespace PinnyNotes.WpfUi.Models;
+namespace TimmyNotes.WpfUi.Models;
 
 public class NoteSettingsModel : BaseModel
 {

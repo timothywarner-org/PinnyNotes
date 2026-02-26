@@ -4,9 +4,9 @@ using System.Windows.Threading;
 
 using Microsoft.Data.Sqlite;
 
-using PinnyNotes.Core.Configurations;
+using TimmyNotes.Core.Configurations;
 
-namespace PinnyNotes.WpfUi.Services;
+namespace TimmyNotes.WpfUi.Services;
 
 public class DatabaseBackupService(DatabaseConfiguration databaseConfiguration)
 {

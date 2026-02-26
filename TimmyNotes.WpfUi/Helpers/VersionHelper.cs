@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Windows;
 
-namespace PinnyNotes.WpfUi.Helpers;
+namespace TimmyNotes.WpfUi.Helpers;
 
 public static class VersionHelper
 {
@@ -18,7 +18,7 @@ public static class VersionHelper
         {
             if (CurrentVersion < await GetLatestGitHubReleaseVersion())
                 MessageBox.Show(
-                    $"A new version of Pinny Notes is available;{Environment.NewLine}https://github.com/timothywarner-org/PinnyNotes/releases/latest",
+                    $"A new version of Timmy Notes is available;{Environment.NewLine}https://github.com/timothywarner-org/TimmyNotes/releases/latest",
                     "Update available",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
@@ -33,12 +33,12 @@ public static class VersionHelper
     private static async Task<Version?> GetLatestGitHubReleaseVersion()
     {
         using HttpClient client = new() { Timeout = TimeSpan.FromSeconds(10) };
-        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("PinnyNotes", CurrentVersion.ToString()));
+        client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("TimmyNotes", CurrentVersion.ToString()));
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         try
         {
-            HttpResponseMessage response = await client.GetAsync("https://api.github.com/repos/timothywarner-org/PinnyNotes/releases/latest");
+            HttpResponseMessage response = await client.GetAsync("https://api.github.com/repos/timothywarner-org/TimmyNotes/releases/latest");
             if (!response.IsSuccessStatusCode)
                 return null;
 

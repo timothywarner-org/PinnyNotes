@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace PinnyNotes.WpfUi.Messages;
+namespace TimmyNotes.WpfUi.Messages;
 
 public record OpenSettingsWindowMessage(
     Window? Owner = null

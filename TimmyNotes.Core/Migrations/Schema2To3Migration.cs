@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.Core.Migrations;
+﻿namespace TimmyNotes.Core.Migrations;
 
 public class Schema2To3Migration : SchemaMigration
 {

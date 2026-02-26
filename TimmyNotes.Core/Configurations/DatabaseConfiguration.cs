@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.Core.Configurations;
+﻿namespace TimmyNotes.Core.Configurations;
 
 public class DatabaseConfiguration
 {

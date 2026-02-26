@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.WpfUi.Themes;
+﻿namespace TimmyNotes.WpfUi.Themes;
 
 public class DefaultTheme : Theme
 {

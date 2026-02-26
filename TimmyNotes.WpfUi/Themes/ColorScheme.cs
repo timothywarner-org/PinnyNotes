@@ -1,7 +1,7 @@
 ﻿using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace PinnyNotes.WpfUi.Themes;
+namespace TimmyNotes.WpfUi.Themes;
 
 public class ColourScheme(string name, string iconColourHex, Palette light, Palette dark)
 {

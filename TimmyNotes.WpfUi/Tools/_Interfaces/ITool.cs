@@ -1,8 +1,8 @@
 ﻿using System.Windows.Controls;
 
-using PinnyNotes.Core.Enums;
+using TimmyNotes.Core.Enums;
 
-namespace PinnyNotes.WpfUi.Tools;
+namespace TimmyNotes.WpfUi.Tools;
 
 public interface ITool
 {

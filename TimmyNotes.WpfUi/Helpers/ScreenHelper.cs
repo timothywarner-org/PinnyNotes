@@ -2,11 +2,11 @@
 using System.Windows;
 using System.Windows.Interop;
 
-using PinnyNotes.WpfUi.Interop;
-using PinnyNotes.WpfUi.Interop.Constants;
-using PinnyNotes.WpfUi.Interop.Structures;
+using TimmyNotes.WpfUi.Interop;
+using TimmyNotes.WpfUi.Interop.Constants;
+using TimmyNotes.WpfUi.Interop.Structures;
 
-namespace PinnyNotes.WpfUi.Helpers;
+namespace TimmyNotes.WpfUi.Helpers;
 
 public static class ScreenHelper
 {

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace PinnyNotes.WpfUi.Interop.Structures;
+namespace TimmyNotes.WpfUi.Interop.Structures;
 
 [StructLayout(LayoutKind.Sequential)]
 internal struct MONITORINFO

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
 
-using PinnyNotes.Core.Migrations;
-using PinnyNotes.Core.Repositories;
+using TimmyNotes.Core.Migrations;
+using TimmyNotes.Core.Repositories;
 
-namespace PinnyNotes.Core;
+namespace TimmyNotes.Core;
 
 public class DatabaseInitialiser
 {
@@ -25,7 +25,7 @@ public class DatabaseInitialiser
 
         int databaseSchemaVersion = GetSchemaVersion(connection);
         if (databaseSchemaVersion > SchemaVersion)
-            throw new Exception("Database is from a newer version of Pinny Notes.");
+            throw new Exception("Database is from a newer version of Timmy Notes.");
         else if (databaseSchemaVersion < SchemaVersion)
             await UpdateDatabase(connection, databaseSchemaVersion);
     }

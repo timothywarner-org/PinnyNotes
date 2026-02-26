@@ -1,6 +1,6 @@
-﻿using PinnyNotes.WpfUi.Models;
+﻿using TimmyNotes.WpfUi.Models;
 
-namespace PinnyNotes.WpfUi.Messages;
+namespace TimmyNotes.WpfUi.Messages;
 
 public record OpenNoteWindowMessage(
     int? NoteId = null,

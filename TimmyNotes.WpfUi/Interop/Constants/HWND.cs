@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.WpfUi.Interop.Constants;
+﻿namespace TimmyNotes.WpfUi.Interop.Constants;
 
 internal static class HWND
 {

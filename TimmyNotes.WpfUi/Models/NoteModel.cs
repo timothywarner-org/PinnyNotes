@@ -4,11 +4,11 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-using PinnyNotes.Core.DataTransferObjects;
-using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Themes;
+using TimmyNotes.Core.DataTransferObjects;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Themes;
 
-namespace PinnyNotes.WpfUi.Models;
+namespace TimmyNotes.WpfUi.Models;
 
 public class NoteModel : BaseModel
 {

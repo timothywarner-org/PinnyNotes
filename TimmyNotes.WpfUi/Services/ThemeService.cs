@@ -1,8 +1,8 @@
-﻿using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Helpers;
-using PinnyNotes.WpfUi.Themes;
+﻿using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Helpers;
+using TimmyNotes.WpfUi.Themes;
 
-namespace PinnyNotes.WpfUi.Services;
+namespace TimmyNotes.WpfUi.Services;
 
 public class ThemeService(AppMetadataService appMetadataService, SettingsService settingsService)
 {

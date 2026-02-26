@@ -1,9 +1,9 @@
 ﻿using System.Windows.Media;
 
-using PinnyNotes.Core.DataTransferObjects;
-using PinnyNotes.WpfUi.Themes;
+using TimmyNotes.Core.DataTransferObjects;
+using TimmyNotes.WpfUi.Themes;
 
-namespace PinnyNotes.WpfUi.Models;
+namespace TimmyNotes.WpfUi.Models;
 
 public class NotePreviewModel : BaseModel
 {

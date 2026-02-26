@@ -1,12 +1,12 @@
 ﻿using System.Windows;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Helpers;
-using PinnyNotes.WpfUi.Messages;
-using PinnyNotes.WpfUi.Services;
-using PinnyNotes.WpfUi.ViewModels;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Helpers;
+using TimmyNotes.WpfUi.Messages;
+using TimmyNotes.WpfUi.Services;
+using TimmyNotes.WpfUi.ViewModels;
 
-namespace PinnyNotes.WpfUi.Views;
+namespace TimmyNotes.WpfUi.Views;
 
 public partial class SettingsWindow : Window
 {

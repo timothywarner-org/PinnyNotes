@@ -3,11 +3,11 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Messages;
-using PinnyNotes.WpfUi.Models;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Messages;
+using TimmyNotes.WpfUi.Models;
 
-namespace PinnyNotes.WpfUi.Services;
+namespace TimmyNotes.WpfUi.Services;
 
 public class NotifyIconService : IDisposable
 {
@@ -62,7 +62,7 @@ public class NotifyIconService : IDisposable
             IconSource = new System.Windows.Media.Imaging.BitmapImage(
                 new Uri("pack://application:,,,/Images/icon.ico")
             ),
-            ToolTipText = "Pinny Notes",
+            ToolTipText = "Timmy Notes",
             Visibility = Visibility.Visible
         };
 

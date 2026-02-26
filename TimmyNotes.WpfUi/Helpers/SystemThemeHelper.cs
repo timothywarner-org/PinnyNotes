@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace PinnyNotes.WpfUi.Helpers;
+namespace TimmyNotes.WpfUi.Helpers;
 
 public static class SystemThemeHelper
 {

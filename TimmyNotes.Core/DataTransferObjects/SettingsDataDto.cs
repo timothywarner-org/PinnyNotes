@@ -1,6 +1,6 @@
-﻿using PinnyNotes.Core.Enums;
+﻿using TimmyNotes.Core.Enums;
 
-namespace PinnyNotes.Core.DataTransferObjects;
+namespace TimmyNotes.Core.DataTransferObjects;
 
 public record SettingsDataDto(
      int Id,

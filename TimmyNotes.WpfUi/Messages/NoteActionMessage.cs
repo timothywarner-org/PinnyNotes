@@ -1,7 +1,7 @@
-﻿using PinnyNotes.Core.DataTransferObjects;
-using PinnyNotes.Core.Enums;
+﻿using TimmyNotes.Core.DataTransferObjects;
+using TimmyNotes.Core.Enums;
 
-namespace PinnyNotes.WpfUi.Messages;
+namespace TimmyNotes.WpfUi.Messages;
 
 public record NoteActionMessage(
     NoteAction Action,

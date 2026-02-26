@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace PinnyNotes.WpfUi.Models;
+namespace TimmyNotes.WpfUi.Models;
 
 public abstract class BaseModel : INotifyPropertyChanged
 {

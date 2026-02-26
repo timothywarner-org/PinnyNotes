@@ -3,14 +3,14 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
-    <RootNamespace>PinnyNotes.WpfUi</RootNamespace>
+    <RootNamespace>TimmyNotes.WpfUi</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <PackageIcon>icon.png</PackageIcon>
     <ApplicationIcon>Images\icon.ico</ApplicationIcon>
     <Version>1.16.0</Version>
-    <AssemblyName>Pinny Notes</AssemblyName>
+    <AssemblyName>Timmy Notes</AssemblyName>
     <Platforms>AnyCPU;x64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PinnyNotes.Core\PinnyNotes.Core.csproj" />
+    <ProjectReference Include="..\TimmyNotes.Core\TimmyNotes.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

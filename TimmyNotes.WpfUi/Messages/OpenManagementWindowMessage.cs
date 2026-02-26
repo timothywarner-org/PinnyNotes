@@ -1,3 +1,3 @@
-﻿namespace PinnyNotes.WpfUi.Messages;
+﻿namespace TimmyNotes.WpfUi.Messages;
 
 public record OpenManagementWindowMessage();

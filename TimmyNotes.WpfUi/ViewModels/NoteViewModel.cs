@@ -2,18 +2,18 @@
 using System.Windows;
 using System.Windows.Threading;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.Core.Repositories;
-using PinnyNotes.WpfUi.Commands;
-using PinnyNotes.WpfUi.Helpers;
-using PinnyNotes.WpfUi.Interop;
-using PinnyNotes.WpfUi.Interop.Constants;
-using PinnyNotes.WpfUi.Messages;
-using PinnyNotes.WpfUi.Models;
-using PinnyNotes.WpfUi.Services;
-using PinnyNotes.WpfUi.Themes;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.Core.Repositories;
+using TimmyNotes.WpfUi.Commands;
+using TimmyNotes.WpfUi.Helpers;
+using TimmyNotes.WpfUi.Interop;
+using TimmyNotes.WpfUi.Interop.Constants;
+using TimmyNotes.WpfUi.Messages;
+using TimmyNotes.WpfUi.Models;
+using TimmyNotes.WpfUi.Services;
+using TimmyNotes.WpfUi.Themes;
 
-namespace PinnyNotes.WpfUi.ViewModels;
+namespace TimmyNotes.WpfUi.ViewModels;
 
 public class NoteViewModel : BaseViewModel
 {

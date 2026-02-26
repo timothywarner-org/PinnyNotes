@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace PinnyNotes.WpfUi.Services;
+namespace TimmyNotes.WpfUi.Services;
 
 public class MessengerService
 {

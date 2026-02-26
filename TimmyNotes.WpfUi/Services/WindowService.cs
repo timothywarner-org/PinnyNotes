@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.Core.Repositories;
-using PinnyNotes.WpfUi.Helpers;
-using PinnyNotes.WpfUi.Messages;
-using PinnyNotes.WpfUi.Models;
-using PinnyNotes.WpfUi.ViewModels;
-using PinnyNotes.WpfUi.Views;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.Core.Repositories;
+using TimmyNotes.WpfUi.Helpers;
+using TimmyNotes.WpfUi.Messages;
+using TimmyNotes.WpfUi.Models;
+using TimmyNotes.WpfUi.ViewModels;
+using TimmyNotes.WpfUi.Views;
 
-namespace PinnyNotes.WpfUi.Services;
+namespace TimmyNotes.WpfUi.Services;
 
 public class WindowService
 {

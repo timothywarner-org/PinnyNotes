@@ -1,8 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 
-using PinnyNotes.Core.Configurations;
+using TimmyNotes.Core.Configurations;
 
-namespace PinnyNotes.Core.Repositories;
+namespace TimmyNotes.Core.Repositories;
 
 public abstract class BaseRepository
 {

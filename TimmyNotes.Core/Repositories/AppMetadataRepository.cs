@@ -1,9 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
 
-using PinnyNotes.Core.Configurations;
-using PinnyNotes.Core.DataTransferObjects;
+using TimmyNotes.Core.Configurations;
+using TimmyNotes.Core.DataTransferObjects;
 
-namespace PinnyNotes.Core.Repositories;
+namespace TimmyNotes.Core.Repositories;
 
 public class AppMetadataRepository(DatabaseConfiguration databaseConfiguration) : BaseRepository(databaseConfiguration)
 {

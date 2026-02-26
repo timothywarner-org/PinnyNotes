@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.WpfUi.Models;
+﻿namespace TimmyNotes.WpfUi.Models;
 
 public class AppMetadataModel : BaseModel
 {

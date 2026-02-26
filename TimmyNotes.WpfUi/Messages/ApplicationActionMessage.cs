@@ -1,6 +1,6 @@
-﻿using PinnyNotes.Core.Enums;
+﻿using TimmyNotes.Core.Enums;
 
-namespace PinnyNotes.WpfUi.Messages;
+namespace TimmyNotes.WpfUi.Messages;
 
 public record ApplicationActionMessage(
     ApplicationAction Action

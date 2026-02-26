@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.Core.Enums;
+﻿namespace TimmyNotes.Core.Enums;
 
 public enum NoteAction
 {

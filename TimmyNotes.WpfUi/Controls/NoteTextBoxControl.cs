@@ -6,11 +6,11 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Commands;
-using PinnyNotes.WpfUi.Controls.ContextMenus;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Commands;
+using TimmyNotes.WpfUi.Controls.ContextMenus;
 
-namespace PinnyNotes.WpfUi.Controls;
+namespace TimmyNotes.WpfUi.Controls;
 
 public partial class NoteTextBoxControl : RichTextBox
 {

@@ -1,11 +1,11 @@
-﻿using PinnyNotes.WpfUi.Helpers;
-using PinnyNotes.WpfUi.Models;
-using PinnyNotes.WpfUi.ViewModels;
+﻿using TimmyNotes.WpfUi.Helpers;
+using TimmyNotes.WpfUi.Models;
+using TimmyNotes.WpfUi.ViewModels;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace PinnyNotes.WpfUi.Views;
+namespace TimmyNotes.WpfUi.Views;
 
 public partial class ManagementWindow : Window
 {

@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.Core.DataTransferObjects;
+﻿namespace TimmyNotes.Core.DataTransferObjects;
 
 public record AppMetadataDataDto(
     int Id,

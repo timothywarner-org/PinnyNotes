@@ -1,8 +1,8 @@
-﻿using PinnyNotes.Core.DataTransferObjects;
-using PinnyNotes.Core.Repositories;
-using PinnyNotes.WpfUi.Models;
+﻿using TimmyNotes.Core.DataTransferObjects;
+using TimmyNotes.Core.Repositories;
+using TimmyNotes.WpfUi.Models;
 
-namespace PinnyNotes.WpfUi.Services;
+namespace TimmyNotes.WpfUi.Services;
 
 public class AppMetadataService(AppMetadataRepository appMetadataRepository)
 {

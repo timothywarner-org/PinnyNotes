@@ -1,8 +1,8 @@
-﻿using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Commands;
-using PinnyNotes.WpfUi.Controls;
+﻿using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Commands;
+using TimmyNotes.WpfUi.Controls;
 
-namespace PinnyNotes.WpfUi.Tools;
+namespace TimmyNotes.WpfUi.Tools;
 
 public class GuidTool : BaseTool, ITool
 {

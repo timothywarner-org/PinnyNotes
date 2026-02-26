@@ -6,15 +6,15 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 
-using PinnyNotes.Core.Enums;
-using PinnyNotes.WpfUi.Helpers;
-using PinnyNotes.WpfUi.Messages;
-using PinnyNotes.WpfUi.Models;
-using PinnyNotes.WpfUi.Services;
-using PinnyNotes.WpfUi.Themes;
-using PinnyNotes.WpfUi.ViewModels;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.WpfUi.Helpers;
+using TimmyNotes.WpfUi.Messages;
+using TimmyNotes.WpfUi.Models;
+using TimmyNotes.WpfUi.Services;
+using TimmyNotes.WpfUi.Themes;
+using TimmyNotes.WpfUi.ViewModels;
 
-namespace PinnyNotes.WpfUi.Views;
+namespace TimmyNotes.WpfUi.Views;
 
 public partial class NoteWindow : Window
 {

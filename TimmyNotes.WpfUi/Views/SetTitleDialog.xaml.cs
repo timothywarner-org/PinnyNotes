@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace PinnyNotes.WpfUi.Views;
+namespace TimmyNotes.WpfUi.Views;
 
 public partial class SetTitleDialog : Window
 {

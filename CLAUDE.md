@@ -4,22 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PinnyNotes is a WPF sticky notes application for Windows, forked from [63BeetleSmurf/PinnyNotes](https://github.com/63BeetleSmurf/PinnyNotes). The goal is to replicate and extend functionality inspired by Zhorn Software's Stickies.
+TimmyNotes is a WPF sticky notes application for Windows, forked from [63BeetleSmurf/TimmyNotes](https://github.com/63BeetleSmurf/TimmyNotes). The goal is to replicate and extend functionality inspired by Zhorn Software's Stickies.
 
 ## Build & Run
 
 ```bash
 # Build the solution
-dotnet build PinnyNotes.sln
+dotnet build TimmyNotes.sln
 
 # Run the app
-dotnet run --project PinnyNotes.WpfUi
+dotnet run --project TimmyNotes.WpfUi
 
 # Build release
-dotnet build PinnyNotes.sln -c Release
+dotnet build TimmyNotes.sln -c Release
 ```
 
-Target: .NET 10.0 (WPF, Windows-only). The solution has three projects but only two build via `dotnet`: **PinnyNotes.Core** (class library) and **PinnyNotes.WpfUi** (WPF exe). PinnyNotes.Setup is a Visual Studio Installer project (.vdproj) and does not build from CLI.
+Target: .NET 10.0 (WPF, Windows-only). The solution has three projects but only two build via `dotnet`: **TimmyNotes.Core** (class library) and **TimmyNotes.WpfUi** (WPF exe). TimmyNotes.Setup is a Visual Studio Installer project (.vdproj) and does not build from CLI.
 
 ## Architecture
 
@@ -27,8 +27,8 @@ Target: .NET 10.0 (WPF, Windows-only). The solution has three projects but only 
 
 ### Project Layout
 
-- **PinnyNotes.Core** — Data layer. SQLite database via Microsoft.Data.Sqlite, repository pattern, DTOs (record types), enums, and schema migrations.
-- **PinnyNotes.WpfUi** — UI layer. Views (WPF windows/controls), ViewModels, Models (INotifyPropertyChanged), Services, Tools, Commands, Interop (Win32 API calls).
+- **TimmyNotes.Core** — Data layer. SQLite database via Microsoft.Data.Sqlite, repository pattern, DTOs (record types), enums, and schema migrations.
+- **TimmyNotes.WpfUi** — UI layer. Views (WPF windows/controls), ViewModels, Models (INotifyPropertyChanged), Services, Tools, Commands, Interop (Win32 API calls).
 
 ### Key Architectural Flows
 
@@ -36,7 +36,7 @@ Target: .NET 10.0 (WPF, Windows-only). The solution has three projects but only 
 
 **Tools System:** 20 text transformation tools inherit from `BaseTool` (Template Method pattern). Each tool builds its own `MenuItem` tree. Tools are instantiated in `NoteTextBoxContextMenu` and filtered by `ToolState` (Disabled/Enabled/Favourite) from settings. To add a new tool: create a class extending `BaseTool`, implement menu items, and register it in the `NoteTextBoxContextMenu` constructor's tools array.
 
-**Database Migrations:** `DatabaseInitializer` runs sequential migrations (`SchemaMigration` subclasses) from current version to target. Current schema version: 5. Migrations live in `PinnyNotes.Core/Migrations/`.
+**Database Migrations:** `DatabaseInitializer` runs sequential migrations (`SchemaMigration` subclasses) from current version to target. Current schema version: 5. Migrations live in `TimmyNotes.Core/Migrations/`.
 
 **Settings:** Four model objects (`ApplicationSettingsModel`, `NoteSettingsModel`, `EditorSettingsModel`, `ToolSettingsModel`) loaded from DB via `SettingsService` on startup, saved on exit.
 

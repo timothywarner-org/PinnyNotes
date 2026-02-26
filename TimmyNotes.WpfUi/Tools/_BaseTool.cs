@@ -1,11 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
-using PinnyNotes.WpfUi.Controls;
-using PinnyNotes.WpfUi.Services;
-using PinnyNotes.WpfUi.Models;
+using TimmyNotes.WpfUi.Controls;
+using TimmyNotes.WpfUi.Services;
+using TimmyNotes.WpfUi.Models;
 
-namespace PinnyNotes.WpfUi.Tools;
+namespace TimmyNotes.WpfUi.Tools;
 
 public abstract class BaseTool
 {

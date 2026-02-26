@@ -1,4 +1,4 @@
-﻿namespace PinnyNotes.WpfUi.Themes;
+﻿namespace TimmyNotes.WpfUi.Themes;
 
 public abstract class Theme
 {

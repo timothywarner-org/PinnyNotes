@@ -2,18 +2,18 @@
 using System.ComponentModel;
 using System.Windows;
 
-using PinnyNotes.Core;
-using PinnyNotes.Core.Configurations;
-using PinnyNotes.Core.Enums;
-using PinnyNotes.Core.Repositories;
-using PinnyNotes.WpfUi.Helpers;
-using PinnyNotes.WpfUi.Messages;
-using PinnyNotes.WpfUi.Models;
-using PinnyNotes.WpfUi.Services;
-using PinnyNotes.WpfUi.ViewModels;
-using PinnyNotes.WpfUi.Views;
+using TimmyNotes.Core;
+using TimmyNotes.Core.Configurations;
+using TimmyNotes.Core.Enums;
+using TimmyNotes.Core.Repositories;
+using TimmyNotes.WpfUi.Helpers;
+using TimmyNotes.WpfUi.Messages;
+using TimmyNotes.WpfUi.Models;
+using TimmyNotes.WpfUi.Services;
+using TimmyNotes.WpfUi.ViewModels;
+using TimmyNotes.WpfUi.Views;
 
-namespace PinnyNotes.WpfUi;
+namespace TimmyNotes.WpfUi;
 
 public partial class App : Application
 {
@@ -107,7 +107,7 @@ public partial class App : Application
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"Pinny Notes failed to start:{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+                $"Timmy Notes failed to start:{Environment.NewLine}{Environment.NewLine}{ex.Message}",
                 "Startup Error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error

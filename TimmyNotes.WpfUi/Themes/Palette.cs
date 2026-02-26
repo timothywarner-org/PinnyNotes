@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace PinnyNotes.WpfUi.Themes;
+namespace TimmyNotes.WpfUi.Themes;
 
 public class Palette(string borderHex, string backgroundHex, string titleBarHex, string buttonHex, string textHex)
 {

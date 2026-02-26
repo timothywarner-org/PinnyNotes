@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace PinnyNotes.WpfUi.Tools;
+namespace TimmyNotes.WpfUi.Tools;
 
 public class ToolMenuAction(string name, ICommand? command = null, Enum? action = null)
 {

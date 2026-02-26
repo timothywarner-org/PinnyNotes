@@ -1,12 +1,12 @@
-# Pinny Notes
+# Timmy Notes
 
 [![License: GPL v2](https://img.shields.io/badge/License-GPL_v2-blue.svg?style=flat-square)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows)](https://github.com/timothywarner-org/PinnyNotes)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows)](https://github.com/timothywarner-org/TimmyNotes)
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet)](https://dotnet.microsoft.com/)
 
-![Pinny Notes Screenshot](assets/Screenshot.png)
+![Timmy Notes Screenshot](assets/Screenshot.png)
 
-**Pinny Notes** is a Windows sticky notes application built with WPF and .NET 10.0. Pin notes to stay always on top, transform text with 20 built-in tools, manage multiple notes with color themes and transparency, and persist everything in a local SQLite database. Forked from [63BeetleSmurf/PinnyNotes](https://github.com/63BeetleSmurf/PinnyNotes), with the goal of replicating and extending functionality inspired by Zhorn Software's Stickies.
+**Timmy Notes** is a Windows sticky notes application built with WPF and .NET 10.0. Pin notes to stay always on top, transform text with 20 built-in tools, manage multiple notes with color themes and transparency, and persist everything in a local SQLite database. Forked from [63BeetleSmurf/TimmyNotes](https://github.com/63BeetleSmurf/TimmyNotes), with the goal of replicating and extending functionality inspired by Zhorn Software's Stickies.
 
 ---
 
@@ -99,17 +99,17 @@
 
 ## Installation
 
-> **Windows only.** Pinny Notes is built with WPF, which does not support Linux or macOS.
+> **Windows only.** Timmy Notes is built with WPF, which does not support Linux or macOS.
 
 ### Installer
 
-1. Go to the [Releases page](https://github.com/timothywarner-org/PinnyNotes/releases).
+1. Go to the [Releases page](https://github.com/timothywarner-org/TimmyNotes/releases).
 2. Download the latest `.msi` installer and run it.
 
 ### Portable
 
-1. Download the latest `.zip` from the [Releases page](https://github.com/timothywarner-org/PinnyNotes/releases).
-2. Extract it anywhere and run `Pinny Notes.exe`.
+1. Download the latest `.zip` from the [Releases page](https://github.com/timothywarner-org/TimmyNotes/releases).
+2. Extract it anywhere and run `Timmy Notes.exe`.
 3. Data is stored next to the executable (no AppData usage).
 
 ---
@@ -120,28 +120,28 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/timothywarner-org/PinnyNotes.git
-cd PinnyNotes
+git clone https://github.com/timothywarner-org/TimmyNotes.git
+cd TimmyNotes
 
 # Build the solution
-dotnet build PinnyNotes.sln
+dotnet build TimmyNotes.sln
 
 # Run the application
-dotnet run --project PinnyNotes.WpfUi
+dotnet run --project TimmyNotes.WpfUi
 
 # Build a release configuration
-dotnet build PinnyNotes.sln -c Release
+dotnet build TimmyNotes.sln -c Release
 ```
 
-> **Note:** The `PinnyNotes.Setup` project is a Visual Studio Installer project (`.vdproj`) and does not build from the CLI. It requires Visual Studio with the Installer Projects extension.
+> **Note:** The `TimmyNotes.Setup` project is a Visual Studio Installer project (`.vdproj`) and does not build from the CLI. It requires Visual Studio with the Installer Projects extension.
 
 ---
 
 ## Project Structure
 
 ```
-PinnyNotes/
-├── PinnyNotes.sln                      # Solution file (3 projects)
+TimmyNotes/
+├── TimmyNotes.sln                      # Solution file (3 projects)
 ├── CLAUDE.md                           # AI assistant project context
 ├── .editorconfig                       # Code style rules (explicit types, Allman braces)
 │
@@ -154,8 +154,8 @@ PinnyNotes/
 │   ├── settings-pipeline.svg           #   Settings data flow diagram
 │   └── note-lifecycle.svg              #   Note state machine diagram
 │
-├── PinnyNotes.Core/                    # DATA LAYER (class library, net10.0)
-│   ├── PinnyNotes.Core.csproj          #   Depends on: Microsoft.Data.Sqlite
+├── TimmyNotes.Core/                    # DATA LAYER (class library, net10.0)
+│   ├── TimmyNotes.Core.csproj          #   Depends on: Microsoft.Data.Sqlite
 │   ├── DatabaseInitializer.cs          #   Creates DB schema, runs migrations
 │   ├── Configurations/
 │   │   └── DatabaseConfiguration.cs    #   Connection string + path resolution
@@ -180,8 +180,8 @@ PinnyNotes/
 │       ├── SettingsRepository.cs       #   CRUD for settings
 │       └── AppMetadataRepository.cs    #   CRUD for app metadata
 │
-├── PinnyNotes.WpfUi/                   # UI LAYER (WPF executable, net10.0-windows)
-│   ├── PinnyNotes.WpfUi.csproj         #   Depends on: Core, H.NotifyIcon.Wpf, MS DI
+├── TimmyNotes.WpfUi/                   # UI LAYER (WPF executable, net10.0-windows)
+│   ├── TimmyNotes.WpfUi.csproj         #   Depends on: Core, H.NotifyIcon.Wpf, MS DI
 │   ├── App.xaml / App.xaml.cs           #   Entry point, DI registration, single-instance
 │   ├── AssemblyInfo.cs                  #   WPF theme assembly attributes
 │   │
@@ -258,7 +258,7 @@ PinnyNotes/
 │       ├── icon.ico                     #   Application icon
 │       └── icon.png                     #   NuGet package icon
 │
-└── PinnyNotes.Setup/                    # MSI INSTALLER (Visual Studio .vdproj)
+└── TimmyNotes.Setup/                    # MSI INSTALLER (Visual Studio .vdproj)
                                          #   Does not build from CLI
 ```
 
@@ -266,11 +266,11 @@ PinnyNotes/
 
 ## Architecture
 
-Pinny Notes follows the **MVVM (Model-View-ViewModel)** pattern with a **pub/sub messaging** layer for decoupled communication between components. All services are registered through **Microsoft.Extensions.DependencyInjection** in `App.xaml.cs`.
+Timmy Notes follows the **MVVM (Model-View-ViewModel)** pattern with a **pub/sub messaging** layer for decoupled communication between components. All services are registered through **Microsoft.Extensions.DependencyInjection** in `App.xaml.cs`.
 
 ### High-Level Architecture
 
-The application is split into two projects: **PinnyNotes.Core** (data layer) and **PinnyNotes.WpfUi** (UI layer). Views bind to ViewModels, ViewModels communicate through `MessengerService`, and all data persistence flows through the repository pattern to SQLite.
+The application is split into two projects: **TimmyNotes.Core** (data layer) and **TimmyNotes.WpfUi** (UI layer). Views bind to ViewModels, ViewModels communicate through `MessengerService`, and all data persistence flows through the repository pattern to SQLite.
 
 <p align="center">
   <img src="docs/architecture.svg" alt="High-Level Architecture Diagram" width="900" />
@@ -311,7 +311,7 @@ graph TB
         NIS[NotifyIconService]
     end
 
-    subgraph Core["PinnyNotes.Core (Data Layer)"]
+    subgraph Core["TimmyNotes.Core (Data Layer)"]
         NR[NoteRepository]
         SR[SettingsRepository]
         AMR[AppMetadataRepository]

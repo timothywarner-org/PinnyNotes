@@ -24,6 +24,10 @@ public partial class NoteWindow : Window
 
     private readonly NoteViewModel _viewModel;
 
+    private bool _isRolledUp;
+    private double _savedHeight;
+    private double _savedMinHeight;
+
     public NoteViewModel ViewModel => _viewModel;
 
     #region NoteWindow
@@ -173,10 +177,38 @@ public partial class NoteWindow : Window
     {
         if (e.ClickCount >= 2)
         {
-            if (WindowState == WindowState.Normal)
-                WindowState = WindowState.Maximized;
-            else
-                WindowState = WindowState.Normal;
+            e.Handled = true;
+            ToggleRollUp();
+        }
+    }
+
+    private void ToggleRollUp()
+    {
+        if (_isRolledUp)
+        {
+            // Restore: expand the note body back to its previous height
+            NoteBodyGrid.Visibility = Visibility.Visible;
+            MinHeight = _savedMinHeight;
+            Height = _savedHeight;
+            ResizeMode = ResizeMode.CanResize;
+            _isRolledUp = false;
+        }
+        else
+        {
+            // Roll up: collapse the note body, shrink to title bar height only
+            _savedHeight = Height;
+            _savedMinHeight = MinHeight;
+
+            NoteBodyGrid.Visibility = Visibility.Collapsed;
+
+            double titleBarHeight = TitleBarGrid.ActualHeight;
+            double borderHeight = BorderThickness.Top + BorderThickness.Bottom;
+            double rolledUpHeight = titleBarHeight + borderHeight;
+
+            MinHeight = rolledUpHeight;
+            Height = rolledUpHeight;
+            ResizeMode = ResizeMode.NoResize;
+            _isRolledUp = true;
         }
     }
 

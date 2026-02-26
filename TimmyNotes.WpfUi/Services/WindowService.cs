@@ -22,6 +22,7 @@ public class WindowService
     private readonly Dictionary<int, NoteWindow> _openNoteWindows = [];
     private SettingsWindow? _settingsWindow;
     private ManagementWindow? _managementWindow;
+    private BreakTimerWindow? _breakTimerWindow;
 
     public WindowService(
         IServiceProvider serviceProvider,
@@ -48,6 +49,8 @@ public class WindowService
         _messengerService.Subscribe<OpenSettingsWindowMessage>(OnOpenSettingsWindowMessage);
 
         _messengerService.Subscribe<OpenManagementWindowMessage>(OnOpenManagementWindowMessage);
+
+        _messengerService.Subscribe<OpenBreakTimerWindowMessage>(OnOpenBreakTimerWindowMessage);
     }
 
     public async Task SaveAllOpenNotes()
@@ -132,6 +135,20 @@ public class WindowService
 
     private void OnOpenManagementWindowMessage(OpenManagementWindowMessage message)
         => OpenManagementWindow();
+
+    private void OnOpenBreakTimerWindowMessage(OpenBreakTimerWindowMessage message)
+    {
+        if (_breakTimerWindow is null || !_breakTimerWindow.IsLoaded)
+        {
+            _breakTimerWindow = _serviceProvider.GetRequiredService<BreakTimerWindow>();
+            _breakTimerWindow.Closed += (s, e) => _breakTimerWindow = null;
+        }
+
+        if (!_breakTimerWindow.IsVisible)
+            _breakTimerWindow.Show();
+
+        _breakTimerWindow.Activate();
+    }
 
     private async Task OpenNoteWindow(int? noteId = null, NoteModel? parentNote = null, nint? managementWindowHandle = null)
     {

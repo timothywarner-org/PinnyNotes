@@ -140,6 +140,9 @@ public partial class App : Application
 
         services.AddTransient<ManagementWindow>();
         services.AddTransient<ManagementViewModel>();
+
+        services.AddTransient<BreakTimerWindow>();
+        services.AddTransient<BreakTimerViewModel>();
     }
 
     protected override async void OnExit(ExitEventArgs e)

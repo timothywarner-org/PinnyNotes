@@ -133,6 +133,30 @@
                 </TextBlock.Style>
             </TextBlock>
 
+            <!-- Break Timer Button -->
+            <Button Name="BreakTimerButton"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,62,0"
+                    ToolTip="Break Timer"
+                    Style="{StaticResource TitleBarButtonStyle}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Canvas>
+                            <Rectangle Width="20" Height="20" Fill="Transparent" />
+                            <Ellipse Width="16" Height="16" Canvas.Left="2" Canvas.Top="2"
+                                     Stroke="{Binding Note.TitleGridButtonForeground}"
+                                     StrokeThickness="2"
+                                     d:Stroke="#464646"/>
+                            <Path Data="M 10,5 V 10 H 14"
+                                  Stroke="{Binding Note.TitleGridButtonForeground}"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  d:Stroke="#464646"/>
+                        </Canvas>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
             <!-- Minimize Button -->
             <Button Name="MinimizeButton"
                     HorizontalAlignment="Right"

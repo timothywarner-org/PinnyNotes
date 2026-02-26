@@ -2,11 +2,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 using TimmyNotes.Core.Enums;
 using TimmyNotes.WpfUi.Commands;
-using TimmyNotes.WpfUi.Tools;
 
 namespace TimmyNotes.WpfUi.Controls.ContextMenus;
 
@@ -14,51 +14,44 @@ public class NoteTextBoxContextMenu : ContextMenu
 {
     private readonly NoteTextBoxControl _noteTextBox;
 
-    private readonly ITool[] _tools;
-
+    private readonly MenuItem _undoMenuItem;
+    private readonly MenuItem _redoMenuItem;
     private readonly MenuItem _copyMenuItem;
     private readonly MenuItem _cutMenuItem;
     private readonly MenuItem _pasteMenuItem;
     private readonly MenuItem _selectAllMenuItem;
-    private readonly MenuItem _clearMenuItem;
-    private readonly MenuItem _lockedMenuItem;
-    private readonly MenuItem _formatMenuItem;
+    private readonly MenuItem _fontMenuItem;
+    private readonly MenuItem _sizeMenuItem;
+    private readonly MenuItem _styleMenuItem;
+    private readonly MenuItem _caseMenuItem;
+    private readonly MenuItem _fontColorMenuItem;
+    private readonly MenuItem _paragraphMenuItem;
     private readonly MenuItem _countsMenuItem;
     private readonly MenuItem _lineCountMenuItem;
     private readonly MenuItem _wordCountMenuItem;
     private readonly MenuItem _charCountMenuItem;
-    private readonly Separator _toolsSeparator = new();
-    private readonly MenuItem _toolsMenuItem;
+    private readonly MenuItem _lockedMenuItem;
 
     private readonly List<Control> _spellingErrorMenuItems = [];
-    private readonly List<Control> _toolMenuItems = [];
 
     public NoteTextBoxContextMenu(NoteTextBoxControl noteTextBox)
     {
         _noteTextBox = noteTextBox;
 
-        _tools = [
-            new Base64Tool(_noteTextBox),
-            new BracketTool(_noteTextBox),
-            new CaseTool(_noteTextBox),
-            new ColourTool(_noteTextBox),
-            new DateTimeTool(_noteTextBox),
-            new GibberishTool(_noteTextBox),
-            new GuidTool(_noteTextBox),
-            new HashTool(_noteTextBox),
-            new HtmlEntityTool(_noteTextBox),
-            new IndentTool(_noteTextBox),
-            new JoinTool(_noteTextBox),
-            new JsonTool(_noteTextBox),
-            new ListTool(_noteTextBox),
-            new QuoteTool(_noteTextBox),
-            new RemoveTool(_noteTextBox),
-            new SlashTool(_noteTextBox),
-            new SortTool(_noteTextBox),
-            new SplitTool(_noteTextBox),
-            new TrimTool(_noteTextBox),
-            new UrlTool(_noteTextBox)
-        ];
+        _undoMenuItem = new()
+        {
+            Header = "Undo",
+            InputGestureText = "Ctrl+Z",
+            Command = ApplicationCommands.Undo,
+            CommandTarget = _noteTextBox
+        };
+        _redoMenuItem = new()
+        {
+            Header = "Redo",
+            InputGestureText = "Ctrl+Shift+Z",
+            Command = ApplicationCommands.Redo,
+            CommandTarget = _noteTextBox
+        };
 
         _copyMenuItem = new()
         {
@@ -82,13 +75,21 @@ public class NoteTextBoxContextMenu : ContextMenu
         _selectAllMenuItem = new()
         {
             Header = "Select All",
+            InputGestureText = "Ctrl+A",
             Command = new RelayCommand(_noteTextBox.SelectAll)
         };
-        _clearMenuItem = new()
-        {
-            Header = "Clear",
-            Command = _noteTextBox.ClearCommand
-        };
+
+        _fontMenuItem = BuildFontMenu();
+        _sizeMenuItem = BuildSizeMenu();
+        _styleMenuItem = BuildStyleMenu();
+        _caseMenuItem = BuildCaseMenu();
+        _fontColorMenuItem = BuildFontColorMenu();
+        _paragraphMenuItem = BuildParagraphMenu();
+
+        _countsMenuItem = new() { Header = "Counts" };
+        _lineCountMenuItem = new() { IsEnabled = false };
+        _wordCountMenuItem = new() { IsEnabled = false };
+        _charCountMenuItem = new() { IsEnabled = false };
 
         _lockedMenuItem = new()
         {
@@ -105,30 +106,6 @@ public class NoteTextBoxContextMenu : ContextMenu
             }
         );
 
-        _formatMenuItem = BuildFormatMenu();
-
-        _countsMenuItem = new()
-        {
-            Header = "Counts"
-        };
-        _lineCountMenuItem = new()
-        {
-            IsEnabled = false
-        };
-        _wordCountMenuItem = new()
-        {
-            IsEnabled = false
-        };
-        _charCountMenuItem = new()
-        {
-            IsEnabled = false
-        };
-
-        _toolsMenuItem = new()
-        {
-            Header = "Tools"
-        };
-
         Populate();
     }
 
@@ -138,22 +115,29 @@ public class NoteTextBoxContextMenu : ContextMenu
 
         UpdateSpellingErrorMenuItems();
 
+        _undoMenuItem.IsEnabled = _noteTextBox.CanUndo;
+        _redoMenuItem.IsEnabled = _noteTextBox.CanRedo;
+
         _copyMenuItem.IsEnabled = _noteTextBox.HasSelectedText;
         _cutMenuItem.IsEnabled = _noteTextBox.HasSelectedText;
         _pasteMenuItem.IsEnabled = Clipboard.ContainsText();
 
         _selectAllMenuItem.IsEnabled = hasText;
-        _clearMenuItem.IsEnabled = hasText;
+
+        _lockedMenuItem.IsChecked = _noteTextBox.IsReadOnly;
 
         _lineCountMenuItem.Header = $"Lines: {_noteTextBox.LineCount()}";
         _wordCountMenuItem.Header = $"Words: {_noteTextBox.WordCount()}";
         _charCountMenuItem.Header = $"Chars: {_noteTextBox.CharCount()}";
-
-        UpdateToolContextMenus();
     }
 
     private void Populate()
     {
+        Items.Add(_undoMenuItem);
+        Items.Add(_redoMenuItem);
+
+        Items.Add(new Separator());
+
         Items.Add(_copyMenuItem);
         Items.Add(_cutMenuItem);
         Items.Add(_pasteMenuItem);
@@ -161,15 +145,18 @@ public class NoteTextBoxContextMenu : ContextMenu
         Items.Add(new Separator());
 
         Items.Add(_selectAllMenuItem);
-        Items.Add(_clearMenuItem);
 
         Items.Add(new Separator());
 
-        Items.Add(_lockedMenuItem);
+        Items.Add(_fontMenuItem);
+        Items.Add(_sizeMenuItem);
+        Items.Add(_styleMenuItem);
+        Items.Add(_caseMenuItem);
+        Items.Add(_fontColorMenuItem);
 
         Items.Add(new Separator());
 
-        Items.Add(_formatMenuItem);
+        Items.Add(_paragraphMenuItem);
 
         Items.Add(new Separator());
 
@@ -177,13 +164,14 @@ public class NoteTextBoxContextMenu : ContextMenu
         _countsMenuItem.Items.Add(_wordCountMenuItem);
         _countsMenuItem.Items.Add(_charCountMenuItem);
         Items.Add(_countsMenuItem);
+
+        Items.Add(_lockedMenuItem);
     }
 
-    private MenuItem BuildFormatMenu()
-    {
-        MenuItem formatMenu = new() { Header = "Format" };
+    #region Submenu Builders
 
-        // Font submenu
+    private MenuItem BuildFontMenu()
+    {
         MenuItem fontMenu = new() { Header = "Font" };
         string[] fonts = ["Segoe UI", "Arial", "Calibri", "Consolas", "Courier New", "Times New Roman"];
         foreach (string font in fonts)
@@ -194,9 +182,11 @@ public class NoteTextBoxContextMenu : ContextMenu
                 Command = new RelayCommand(() => _noteTextBox.ApplyFontFamily(font))
             });
         }
-        formatMenu.Items.Add(fontMenu);
+        return fontMenu;
+    }
 
-        // Size submenu
+    private MenuItem BuildSizeMenu()
+    {
         MenuItem sizeMenu = new() { Header = "Size" };
         double[] sizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 36];
         foreach (double size in sizes)
@@ -207,10 +197,63 @@ public class NoteTextBoxContextMenu : ContextMenu
                 Command = new RelayCommand(() => _noteTextBox.ApplyFontSize(size))
             });
         }
-        formatMenu.Items.Add(sizeMenu);
+        return sizeMenu;
+    }
 
-        // Color submenu
-        MenuItem colorMenu = new() { Header = "Color" };
+    private MenuItem BuildStyleMenu()
+    {
+        MenuItem styleMenu = new() { Header = "Style" };
+        styleMenu.Items.Add(new MenuItem
+        {
+            Header = "Bold",
+            InputGestureText = "Ctrl+B",
+            Command = new RelayCommand(() => _noteTextBox.ToggleBold())
+        });
+        styleMenu.Items.Add(new MenuItem
+        {
+            Header = "Italic",
+            InputGestureText = "Ctrl+I",
+            Command = new RelayCommand(() => _noteTextBox.ToggleItalic())
+        });
+        styleMenu.Items.Add(new MenuItem
+        {
+            Header = "Underline",
+            InputGestureText = "Ctrl+U",
+            Command = new RelayCommand(() => _noteTextBox.ToggleUnderline())
+        });
+        styleMenu.Items.Add(new Separator());
+        styleMenu.Items.Add(new MenuItem
+        {
+            Header = "Clear Formatting",
+            Command = new RelayCommand(() => _noteTextBox.ClearFormatting())
+        });
+        return styleMenu;
+    }
+
+    private MenuItem BuildCaseMenu()
+    {
+        MenuItem caseMenu = new() { Header = "Case" };
+        caseMenu.Items.Add(new MenuItem
+        {
+            Header = "Lower",
+            Command = new RelayCommand(() => _noteTextBox.ApplyCaseTransform(CaseTransform.Lower))
+        });
+        caseMenu.Items.Add(new MenuItem
+        {
+            Header = "Upper",
+            Command = new RelayCommand(() => _noteTextBox.ApplyCaseTransform(CaseTransform.Upper))
+        });
+        caseMenu.Items.Add(new MenuItem
+        {
+            Header = "Title",
+            Command = new RelayCommand(() => _noteTextBox.ApplyCaseTransform(CaseTransform.Title))
+        });
+        return caseMenu;
+    }
+
+    private MenuItem BuildFontColorMenu()
+    {
+        MenuItem fontColorMenu = new() { Header = "Font Color" };
         (string Name, Color Color)[] colors = [
             ("Black", Colors.Black),
             ("Red", Colors.Red),
@@ -221,47 +264,86 @@ public class NoteTextBoxContextMenu : ContextMenu
             ("Brown", Colors.Brown),
             ("Gray", Colors.Gray)
         ];
-        foreach (var (name, color) in colors)
+        foreach ((string name, Color color) in colors)
         {
-            colorMenu.Items.Add(new MenuItem
+            fontColorMenu.Items.Add(new MenuItem
             {
                 Header = name,
                 Command = new RelayCommand(() => _noteTextBox.ApplyForeground(color))
             });
         }
-        formatMenu.Items.Add(colorMenu);
-
-        formatMenu.Items.Add(new Separator());
-
-        formatMenu.Items.Add(new MenuItem
-        {
-            Header = "Bold",
-            InputGestureText = "Ctrl+B",
-            Command = new RelayCommand(() => _noteTextBox.ToggleBold())
-        });
-        formatMenu.Items.Add(new MenuItem
-        {
-            Header = "Italic",
-            InputGestureText = "Ctrl+I",
-            Command = new RelayCommand(() => _noteTextBox.ToggleItalic())
-        });
-        formatMenu.Items.Add(new MenuItem
-        {
-            Header = "Underline",
-            InputGestureText = "Ctrl+U",
-            Command = new RelayCommand(() => _noteTextBox.ToggleUnderline())
-        });
-
-        formatMenu.Items.Add(new Separator());
-
-        formatMenu.Items.Add(new MenuItem
-        {
-            Header = "Clear Formatting",
-            Command = new RelayCommand(() => _noteTextBox.ClearFormatting())
-        });
-
-        return formatMenu;
+        return fontColorMenu;
     }
+
+    private MenuItem BuildParagraphMenu()
+    {
+        MenuItem paragraphMenu = new() { Header = "Paragraph" };
+
+        // Alignment
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "Left",
+            Command = new RelayCommand(() => _noteTextBox.ApplyAlignment(TextAlignment.Left))
+        });
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "Center",
+            Command = new RelayCommand(() => _noteTextBox.ApplyAlignment(TextAlignment.Center))
+        });
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "Right",
+            Command = new RelayCommand(() => _noteTextBox.ApplyAlignment(TextAlignment.Right))
+        });
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "Justified",
+            Command = new RelayCommand(() => _noteTextBox.ApplyAlignment(TextAlignment.Justify))
+        });
+
+        paragraphMenu.Items.Add(new Separator());
+
+        // List styles
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "None",
+            Command = new RelayCommand(() => _noteTextBox.ApplyList(TextMarkerStyle.None))
+        });
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "Bullets",
+            Command = new RelayCommand(() => _noteTextBox.ApplyList(TextMarkerStyle.Disc))
+        });
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "Numbered",
+            Command = new RelayCommand(() => _noteTextBox.ApplyList(TextMarkerStyle.Decimal))
+        });
+        paragraphMenu.Items.Add(new MenuItem
+        {
+            Header = "Lettered",
+            Command = new RelayCommand(() => _noteTextBox.ApplyList(TextMarkerStyle.LowerLatin))
+        });
+
+        paragraphMenu.Items.Add(new Separator());
+
+        // Tab spacing
+        double[] tabSpacings = [40, 80, 120, 240];
+        foreach (double spacing in tabSpacings)
+        {
+            paragraphMenu.Items.Add(new MenuItem
+            {
+                Header = $"Tab spacing: {spacing}",
+                Command = new RelayCommand(() => _noteTextBox.ApplyTabSpacing(spacing))
+            });
+        }
+
+        return paragraphMenu;
+    }
+
+    #endregion
+
+    #region Spelling Error Items
 
     private void UpdateSpellingErrorMenuItems()
     {
@@ -303,39 +385,5 @@ public class NoteTextBoxContextMenu : ContextMenu
             Items.Insert(0, spellingErrorMenuItem);
     }
 
-    private void UpdateToolContextMenus()
-    {
-        foreach (Control toolMenuItem in _toolMenuItems)
-            Items.Remove(toolMenuItem);
-        _toolsMenuItem.Items.Clear();
-
-        _toolMenuItems.Clear();
-
-        IEnumerable<ITool> activeTools = _tools.Where(t => t.State != ToolState.Disabled);
-        if (!activeTools.Any())
-            return;
-
-        _toolMenuItems.Add(_toolsSeparator);
-
-        bool hasEnabledTools = false;
-        foreach (ITool tool in activeTools)
-        {
-            switch (tool.State)
-            {
-                case ToolState.Favourite:
-                    _toolMenuItems.Add(tool.MenuItem);
-                    break;
-                case ToolState.Enabled:
-                    _toolsMenuItem.Items.Add(tool.MenuItem);
-                    hasEnabledTools = true;
-                    break;
-            }
-        }
-
-        if (hasEnabledTools)
-            _toolMenuItems.Add(_toolsMenuItem);
-
-        foreach (Control toolMenuItem in _toolMenuItems)
-            Items.Add(toolMenuItem);
-    }
+    #endregion
 }

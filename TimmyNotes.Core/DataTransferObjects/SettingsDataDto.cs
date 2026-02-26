@@ -1,4 +1,4 @@
-﻿using TimmyNotes.Core.Enums;
+using TimmyNotes.Core.Enums;
 
 namespace TimmyNotes.Core.DataTransferObjects;
 
@@ -47,26 +47,5 @@ public record SettingsDataDto(
      bool TrimTextOnAltPaste,
      bool MiddleClickPaste,
      double CaretThickness,
-     CaretColour CaretColour,
-
-     ToolState Base64State,
-     ToolState BracketState,
-     ToolState CaseState,
-     ToolState ColourState,
-     ToolState DateTimeState,
-     ToolState GibberishState,
-     ToolState GuidState,
-     ToolState HashState,
-     ToolState HTMLEntityState,
-     ToolState IndentState,
-     ToolState JoinState,
-     ToolState JSONState,
-     ToolState ListState,
-     ToolState QuoteState,
-     ToolState RemoveState,
-     ToolState SlashState,
-     ToolState SortState,
-     ToolState SplitState,
-     ToolState TrimState,
-     ToolState UrlState
+     CaretColour CaretColour
 );

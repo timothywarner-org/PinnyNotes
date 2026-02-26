@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows;
@@ -424,6 +425,222 @@ public partial class NoteTextBoxControl : RichTextBox
     public void ClearFormatting()
         => Selection.ClearAllProperties();
 
+    public void ApplyAlignment(TextAlignment alignment)
+    {
+        TextPointer start = Selection.Start;
+        TextPointer end = Selection.IsEmpty ? Selection.Start : Selection.End;
+
+        Block? startBlock = start.Paragraph ?? (Block?)start.GetAdjacentElement(LogicalDirection.Forward);
+        Block? endBlock = end.Paragraph ?? (Block?)end.GetAdjacentElement(LogicalDirection.Backward);
+
+        if (startBlock == null)
+            return;
+
+        Block? block = startBlock;
+        while (block != null)
+        {
+            block.TextAlignment = alignment;
+            if (block == endBlock)
+                break;
+            block = block.NextBlock;
+        }
+    }
+
+    public void ApplyList(TextMarkerStyle markerStyle)
+    {
+        TextPointer start = Selection.Start;
+        TextPointer end = Selection.IsEmpty ? Selection.Start : Selection.End;
+
+        Paragraph? startParagraph = start.Paragraph;
+        Paragraph? endParagraph = end.Paragraph;
+
+        if (startParagraph == null)
+            return;
+
+        // If removing list (None), unwrap ListItems back to document-level paragraphs
+        if (markerStyle == TextMarkerStyle.None)
+        {
+            // When paragraphs are inside ListItems, walk via ListItem siblings
+            ListItem? startItem = startParagraph.Parent as ListItem;
+            ListItem? endItem = endParagraph?.Parent as ListItem;
+
+            if (startItem == null)
+                return;
+
+            List<ListItem> itemsToUnwrap = [];
+            ListItem? currentItem = startItem;
+            while (currentItem != null)
+            {
+                itemsToUnwrap.Add(currentItem);
+                if (currentItem == endItem)
+                    break;
+                currentItem = currentItem.NextListItem;
+            }
+
+            foreach (ListItem item in itemsToUnwrap)
+            {
+                if (item.Parent is List parentList)
+                {
+                    List<Paragraph> paragraphs = [.. item.Blocks.OfType<Paragraph>()];
+                    Block insertAfter = parentList;
+                    foreach (Paragraph p in paragraphs)
+                    {
+                        item.Blocks.Remove(p);
+                        Document.Blocks.InsertAfter(insertAfter, p);
+                        insertAfter = p;
+                    }
+                    parentList.ListItems.Remove(item);
+                    if (!parentList.ListItems.Any())
+                        Document.Blocks.Remove(parentList);
+                }
+            }
+            return;
+        }
+
+        // Check if already in a list — change marker style on all affected lists
+        if (startParagraph.Parent is ListItem)
+        {
+            HashSet<List> listsToUpdate = [];
+            ListItem? startItem = startParagraph.Parent as ListItem;
+            ListItem? endItem = endParagraph?.Parent as ListItem;
+            ListItem? currentItem = startItem;
+            while (currentItem != null)
+            {
+                if (currentItem.Parent is List parentList)
+                    listsToUpdate.Add(parentList);
+                if (currentItem == endItem)
+                    break;
+                currentItem = currentItem.NextListItem;
+            }
+            foreach (List list in listsToUpdate)
+            {
+                list.MarkerStyle = markerStyle;
+            }
+            return;
+        }
+
+        // Collect paragraphs to wrap — traverse as Block to handle non-Paragraph blocks
+        List<Paragraph> toWrap = [];
+        Block? block = startParagraph;
+        while (block != null)
+        {
+            if (block is Paragraph p)
+                toWrap.Add(p);
+            if (block == endParagraph)
+                break;
+            block = block.NextBlock;
+        }
+
+        if (toWrap.Count == 0)
+            return;
+
+        // Insert new List before the first paragraph
+        List newList = new() { MarkerStyle = markerStyle };
+        Document.Blocks.InsertBefore(toWrap[0], newList);
+
+        foreach (Paragraph p in toWrap)
+        {
+            Document.Blocks.Remove(p);
+            ListItem listItem = new(p);
+            newList.ListItems.Add(listItem);
+        }
+    }
+
+    public void ApplyTabSpacing(double spacing)
+    {
+        if (spacing <= 0)
+            return;
+
+        foreach (Block block in Document.Blocks)
+        {
+            ApplyTabSpacingToBlock(block, spacing);
+        }
+    }
+
+    private static void ApplyTabSpacingToBlock(Block block, double spacing)
+    {
+        if (block is Paragraph paragraph)
+        {
+            // Recalculate margin based on new tab spacing.
+            // If the paragraph has left margin, re-snap it to the new spacing grid.
+            double currentLeft = paragraph.Margin.Left;
+            if (currentLeft > 0)
+            {
+                // Keep the indent but round to new tab spacing
+                double newLeft = Math.Round(currentLeft / spacing) * spacing;
+                if (newLeft < spacing)
+                    newLeft = 0;
+                paragraph.Margin = new Thickness(newLeft, paragraph.Margin.Top, paragraph.Margin.Right, paragraph.Margin.Bottom);
+            }
+        }
+        else if (block is List list)
+        {
+            list.MarkerOffset = spacing;
+            list.Padding = new Thickness(spacing, 0, 0, 0);
+            foreach (ListItem item in list.ListItems)
+            {
+                foreach (Block childBlock in item.Blocks)
+                {
+                    ApplyTabSpacingToBlock(childBlock, spacing);
+                }
+            }
+        }
+    }
+
+    public void ApplyCaseTransform(CaseTransform caseType)
+    {
+        TextInfo textInfo = CultureInfo.CurrentCulture.TextInfo;
+
+        if (!Selection.IsEmpty)
+        {
+            string text = Selection.Text;
+            if (string.IsNullOrEmpty(text))
+                return;
+
+            Selection.Text = TransformCase(text, caseType, textInfo);
+            return;
+        }
+
+        // When no selection, iterate through Run inlines to preserve RTF formatting
+        foreach (Block block in Document.Blocks)
+        {
+            TransformBlockCase(block, caseType, textInfo);
+        }
+    }
+
+    private static string TransformCase(string text, CaseTransform caseType, TextInfo textInfo)
+    {
+        return caseType switch
+        {
+            CaseTransform.Lower => textInfo.ToLower(text),
+            CaseTransform.Upper => textInfo.ToUpper(text),
+            CaseTransform.Title => textInfo.ToTitleCase(textInfo.ToLower(text)),
+            _ => text
+        };
+    }
+
+    private static void TransformBlockCase(Block block, CaseTransform caseType, TextInfo textInfo)
+    {
+        if (block is Paragraph paragraph)
+        {
+            foreach (Inline inline in paragraph.Inlines)
+            {
+                if (inline is Run run)
+                    run.Text = TransformCase(run.Text, caseType, textInfo);
+            }
+        }
+        else if (block is List list)
+        {
+            foreach (ListItem item in list.ListItems)
+            {
+                foreach (Block childBlock in item.Blocks)
+                {
+                    TransformBlockCase(childBlock, caseType, textInfo);
+                }
+            }
+        }
+    }
+
     #endregion
 
     #region Copy / Paste
@@ -456,7 +673,14 @@ public partial class NoteTextBoxControl : RichTextBox
         if (string.IsNullOrEmpty(copiedText))
             return;
 
-        Clipboard.SetDataObject(copiedText);
+        try
+        {
+            Clipboard.SetDataObject(copiedText);
+        }
+        catch (System.Runtime.InteropServices.ExternalException)
+        {
+            // Clipboard locked by another application; ignore silently
+        }
     }
 
     private string GetTextForCopyAction(CopyAction action, CopyFallbackAction fallbackAction, bool trim, bool fallbackTrim, bool cut)
@@ -553,7 +777,7 @@ public partial class NoteTextBoxControl : RichTextBox
         {
             clipboardString = Clipboard.GetText();
         }
-        catch
+        catch (System.Runtime.InteropServices.ExternalException)
         {
             return;
         }
@@ -629,13 +853,27 @@ public partial class NoteTextBoxControl : RichTextBox
 
     private void OnPreviewDrop(object sender, DragEventArgs e)
     {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            return;
+
+        if (e.Data.GetData(DataFormats.FileDrop) is not string[] files || files.Length == 0)
+            return;
+
+        string filePath = files[0];
+
+        try
         {
-            string fileText = File.ReadAllText(
-                ((string[])e.Data.GetData(DataFormats.FileDrop))[0]
-            );
+            FileInfo fileInfo = new(filePath);
+            if (!fileInfo.Exists || fileInfo.Length > 10 * 1024 * 1024)
+                return;
+
+            string fileText = File.ReadAllText(filePath);
             Document.Blocks.Clear();
             Document.Blocks.Add(new Paragraph(new Run(fileText)));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.SecurityException)
+        {
+            // Silently ignore inaccessible files
         }
     }
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 
 using TimmyNotes.Core.Configurations;
 using TimmyNotes.Core.DataTransferObjects;
@@ -145,28 +145,7 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
             TrimTextOnAltPaste: GetBool(reader, "Editor_TrimTextOnAltPaste"),
             MiddleClickPaste: GetBool(reader, "Editor_MiddleClickPaste"),
             CaretThickness: GetDouble(reader, "Editor_CaretThickness"),
-            CaretColour: GetEnum<CaretColour>(reader, "Editor_CaretColour"),
-
-            Base64State: GetEnum<ToolState>(reader, "Tool_Base64State"),
-            BracketState: GetEnum<ToolState>(reader, "Tool_BracketState"),
-            CaseState: GetEnum<ToolState>(reader, "Tool_CaseState"),
-            ColourState: GetEnum<ToolState>(reader, "Tool_ColourState"),
-            DateTimeState: GetEnum<ToolState>(reader, "Tool_DateTimeState"),
-            GibberishState: GetEnum<ToolState>(reader, "Tool_GibberishState"),
-            GuidState: GetEnum<ToolState>(reader, "Tool_GuidState"),
-            HashState: GetEnum<ToolState>(reader, "Tool_HashState"),
-            HTMLEntityState: GetEnum<ToolState>(reader, "Tool_HTMLEntityState"),
-            IndentState: GetEnum<ToolState>(reader, "Tool_IndentState"),
-            JoinState: GetEnum<ToolState>(reader, "Tool_JoinState"),
-            JSONState: GetEnum<ToolState>(reader, "Tool_JSONState"),
-            ListState: GetEnum<ToolState>(reader, "Tool_ListState"),
-            QuoteState: GetEnum<ToolState>(reader, "Tool_QuoteState"),
-            RemoveState: GetEnum<ToolState>(reader, "Tool_RemoveState"),
-            SlashState: GetEnum<ToolState>(reader, "Tool_SlashState"),
-            SortState: GetEnum<ToolState>(reader, "Tool_SortState"),
-            SplitState: GetEnum<ToolState>(reader, "Tool_SplitState"),
-            TrimState: GetEnum<ToolState>(reader, "Tool_TrimState"),
-            UrlState: GetEnum<ToolState>(reader, "Tool_UrlState")
+            CaretColour: GetEnum<CaretColour>(reader, "Editor_CaretColour")
         );
     }
 
@@ -223,28 +202,7 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
                     Editor_TrimTextOnAltPaste = @editor_TrimTextOnAltPaste,
                     Editor_MiddleClickPaste = @editor_MiddleClickPaste,
                     Editor_CaretThickness = @editor_CaretThickness,
-                    Editor_CaretColour = @editor_CaretColour,
-
-                    Tool_Base64State = @tool_Base64State,
-                    Tool_BracketState = @tool_BracketState,
-                    Tool_CaseState = @tool_CaseState,
-                    Tool_ColourState = @tool_ColourState,
-                    Tool_DateTimeState = @tool_DateTimeState,
-                    Tool_GibberishState = @tool_GibberishState,
-                    Tool_GuidState = @tool_GuidState,
-                    Tool_HashState = @tool_HashState,
-                    Tool_HTMLEntityState = @tool_HTMLEntityState,
-                    Tool_IndentState = @tool_IndentState,
-                    Tool_JoinState = @tool_JoinState,
-                    Tool_JSONState = @tool_JSONState,
-                    Tool_ListState = @tool_ListState,
-                    Tool_QuoteState = @tool_QuoteState,
-                    Tool_RemoveState = @tool_RemoveState,
-                    Tool_SlashState = @tool_SlashState,
-                    Tool_SortState = @tool_SortState,
-                    Tool_SplitState = @tool_SplitState,
-                    Tool_TrimState = @tool_TrimState,
-                    Tool_UrlState = @tool_UrlState
+                    Editor_CaretColour = @editor_CaretColour
                 WHERE
                     Id = @id;
             ",
@@ -292,27 +250,6 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
                 new("@editor_MiddleClickPaste", settings.MiddleClickPaste),
                 new("@editor_CaretThickness", settings.CaretThickness),
                 new("@editor_CaretColour", settings.CaretColour),
-
-                new("@tool_Base64State", settings.Base64State),
-                new("@tool_BracketState", settings.BracketState),
-                new("@tool_CaseState", settings.CaseState),
-                new("@tool_ColourState", settings.ColourState),
-                new("@tool_DateTimeState", settings.DateTimeState),
-                new("@tool_GibberishState", settings.GibberishState),
-                new("@tool_GuidState", settings.GuidState),
-                new("@tool_HashState", settings.HashState),
-                new("@tool_HTMLEntityState", settings.HTMLEntityState),
-                new("@tool_IndentState", settings.IndentState),
-                new("@tool_JoinState", settings.JoinState),
-                new("@tool_JSONState", settings.JSONState),
-                new("@tool_ListState", settings.ListState),
-                new("@tool_QuoteState", settings.QuoteState),
-                new("@tool_RemoveState", settings.RemoveState),
-                new("@tool_SlashState", settings.SlashState),
-                new("@tool_SortState", settings.SortState),
-                new("@tool_SplitState", settings.SplitState),
-                new("@tool_TrimState", settings.TrimState),
-                new("@tool_UrlState", settings.UrlState),
 
                 new("@id", settings.Id)
             ]

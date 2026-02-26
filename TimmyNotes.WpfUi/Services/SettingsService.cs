@@ -11,7 +11,6 @@ public class SettingsService(SettingsRepository settingsRepository)
     public ApplicationSettingsModel ApplicationSettings { get; private set; } = null!;
     public NoteSettingsModel NoteSettings { get; private set; } = null!;
     public EditorSettingsModel EditorSettings { get; private set; } = null!;
-    public ToolSettingsModel ToolSettings { get; private set; } = null!;
 
     public async Task Load()
     {
@@ -69,30 +68,6 @@ public class SettingsService(SettingsRepository settingsRepository)
             TrimTextOnAltPaste = settings.TrimTextOnAltPaste,
             MiddleClickPaste = settings.MiddleClickPaste
         };
-
-        ToolSettings = new()
-        {
-            Base64ToolState = settings.Base64State,
-            BracketToolState = settings.BracketState,
-            CaseToolState = settings.CaseState,
-            ColourToolState = settings.ColourState,
-            DateTimeToolState = settings.DateTimeState,
-            GibberishToolState = settings.GibberishState,
-            GuidToolState = settings.GuidState,
-            HashToolState = settings.HashState,
-            HtmlEntityToolState = settings.HTMLEntityState,
-            IndentToolState = settings.IndentState,
-            JoinToolState = settings.JoinState,
-            JsonToolState = settings.JSONState,
-            ListToolState = settings.ListState,
-            QuoteToolState = settings.QuoteState,
-            RemoveToolState = settings.RemoveState,
-            SlashToolState = settings.SlashState,
-            SortToolState = settings.SortState,
-            SplitToolState = settings.SplitState,
-            TrimToolState = settings.TrimState,
-            UrlToolState = settings.UrlState
-        };
     }
 
     public async Task Save()
@@ -143,28 +118,7 @@ public class SettingsService(SettingsRepository settingsRepository)
                 TrimTextOnPaste: EditorSettings.TrimTextOnPaste,
                 PasteAltAction: EditorSettings.PasteAltAction,
                 TrimTextOnAltPaste: EditorSettings.TrimTextOnAltPaste,
-                MiddleClickPaste: EditorSettings.MiddleClickPaste,
-
-                Base64State: ToolSettings.Base64ToolState,
-                BracketState: ToolSettings.BracketToolState,
-                CaseState: ToolSettings.CaseToolState,
-                ColourState: ToolSettings.ColourToolState,
-                DateTimeState: ToolSettings.DateTimeToolState,
-                GibberishState: ToolSettings.GibberishToolState,
-                GuidState: ToolSettings.GuidToolState,
-                HashState: ToolSettings.HashToolState,
-                HTMLEntityState: ToolSettings.HtmlEntityToolState,
-                IndentState: ToolSettings.IndentToolState,
-                JoinState: ToolSettings.JoinToolState,
-                JSONState: ToolSettings.JsonToolState,
-                ListState: ToolSettings.ListToolState,
-                QuoteState: ToolSettings.QuoteToolState,
-                RemoveState: ToolSettings.RemoveToolState,
-                SlashState: ToolSettings.SlashToolState,
-                SortState: ToolSettings.SortToolState,
-                SplitState: ToolSettings.SplitToolState,
-                TrimState: ToolSettings.TrimToolState,
-                UrlState: ToolSettings.UrlToolState
+                MiddleClickPaste: EditorSettings.MiddleClickPaste
             )
         );
     }

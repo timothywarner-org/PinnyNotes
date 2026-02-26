@@ -1,4 +1,4 @@
-﻿using System.Drawing.Text;
+using System.Drawing.Text;
 
 using TimmyNotes.Core.Enums;
 using TimmyNotes.WpfUi.Models;
@@ -17,7 +17,6 @@ public class SettingsViewModel : BaseViewModel
         ApplicationSettings = SettingsService.ApplicationSettings;
         NoteSettings = SettingsService.NoteSettings;
         EditorSettings = SettingsService.EditorSettings;
-        ToolSettings = SettingsService.ToolSettings;
 
         IsTransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyMode.Disabled);
     }
@@ -25,7 +24,6 @@ public class SettingsViewModel : BaseViewModel
     public ApplicationSettingsModel ApplicationSettings { get; set; }
     public NoteSettingsModel NoteSettings { get; set; }
     public EditorSettingsModel EditorSettings { get; set; }
-    public ToolSettingsModel ToolSettings { get; set; }
 
     public static KeyValuePair<StartupPosition, string>[] StartupPositionsList { get; } = [
         new(StartupPosition.TopLeft, "Top left"),
@@ -108,12 +106,6 @@ public class SettingsViewModel : BaseViewModel
         new(CaretColour.Purple, "Purple"),
         new(CaretColour.Brown, "Brown"),
         new(CaretColour.Gray, "Gray")
-    ];
-
-    public static KeyValuePair<ToolState, string>[] ToolStateList { get; } = [
-        new(ToolState.Disabled, "Disabled"),
-        new(ToolState.Enabled, "Enabled"),
-        new(ToolState.Favourite, "Favourite")
     ];
 
     public bool IsTransparencyEnabled { get; set; }

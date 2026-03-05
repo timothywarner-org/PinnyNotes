@@ -64,6 +64,12 @@ public partial class SettingsWindow : Window
         }
     }
 
+    public void SelectTab(int index)
+    {
+        if (index >= 0 && index < SettingsTabControl.Items.Count)
+            SettingsTabControl.SelectedIndex = index;
+    }
+
     private void OnWindowActionMessage(WindowActionMessage message)
     {
         if (message.Action == WindowAction.Activate)

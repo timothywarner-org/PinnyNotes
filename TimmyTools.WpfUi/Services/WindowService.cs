@@ -129,6 +129,7 @@ public class WindowService
         }
 
         _settingsWindow.Owner = message.Owner;
+        _settingsWindow.SelectTab(message.TabIndex);
 
         if (!_settingsWindow.IsVisible)
             _settingsWindow.Show();

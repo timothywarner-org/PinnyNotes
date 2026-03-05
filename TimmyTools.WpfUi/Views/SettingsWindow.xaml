@@ -33,7 +33,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0">
+        <TabControl x:Name="SettingsTabControl" Grid.Row="0">
 
             <!-- Application Tab -->
             <TabItem Header="Application">

@@ -66,6 +66,18 @@
 
     <DockPanel LastChildFill="True">
 
+        <!-- Next Up -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center"
+                    Margin="0,0,0,16"
+                    Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
+            <TextBlock Text="Next up: "
+                       FontSize="48" FontFamily="Segoe UI Light"
+                       Foreground="#AAAAAA"/>
+            <TextBlock Text="{Binding NextUp}"
+                       FontSize="48" FontFamily="Segoe UI Light"
+                       Foreground="#CCCCCC"/>
+        </StackPanel>
+
         <!-- Class Title -->
         <TextBlock DockPanel.Dock="Top"
                    Text="{Binding ClassTitle}"
@@ -199,14 +211,6 @@
                         </Border.Width>
                     </Border>
                 </Grid>
-
-                <!-- Next Up -->
-                <TextBlock FontSize="36" FontFamily="Segoe UI Light"
-                           Foreground="#CCCCCC" HorizontalAlignment="Center"
-                           Margin="0,0,0,12">
-                    <Run Text="Next up: " Foreground="#AAAAAA"/>
-                    <Run Text="{Binding NextUp}"/>
-                </TextBlock>
 
                 <!-- Action Buttons -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

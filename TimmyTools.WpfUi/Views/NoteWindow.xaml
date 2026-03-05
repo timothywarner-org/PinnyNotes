@@ -22,9 +22,8 @@
         Width="{Binding Note.Width, Mode=TwoWay}"
         Height="{Binding Note.Height, Mode=TwoWay}"
         AllowsTransparency="{Binding Note.TransparencyEnabled}"
-        Opacity="{Binding Note.Opacity}"
         ShowInTaskbar="{Binding Note.ShowInTaskbar}"
-        Background="{Binding Note.Background}"
+        Background="Transparent"
         BorderBrush="{Binding Note.BorderBrush}"
         d:DataContext="{d:DesignInstance Type=vm:NoteViewModel}"
         d:Height="300"
@@ -264,7 +263,7 @@
         </Grid>
 
         <!-- Text Box -->
-        <Grid Name="NoteBodyGrid" Grid.Column="0" Grid.Row="1">
+        <Grid Name="NoteBodyGrid" Grid.Column="0" Grid.Row="1" Background="{Binding Note.Background}">
             <controls:NoteTextBoxControl BorderThickness="0"
                                          Background="Transparent"
                                          Foreground="{Binding Note.ContentTextBoxForeground}"

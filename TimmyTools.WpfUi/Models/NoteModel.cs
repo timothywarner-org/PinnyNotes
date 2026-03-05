@@ -69,7 +69,6 @@ public class NoteModel : BaseModel
     public bool IsFocused { get; set => SetProperty(ref field, value); }
 
     public bool TransparencyEnabled { get; set => SetProperty(ref field, value); }
-    public double Opacity { get; set => SetProperty(ref field, value); }
     public bool ShowInTaskbar { get; set => SetProperty(ref field, value); }
 
     public Brush Background { get; set => SetProperty(ref field, value); } = Brushes.LightGray;
@@ -78,14 +77,34 @@ public class NoteModel : BaseModel
     public Brush TitleGridButtonForeground { get; set => SetProperty(ref field, value); } = Brushes.DarkGray;
     public Brush ContentTextBoxForeground { get; set => SetProperty(ref field, value); } = Brushes.Black;
 
+    private Palette? _currentPalette;
 
     public void UpdateBrushes(Palette palette)
     {
+        _currentPalette = palette;
         Background = new SolidColorBrush(palette.Background);
         BorderBrush = new SolidColorBrush(palette.Border);
         TitleGridBackground = new SolidColorBrush(palette.Title);
         TitleGridButtonForeground = new SolidColorBrush(palette.Button);
         ContentTextBoxForeground = new SolidColorBrush(palette.Text);
+    }
+
+    public void ApplyBackgroundOpacity(double opacity)
+    {
+        if (_currentPalette == null)
+            return;
+
+        byte alpha = (byte)(opacity * 255);
+
+        Color background = _currentPalette.Background;
+        Color border = _currentPalette.Border;
+        Color title = _currentPalette.Title;
+
+        Background = new SolidColorBrush(Color.FromArgb(alpha, background.R, background.G, background.B));
+        BorderBrush = new SolidColorBrush(Color.FromArgb(alpha, border.R, border.G, border.B));
+        TitleGridBackground = new SolidColorBrush(Color.FromArgb(alpha, title.R, title.G, title.B));
+
+        // Foreground brushes remain fully opaque so text is always readable
     }
 
     public NoteDto ToDto()

@@ -8,6 +8,7 @@
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance Type=vm:BreakTimerViewModel}"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d">
@@ -15,11 +16,9 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
-        <Style x:Key="PresetButtonStyle" TargetType="Button">
-            <Setter Property="FontSize" Value="18"/>
+        <Style x:Key="TimerButtonBase" TargetType="Button">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="#555555"/>
-            <Setter Property="Padding" Value="20,12"/>
             <Setter Property="Margin" Value="6"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -44,33 +43,14 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="ActionButtonStyle" TargetType="Button">
+        <Style x:Key="PresetButtonStyle" TargetType="Button" BasedOn="{StaticResource TimerButtonBase}">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Padding" Value="20,12"/>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource TimerButtonBase}">
             <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#555555"/>
             <Setter Property="Padding" Value="24,10"/>
-            <Setter Property="Margin" Value="6"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#666666"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#444444"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
     </Window.Resources>
 
@@ -96,13 +76,21 @@
                 <!-- Preset Buttons -->
                 <WrapPanel HorizontalAlignment="Center" Margin="0,0,0,20">
                     <Button Content="5 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}" CommandParameter="5"/>
+                            Command="{Binding StartPresetCommand}">
+                        <Button.CommandParameter><sys:Int32>5</sys:Int32></Button.CommandParameter>
+                    </Button>
                     <Button Content="10 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}" CommandParameter="10"/>
-                    <Button Content="15 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}" CommandParameter="15"/>
-                    <Button Content="20 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}" CommandParameter="20"/>
+                            Command="{Binding StartPresetCommand}">
+                        <Button.CommandParameter><sys:Int32>10</sys:Int32></Button.CommandParameter>
+                    </Button>
+                    <Button Content="30 min" Style="{StaticResource PresetButtonStyle}"
+                            Command="{Binding StartPresetCommand}">
+                        <Button.CommandParameter><sys:Int32>30</sys:Int32></Button.CommandParameter>
+                    </Button>
+                    <Button Content="45 min" Style="{StaticResource PresetButtonStyle}"
+                            Command="{Binding StartPresetCommand}">
+                        <Button.CommandParameter><sys:Int32>45</sys:Int32></Button.CommandParameter>
+                    </Button>
                 </WrapPanel>
 
                 <!-- Custom Input -->
@@ -198,7 +186,7 @@
                         <Border.Width>
                             <MultiBinding>
                                 <MultiBinding.Converter>
-                                    <local:FractionToWidthConverter xmlns:local="clr-namespace:TimmyTools.WpfUi.Views"/>
+                                    <conv:FractionToWidthConverter xmlns:conv="clr-namespace:TimmyTools.WpfUi.Converters"/>
                                 </MultiBinding.Converter>
                                 <Binding Path="ProgressFraction"/>
                                 <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType=Grid}"/>

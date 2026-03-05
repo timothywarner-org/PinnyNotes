@@ -88,7 +88,7 @@ public class NoteViewModel : BaseViewModel
         TransparencyMode transparentMode = NoteSettings.TransparencyMode;
         if (transparentMode == TransparencyMode.Disabled)
         {
-            Note.Opacity = 1.0;
+            Note.ApplyBackgroundOpacity(1.0);
             return;
         }
 
@@ -98,9 +98,9 @@ public class NoteViewModel : BaseViewModel
         double transparentOpacity = NoteSettings.TransparentValue;
 
         if (opaqueWhenFocused && Note.IsFocused)
-            Note.Opacity = opaqueOpacity;
+            Note.ApplyBackgroundOpacity(opaqueOpacity);
         else
-            Note.Opacity = transparentOpacity;
+            Note.ApplyBackgroundOpacity(transparentOpacity);
     }
 
     public void UpdateAlwaysOnTop()

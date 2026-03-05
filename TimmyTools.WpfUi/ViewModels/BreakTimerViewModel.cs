@@ -7,7 +7,7 @@ using TimmyTools.WpfUi.Commands;
 
 namespace TimmyTools.WpfUi.ViewModels;
 
-public class BreakTimerViewModel : INotifyPropertyChanged
+public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
 {
     private enum TimerState
     {
@@ -69,40 +69,21 @@ public class BreakTimerViewModel : INotifyPropertyChanged
         get => _customMinutes;
         set
         {
-            if (SetProperty(ref _customMinutes, value))
+            int clamped = Math.Clamp(value, 1, 999);
+            if (SetProperty(ref _customMinutes, clamped))
                 ((RelayCommand)StartCustomCommand).RaiseCanExecuteChanged();
         }
     }
 
-    public bool IsIdle
-    {
-        get => _state == TimerState.Idle;
-        private set => OnPropertyChanged();
-    }
+    public bool IsIdle => _state == TimerState.Idle;
 
-    public bool IsRunning
-    {
-        get => _state == TimerState.Running;
-        private set => OnPropertyChanged();
-    }
+    public bool IsRunning => _state == TimerState.Running;
 
-    public bool IsPaused
-    {
-        get => _state == TimerState.Paused;
-        private set => OnPropertyChanged();
-    }
+    public bool IsPaused => _state == TimerState.Paused;
 
-    public bool IsCompleted
-    {
-        get => _state == TimerState.Completed;
-        private set => OnPropertyChanged();
-    }
+    public bool IsCompleted => _state == TimerState.Completed;
 
-    public bool IsActive
-    {
-        get => _state != TimerState.Idle;
-        private set => OnPropertyChanged();
-    }
+    public bool IsActive => _state != TimerState.Idle;
 
     public ICommand StartPresetCommand { get; }
     public ICommand StartCustomCommand { get; }
@@ -152,15 +133,10 @@ public class BreakTimerViewModel : INotifyPropertyChanged
     private void Reset()
     {
         _timer.Stop();
-        _timeRemainingText = "00:00";
-        _verboseTimeText = "";
-        _progressFraction = 0;
-
+        TimeRemainingText = "00:00";
+        VerboseTimeText = "";
+        ProgressFraction = 0;
         SetState(TimerState.Idle);
-
-        OnPropertyChanged(nameof(TimeRemainingText));
-        OnPropertyChanged(nameof(VerboseTimeText));
-        OnPropertyChanged(nameof(ProgressFraction));
     }
 
     private void Timer_Tick(object? sender, EventArgs e)
@@ -212,6 +188,12 @@ public class BreakTimerViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(IsPaused));
         OnPropertyChanged(nameof(IsCompleted));
         OnPropertyChanged(nameof(IsActive));
+    }
+
+    public void Dispose()
+    {
+        _timer.Stop();
+        _timer.Tick -= Timer_Tick;
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

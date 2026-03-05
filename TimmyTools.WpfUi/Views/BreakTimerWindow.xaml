@@ -3,12 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:TimmyTools.WpfUi.ViewModels"
         Title="Break Timer"
-        Width="600" Height="400"
-        MinWidth="400" MinHeight="250"
+        Width="600" Height="460"
+        MinWidth="400" MinHeight="310"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance Type=vm:BreakTimerViewModel}"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d">
@@ -65,6 +64,44 @@
         </Style>
     </Window.Style>
 
+    <DockPanel LastChildFill="True">
+
+        <!-- Note Area -->
+        <Grid DockPanel.Dock="Bottom" Margin="20,0,20,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="Class:"
+                       FontSize="14" Foreground="#AAAAAA"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,4"/>
+            <TextBox Grid.Row="0" Grid.Column="1"
+                     Text="{Binding ClassTitle, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="14" Foreground="White"
+                     Background="#3A3A3A" BorderThickness="0"
+                     Padding="6,4" Margin="0,0,0,4"
+                     CaretBrush="White"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                       Text="Next up:"
+                       FontSize="14" Foreground="#AAAAAA"
+                       VerticalAlignment="Center"
+                       Margin="0,0,8,0"/>
+            <TextBox Grid.Row="1" Grid.Column="1"
+                     Text="{Binding NextUp, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="14" Foreground="White"
+                     Background="#3A3A3A" BorderThickness="0"
+                     Padding="6,4"
+                     CaretBrush="White"/>
+        </Grid>
+
     <Viewbox Stretch="Uniform" Margin="20">
         <Grid Width="560" Height="320">
 
@@ -76,21 +113,17 @@
                 <!-- Preset Buttons -->
                 <WrapPanel HorizontalAlignment="Center" Margin="0,0,0,20">
                     <Button Content="5 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}">
-                        <Button.CommandParameter><sys:Int32>5</sys:Int32></Button.CommandParameter>
-                    </Button>
+                            Command="{Binding StartPresetCommand}"
+                            CommandParameter="5"/>
                     <Button Content="10 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}">
-                        <Button.CommandParameter><sys:Int32>10</sys:Int32></Button.CommandParameter>
-                    </Button>
+                            Command="{Binding StartPresetCommand}"
+                            CommandParameter="10"/>
                     <Button Content="30 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}">
-                        <Button.CommandParameter><sys:Int32>30</sys:Int32></Button.CommandParameter>
-                    </Button>
+                            Command="{Binding StartPresetCommand}"
+                            CommandParameter="30"/>
                     <Button Content="45 min" Style="{StaticResource PresetButtonStyle}"
-                            Command="{Binding StartPresetCommand}">
-                        <Button.CommandParameter><sys:Int32>45</sys:Int32></Button.CommandParameter>
-                    </Button>
+                            Command="{Binding StartPresetCommand}"
+                            CommandParameter="45"/>
                 </WrapPanel>
 
                 <!-- Custom Input -->
@@ -215,4 +248,6 @@
 
         </Grid>
     </Viewbox>
+
+    </DockPanel>
 </Window>

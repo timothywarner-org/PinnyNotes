@@ -36,7 +36,7 @@ public class AtomicClockViewModel : INotifyPropertyChanged, IDisposable
         {
             Interval = TimeSpan.FromMinutes(10)
         };
-        _syncTimer.Tick += async (s, e) => await SyncNtpAsync();
+        _syncTimer.Tick += SyncTimer_Tick;
 
         UpdateDisplay();
         _displayTimer.Start();
@@ -93,7 +93,7 @@ public class AtomicClockViewModel : INotifyPropertyChanged, IDisposable
     {
         StopTimers();
         _displayTimer.Tick -= DisplayTimer_Tick;
-        // _syncTimer.Tick uses a lambda and cannot be unhooked; stopping is sufficient.
+        _syncTimer.Tick -= SyncTimer_Tick;
     }
 
     private DateTime CurrentTime => DateTime.Now + _ntpOffset;
@@ -134,9 +134,22 @@ public class AtomicClockViewModel : INotifyPropertyChanged, IDisposable
                 IsSynced = false;
             }
         }
-        catch
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"NTP sync failed: {ex.Message}");
             IsSynced = false;
+        }
+    }
+
+    private async void SyncTimer_Tick(object? sender, EventArgs e)
+    {
+        try
+        {
+            await SyncNtpAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Sync timer tick failed: {ex.Message}");
         }
     }
 

@@ -28,6 +28,8 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
     private string _verboseTimeText = "";
     private double _progressFraction;
     private int _customMinutes = 5;
+    private string _classTitle = "";
+    private string _nextUp = "";
 
     public BreakTimerViewModel()
     {
@@ -37,7 +39,7 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
         };
         _timer.Tick += Timer_Tick;
 
-        StartPresetCommand = new RelayCommand<int>(StartPreset);
+        StartPresetCommand = new RelayCommand<string>(StartPreset);
         StartCustomCommand = new RelayCommand(StartCustom, () => CustomMinutes > 0);
         PauseCommand = new RelayCommand(Pause);
         ResumeCommand = new RelayCommand(Resume);
@@ -75,6 +77,18 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
+    public string ClassTitle
+    {
+        get => _classTitle;
+        set => SetProperty(ref _classTitle, value);
+    }
+
+    public string NextUp
+    {
+        get => _nextUp;
+        set => SetProperty(ref _nextUp, value);
+    }
+
     public bool IsIdle => _state == TimerState.Idle;
 
     public bool IsRunning => _state == TimerState.Running;
@@ -91,9 +105,10 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
     public ICommand ResumeCommand { get; }
     public ICommand ResetCommand { get; }
 
-    private void StartPreset(int minutes)
+    private void StartPreset(string minutesText)
     {
-        StartTimer(TimeSpan.FromMinutes(minutes));
+        if (int.TryParse(minutesText, out int minutes) && minutes > 0)
+            StartTimer(TimeSpan.FromMinutes(minutes));
     }
 
     private void StartCustom()
@@ -165,7 +180,7 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
         else
             TimeRemainingText = $"{remaining.Minutes:D2}:{remaining.Seconds:D2}";
 
-        int displayMinutes = remaining.Minutes + ((int)remaining.TotalHours * 60);
+        int displayMinutes = (int)remaining.TotalMinutes;
         int displaySeconds = remaining.Seconds;
 
         if (remaining.TotalHours >= 1)

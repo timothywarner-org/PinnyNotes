@@ -31,9 +31,9 @@ public class NtpService
                 if (result.Success)
                     return result;
             }
-            catch
+            catch (Exception ex)
             {
-                // Try next server
+                System.Diagnostics.Debug.WriteLine($"NTP query failed for {server}: {ex.Message}");
             }
         }
 

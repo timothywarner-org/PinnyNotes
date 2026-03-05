@@ -100,9 +100,17 @@ public class NoteModel : BaseModel
         Color border = _currentPalette.Border;
         Color title = _currentPalette.Title;
 
-        Background = new SolidColorBrush(Color.FromArgb(alpha, background.R, background.G, background.B));
-        BorderBrush = new SolidColorBrush(Color.FromArgb(alpha, border.R, border.G, border.B));
-        TitleGridBackground = new SolidColorBrush(Color.FromArgb(alpha, title.R, title.G, title.B));
+        SolidColorBrush backgroundBrush = new(Color.FromArgb(alpha, background.R, background.G, background.B));
+        backgroundBrush.Freeze();
+        Background = backgroundBrush;
+
+        SolidColorBrush borderBrush = new(Color.FromArgb(alpha, border.R, border.G, border.B));
+        borderBrush.Freeze();
+        BorderBrush = borderBrush;
+
+        SolidColorBrush titleBrush = new(Color.FromArgb(alpha, title.R, title.G, title.B));
+        titleBrush.Freeze();
+        TitleGridBackground = titleBrush;
 
         // Foreground brushes remain fully opaque so text is always readable
     }

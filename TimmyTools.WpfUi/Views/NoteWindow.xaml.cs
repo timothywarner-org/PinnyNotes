@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 using TimmyTools.Core.Enums;
@@ -28,6 +29,7 @@ public partial class NoteWindow : Window
     private bool _isRolledUp;
     private double _savedHeight;
     private double _savedMinHeight;
+    private bool _isInitialLoadComplete;
 
     public NoteViewModel ViewModel => _viewModel;
 
@@ -88,6 +90,17 @@ public partial class NoteWindow : Window
     {
         _viewModel.OnWindowLoaded(
             ScreenHelper.GetWindowHandle(this)
+        );
+
+        // Subscribe to text changes after initial load so the first
+        // content load does not trigger an unwanted resize.
+        NoteTextBox.Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.Loaded,
+            () =>
+            {
+                _isInitialLoadComplete = true;
+                NoteTextBox.TextChanged += NoteTextBox_TextChanged;
+            }
         );
     }
 
@@ -172,6 +185,54 @@ public partial class NoteWindow : Window
 
     #endregion
 
+    #region Auto-Resize
+
+    private void NoteTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (!_isInitialLoadComplete || _isRolledUp)
+            return;
+
+        AutoResizeHeight();
+    }
+
+    private void AutoResizeHeight()
+    {
+        NoteTextBox.UpdateLayout();
+
+        ScrollViewer? scrollViewer = FindVisualChild<ScrollViewer>(NoteTextBox);
+        if (scrollViewer == null)
+            return;
+
+        double contentHeight = scrollViewer.ExtentHeight;
+        double titleBarHeight = TitleBarGrid.ActualHeight;
+        double borderHeight = BorderThickness.Top + BorderThickness.Bottom;
+        double textBoxPadding = NoteTextBox.Padding.Top + NoteTextBox.Padding.Bottom;
+        double buffer = 16.0;
+
+        double desiredHeight = contentHeight + titleBarHeight + borderHeight + textBoxPadding + buffer;
+
+        double maxHeight = SystemParameters.WorkArea.Height;
+        double clampedHeight = Math.Clamp(desiredHeight, MinHeight, maxHeight);
+
+        Height = clampedHeight;
+    }
+
+    private static T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T found)
+                return found;
+            T? result = FindVisualChild<T>(child);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
+
+    #endregion
+
     #region TitleBar
 
     private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
@@ -222,13 +283,6 @@ public partial class NoteWindow : Window
             _isRolledUp = true;
         }
     }
-
-    /// <summary>
-    /// Returns the height that should be persisted to the database.
-    /// When rolled up, returns the saved pre-rollup height to avoid
-    /// persisting the collapsed title-bar-only height.
-    /// </summary>
-    public double PersistableHeight => _isRolledUp ? _savedHeight : ActualHeight;
 
     private void NewButton_Click(object sender, RoutedEventArgs e)
     {

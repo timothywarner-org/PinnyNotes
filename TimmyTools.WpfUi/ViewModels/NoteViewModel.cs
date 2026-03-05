@@ -281,9 +281,11 @@ public class NoteViewModel : BaseViewModel
         // Apply noteMargin if another note is already in that position
         if (Application.Current.Windows.Count > 1)
         {
+            int maxAttempts = 50;
+            int attempts = 0;
             Window[] otherWindows = new Window[Application.Current.Windows.Count];
             Application.Current.Windows.CopyTo(otherWindows, 0);
-            while (otherWindows.Any(w => w.Left == position.X && w.Top == position.Y))
+            while (attempts < maxAttempts && otherWindows.Any(w => Math.Abs(w.Left - position.X) < 1 && Math.Abs(w.Top - position.Y) < 1))
             {
                 double newX = position.X + (noteMargin * Note.GravityX);
                 if (newX < screenBounds.Left)
@@ -297,11 +299,12 @@ public class NoteViewModel : BaseViewModel
                 else if (newY + Note.Height > screenBounds.Bottom)
                     newY = screenBounds.Bottom - Note.Height;
 
-                if (position.X == newX && position.Y == newY)
+                if (Math.Abs(position.X - newX) < 1 && Math.Abs(position.Y - newY) < 1)
                     break;
 
                 position.X = newX;
                 position.Y = newY;
+                attempts++;
             }
         }
 

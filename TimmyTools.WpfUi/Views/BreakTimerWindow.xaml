@@ -43,13 +43,13 @@
         </Style>
 
         <Style x:Key="PresetButtonStyle" TargetType="Button" BasedOn="{StaticResource TimerButtonBase}">
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="12,8"/>
         </Style>
 
         <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource TimerButtonBase}">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Padding" Value="24,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="14,6"/>
         </Style>
     </Window.Resources>
 
@@ -66,38 +66,13 @@
 
     <DockPanel LastChildFill="True">
 
-        <!-- Note Area -->
-        <Grid DockPanel.Dock="Bottom" Margin="20,0,20,16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" Grid.Column="0"
-                       Text="Class:"
-                       FontSize="18" Foreground="#AAAAAA"
-                       VerticalAlignment="Center"
-                       Margin="0,0,8,4"/>
-            <TextBlock Grid.Row="0" Grid.Column="1"
-                       Text="{Binding ClassTitle}"
-                       FontSize="18" Foreground="White"
-                       VerticalAlignment="Center"
-                       Margin="0,0,0,4"/>
-
-            <TextBlock Grid.Row="1" Grid.Column="0"
-                       Text="Next up:"
-                       FontSize="18" Foreground="#AAAAAA"
-                       VerticalAlignment="Center"
-                       Margin="0,0,8,0"/>
-            <TextBlock Grid.Row="1" Grid.Column="1"
-                       Text="{Binding NextUp}"
-                       FontSize="18" Foreground="White"
-                       VerticalAlignment="Center"/>
-        </Grid>
+        <!-- Class Title -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="{Binding ClassTitle}"
+                   FontSize="48" FontFamily="Segoe UI Light"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   Margin="0,16,0,0"/>
 
     <Viewbox Stretch="Uniform" Margin="20">
         <Grid Width="560" Height="320">
@@ -225,8 +200,16 @@
                     </Border>
                 </Grid>
 
+                <!-- Next Up -->
+                <TextBlock FontSize="36" FontFamily="Segoe UI Light"
+                           Foreground="#CCCCCC" HorizontalAlignment="Center"
+                           Margin="0,0,0,12">
+                    <Run Text="Next up: " Foreground="#AAAAAA"/>
+                    <Run Text="{Binding NextUp}"/>
+                </TextBlock>
+
                 <!-- Action Buttons -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <!-- Pause (visible when running) -->
                     <Button Content="Pause" Style="{StaticResource ActionButtonStyle}"
                             Command="{Binding PauseCommand}"

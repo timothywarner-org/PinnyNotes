@@ -11,6 +11,7 @@ public class SettingsService(SettingsRepository settingsRepository)
     public ApplicationSettingsModel ApplicationSettings { get; private set; } = null!;
     public NoteSettingsModel NoteSettings { get; private set; } = null!;
     public EditorSettingsModel EditorSettings { get; private set; } = null!;
+    public BreakTimerSettingsModel BreakTimerSettings { get; private set; } = null!;
 
     public async Task Load()
     {
@@ -36,6 +37,12 @@ public class SettingsService(SettingsRepository settingsRepository)
             OpaqueWhenFocused = settings.OpaqueWhenFocused,
             OpaqueValue = settings.OpaqueOpacity,
             TransparentValue = settings.TransparentOpacity
+        };
+
+        BreakTimerSettings = new()
+        {
+            ClassTitle = settings.ClassTitle,
+            NextUp = settings.NextUp
         };
 
         EditorSettings = new()
@@ -118,7 +125,10 @@ public class SettingsService(SettingsRepository settingsRepository)
                 TrimTextOnPaste: EditorSettings.TrimTextOnPaste,
                 PasteAltAction: EditorSettings.PasteAltAction,
                 TrimTextOnAltPaste: EditorSettings.TrimTextOnAltPaste,
-                MiddleClickPaste: EditorSettings.MiddleClickPaste
+                MiddleClickPaste: EditorSettings.MiddleClickPaste,
+
+                ClassTitle: BreakTimerSettings.ClassTitle,
+                NextUp: BreakTimerSettings.NextUp
             )
         );
     }

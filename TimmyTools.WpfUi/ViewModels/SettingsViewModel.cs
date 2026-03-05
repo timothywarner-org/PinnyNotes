@@ -17,6 +17,7 @@ public class SettingsViewModel : BaseViewModel
         ApplicationSettings = SettingsService.ApplicationSettings;
         NoteSettings = SettingsService.NoteSettings;
         EditorSettings = SettingsService.EditorSettings;
+        BreakTimerSettings = SettingsService.BreakTimerSettings;
 
         IsTransparencyEnabled = (NoteSettings.TransparencyMode != TransparencyMode.Disabled);
     }
@@ -24,6 +25,7 @@ public class SettingsViewModel : BaseViewModel
     public ApplicationSettingsModel ApplicationSettings { get; set; }
     public NoteSettingsModel NoteSettings { get; set; }
     public EditorSettingsModel EditorSettings { get; set; }
+    public BreakTimerSettingsModel BreakTimerSettings { get; set; }
 
     public static KeyValuePair<StartupPosition, string>[] StartupPositionsList { get; } = [
         new(StartupPosition.TopLeft, "Top left"),

@@ -77,7 +77,10 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
             Tool_SortState                      INTEGER DEFAULT 1,
             Tool_SplitState                     INTEGER DEFAULT 1,
             Tool_TrimState                      INTEGER DEFAULT 1,
-            Tool_UrlState                       INTEGER DEFAULT 1
+            Tool_UrlState                       INTEGER DEFAULT 1,
+
+            BreakTimer_ClassTitle               TEXT    DEFAULT '',
+            BreakTimer_NextUp                   TEXT    DEFAULT ''
         )
     ";
 
@@ -145,7 +148,10 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
             TrimTextOnAltPaste: GetBool(reader, "Editor_TrimTextOnAltPaste"),
             MiddleClickPaste: GetBool(reader, "Editor_MiddleClickPaste"),
             CaretThickness: GetDouble(reader, "Editor_CaretThickness"),
-            CaretColour: GetEnum<CaretColour>(reader, "Editor_CaretColour")
+            CaretColour: GetEnum<CaretColour>(reader, "Editor_CaretColour"),
+
+            ClassTitle: GetString(reader, "BreakTimer_ClassTitle"),
+            NextUp: GetString(reader, "BreakTimer_NextUp")
         );
     }
 
@@ -202,7 +208,10 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
                     Editor_TrimTextOnAltPaste = @editor_TrimTextOnAltPaste,
                     Editor_MiddleClickPaste = @editor_MiddleClickPaste,
                     Editor_CaretThickness = @editor_CaretThickness,
-                    Editor_CaretColour = @editor_CaretColour
+                    Editor_CaretColour = @editor_CaretColour,
+
+                    BreakTimer_ClassTitle = @breakTimer_ClassTitle,
+                    BreakTimer_NextUp = @breakTimer_NextUp
                 WHERE
                     Id = @id;
             ",
@@ -250,6 +259,9 @@ public class SettingsRepository(DatabaseConfiguration databaseConfiguration) : B
                 new("@editor_MiddleClickPaste", settings.MiddleClickPaste),
                 new("@editor_CaretThickness", settings.CaretThickness),
                 new("@editor_CaretColour", settings.CaretColour),
+
+                new("@breakTimer_ClassTitle", settings.ClassTitle),
+                new("@breakTimer_NextUp", settings.NextUp),
 
                 new("@id", settings.Id)
             ]

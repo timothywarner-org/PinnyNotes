@@ -4,6 +4,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 using TimmyTools.WpfUi.Commands;
+using TimmyTools.WpfUi.Models;
+using TimmyTools.WpfUi.Services;
 
 namespace TimmyTools.WpfUi.ViewModels;
 
@@ -18,6 +20,7 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
     }
 
     private readonly DispatcherTimer _timer;
+    private readonly BreakTimerSettingsModel _breakTimerSettings;
 
     private TimerState _state = TimerState.Idle;
     private DateTime _endTime;
@@ -28,11 +31,11 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
     private string _verboseTimeText = "";
     private double _progressFraction;
     private int _customMinutes = 5;
-    private string _classTitle = "";
-    private string _nextUp = "";
 
-    public BreakTimerViewModel()
+    public BreakTimerViewModel(SettingsService settingsService)
     {
+        _breakTimerSettings = settingsService.BreakTimerSettings;
+        _breakTimerSettings.PropertyChanged += OnBreakTimerSettingsChanged;
         _timer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(250)
@@ -77,17 +80,9 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
-    public string ClassTitle
-    {
-        get => _classTitle;
-        set => SetProperty(ref _classTitle, value);
-    }
+    public string ClassTitle => _breakTimerSettings.ClassTitle;
 
-    public string NextUp
-    {
-        get => _nextUp;
-        set => SetProperty(ref _nextUp, value);
-    }
+    public string NextUp => _breakTimerSettings.NextUp;
 
     public bool IsIdle => _state == TimerState.Idle;
 
@@ -209,6 +204,15 @@ public class BreakTimerViewModel : INotifyPropertyChanged, IDisposable
     {
         _timer.Stop();
         _timer.Tick -= Timer_Tick;
+        _breakTimerSettings.PropertyChanged -= OnBreakTimerSettingsChanged;
+    }
+
+    private void OnBreakTimerSettingsChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(BreakTimerSettingsModel.ClassTitle))
+            OnPropertyChanged(nameof(ClassTitle));
+        else if (e.PropertyName == nameof(BreakTimerSettingsModel.NextUp))
+            OnPropertyChanged(nameof(NextUp));
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)

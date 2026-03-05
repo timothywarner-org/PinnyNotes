@@ -47,5 +47,8 @@ public record SettingsDataDto(
      bool TrimTextOnAltPaste,
      bool MiddleClickPaste,
      double CaretThickness,
-     CaretColour CaretColour
+     CaretColour CaretColour,
+
+     string ClassTitle,
+     string NextUp
 );

@@ -47,9 +47,35 @@
             <Setter Property="Padding" Value="12,8"/>
         </Style>
 
-        <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource TimerButtonBase}">
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="14,6"/>
+        <!-- Small icon button for top-right toolbar -->
+        <Style x:Key="ToolbarIconButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="#888888"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Foreground" Value="#AAAAAA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -66,50 +92,64 @@
 
     <DockPanel LastChildFill="True">
 
-        <!-- Next Up -->
+        <!-- Top Bar: Class Title + Toolbar Icons (Pause/Reset/Settings) -->
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Class Title (centered in middle column) -->
+            <TextBlock Grid.Column="1"
+                       Text="{Binding ClassTitle}"
+                       FontSize="48" FontFamily="Segoe UI Light"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       TextTrimming="CharacterEllipsis"
+                       Margin="0,4,0,0"/>
+
+            <!-- Toolbar Icons: upper-right -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Margin="0,6,8,0">
+                <!-- Pause (visible when running) -->
+                <Button Content="&#xE769;"
+                        Style="{StaticResource ToolbarIconButtonStyle}"
+                        Command="{Binding PauseCommand}"
+                        ToolTip="Pause"
+                        Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
+                <!-- Resume (visible when paused) -->
+                <Button Content="&#xE768;"
+                        Style="{StaticResource ToolbarIconButtonStyle}"
+                        Command="{Binding ResumeCommand}"
+                        ToolTip="Resume"
+                        Visibility="{Binding IsPaused, Converter={StaticResource BoolToVis}}"/>
+                <!-- Reset (visible when active) -->
+                <Button Content="&#xE72C;"
+                        Style="{StaticResource ToolbarIconButtonStyle}"
+                        Command="{Binding ResetCommand}"
+                        ToolTip="Reset"
+                        Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}"/>
+                <!-- Settings (always visible) -->
+                <Button Content="&#xE713;"
+                        Style="{StaticResource ToolbarIconButtonStyle}"
+                        Click="SettingsButton_Click"
+                        ToolTip="Break Timer Settings"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Next Up (centered, larger text at bottom) -->
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center"
-                    Margin="0,0,0,16"
+                    Margin="0,0,0,20"
                     Visibility="{Binding IsActive, Converter={StaticResource BoolToVis}}">
             <TextBlock Text="Next up: "
-                       FontSize="48" FontFamily="Segoe UI Light"
+                       FontSize="56" FontFamily="Segoe UI Light"
                        Foreground="#AAAAAA"/>
             <TextBlock Text="{Binding NextUp}"
-                       FontSize="48" FontFamily="Segoe UI Light"
+                       FontSize="56" FontFamily="Segoe UI Light"
                        Foreground="#CCCCCC"/>
         </StackPanel>
-
-        <!-- Settings Button -->
-        <Button DockPanel.Dock="Top"
-                Content="&#x2699;"
-                Click="SettingsButton_Click"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                FontSize="16" Foreground="#888888"
-                Background="Transparent" BorderThickness="0"
-                Cursor="Hand" Padding="8,4"
-                Margin="0,4,8,0"
-                ToolTip="Break Timer Settings">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-
-        <!-- Class Title -->
-        <TextBlock DockPanel.Dock="Top"
-                   Text="{Binding ClassTitle}"
-                   FontSize="48" FontFamily="Segoe UI Light"
-                   Foreground="White"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,0"/>
 
     <Viewbox Stretch="Uniform" Margin="20">
         <Grid Width="560" Height="320">
@@ -236,23 +276,6 @@
                         </Border.Width>
                     </Border>
                 </Grid>
-
-                <!-- Action Buttons -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <!-- Pause (visible when running) -->
-                    <Button Content="Pause" Style="{StaticResource ActionButtonStyle}"
-                            Command="{Binding PauseCommand}"
-                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
-
-                    <!-- Resume (visible when paused) -->
-                    <Button Content="Resume" Style="{StaticResource ActionButtonStyle}"
-                            Command="{Binding ResumeCommand}"
-                            Visibility="{Binding IsPaused, Converter={StaticResource BoolToVis}}"/>
-
-                    <!-- Reset (always visible when active) -->
-                    <Button Content="Reset" Style="{StaticResource ActionButtonStyle}"
-                            Command="{Binding ResetCommand}"/>
-                </StackPanel>
             </StackPanel>
 
         </Grid>
